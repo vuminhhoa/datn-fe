@@ -3,7 +3,6 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import {
   Button,
   Card,
-  Checkbox,
   Flex,
   Form,
   Input,
@@ -12,28 +11,34 @@ import {
   message,
 } from 'antd';
 import axios from 'axios';
-import './Login.css'; // Import file CSS để tùy chỉnh căn giữa và background
+import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+const SignUp = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    passwordConfirm: '',
+  });
   const [messageApi, contextHolder] = message.useMessage();
 
   const onFinish = async (values) => {
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:5000/api/auth/login',
+      url: 'http://localhost:5000/api/auth/register',
       data: values,
     });
-    if (res.data.success === true) {
+    if (!res.data.success) {
       return messageApi.open({
-        type: 'success',
-        content: 'Đăng nhập thành công!',
+        type: 'error',
+        content: res.data.message,
       });
     }
-    messageApi.open({
-      type: 'error',
-      content: res.data.message,
+    await messageApi.open({
+      type: 'success',
+      content: 'Đăng ký thành công!',
     });
+    return navigate('/login');
   };
 
   const handleInputChange = (e) => {
@@ -47,11 +52,16 @@ const Login = () => {
     <div className="login-container">
       {contextHolder}
       <Card style={{ width: 350 }}>
-        <Form name="normal_login" onFinish={onFinish} autoComplete="off">
+        <Form
+          initialValues={{ remember: true }}
+          autoComplete="off"
+          onFinish={onFinish}
+        >
           <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
             <Flex justify="center">
-              <Typography.Title level={3}>Đăng nhập</Typography.Title>
+              <Typography.Title level={3}>Đăng kí</Typography.Title>
             </Flex>
+
             <Space
               direction="vertical"
               size="small"
@@ -64,7 +74,7 @@ const Login = () => {
                     type: 'email',
                     message: 'Email không đúng định dạng!',
                   },
-                  { required: true, message: 'Vui lòng email đăng nhập!' },
+                  { required: true, message: 'Vui lòng nhập tên đăng nhập!' },
                 ]}
               >
                 <Input
@@ -86,19 +96,39 @@ const Login = () => {
                   placeholder="Mật khẩu"
                 />
               </Form.Item>
+              <Form.Item
+                name="passwordConfirm"
+                rules={[
+                  { required: true, message: 'Vui lòng xác nhận mật khẩu!' },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error('Mật khẩu không giống nhau')
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <Input
+                  name="passwordConfirm"
+                  onChange={handleInputChange}
+                  prefix={<LockOutlined />}
+                  type="password"
+                  placeholder="Xác nhận mật khẩu"
+                />
+              </Form.Item>
             </Space>
 
-            <Flex justify="space-between">
-              <Checkbox>Ghi nhớ đăng nhập</Checkbox>
-              <Typography.Link>Quên mật khẩu</Typography.Link>
-            </Flex>
-
             <Button size="large" type="primary" htmlType="submit" block>
-              Đăng nhập
+              Đăng kí
             </Button>
             <Typography>
-              hoặc{' '}
-              <Typography.Link href="/sign-up">đăng ký ngay!</Typography.Link>
+              hoặc {''}
+              <Typography.Link href="/login">đăng nhập </Typography.Link>
+              nếu đã có tài khoản!
             </Typography>
           </Space>
         </Form>
@@ -107,4 +137,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
