@@ -13,8 +13,10 @@ import {
 } from 'antd';
 import axios from 'axios';
 import './Login.css'; // Import file CSS để tùy chỉnh căn giữa và background
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -24,16 +26,14 @@ const Login = () => {
       url: 'http://localhost:5000/api/auth/login',
       data: values,
     });
-    if (res.data.success === true) {
-      return messageApi.open({
-        type: 'success',
-        content: 'Đăng nhập thành công!',
+    if (!res.data.success) {
+      await messageApi.open({
+        type: 'error',
+        content: res.data.message,
       });
     }
-    messageApi.open({
-      type: 'error',
-      content: res.data.message,
-    });
+
+    return navigate('/');
   };
 
   const handleInputChange = (e) => {

@@ -34,9 +34,14 @@ const SignUp = () => {
         content: res.data.message,
       });
     }
+
     await messageApi.open({
       type: 'success',
       content: 'Đăng ký thành công!',
+    });
+    await messageApi.open({
+      type: 'info',
+      content: 'Đang chuyển sang trang đăng nhập!',
     });
     return navigate('/login');
   };
