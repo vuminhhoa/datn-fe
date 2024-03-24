@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -23,27 +24,38 @@ const SignUp = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const onFinish = async (values) => {
-    const res = await axios({
-      method: 'POST',
-      url: 'http://localhost:5000/api/auth/register',
-      data: values,
-    });
-    if (!res.data.success) {
+    try {
+      setSaving(true);
+      const res = await axios({
+        method: 'POST',
+        url: 'http://localhost:5000/api/auth/register',
+        data: values,
+      });
+      if (!res.data.success) {
+        return messageApi.open({
+          type: 'error',
+          content: res.data.message,
+        });
+      }
+
+      await messageApi.open({
+        type: 'success',
+        content: 'Đăng ký thành công!',
+      });
+      await messageApi.open({
+        type: 'info',
+        content: 'Đang chuyển sang trang đăng nhập!',
+      });
+      return navigate('/login');
+    } catch (error) {
+      console.log(error);
       return messageApi.open({
         type: 'error',
-        content: res.data.message,
+        content: 'Lỗi hệ thống',
       });
+    } finally {
+      setSaving(false);
     }
-
-    await messageApi.open({
-      type: 'success',
-      content: 'Đăng ký thành công!',
-    });
-    await messageApi.open({
-      type: 'info',
-      content: 'Đang chuyển sang trang đăng nhập!',
-    });
-    return navigate('/login');
   };
 
   const handleInputChange = (e) => {
@@ -64,7 +76,9 @@ const SignUp = () => {
         >
           <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
             <Flex justify="center">
-              <Typography.Title level={3}>Đăng kí</Typography.Title>
+              <Typography.Title level={3} style={{ margin: 0 }}>
+                Đăng kí
+              </Typography.Title>
             </Flex>
 
             <Space
@@ -87,6 +101,7 @@ const SignUp = () => {
                   onChange={handleInputChange}
                   prefix={<UserOutlined />}
                   placeholder="Tên đăng nhập"
+                  disabled={saving}
                 />
               </Form.Item>
               <Form.Item
@@ -99,6 +114,7 @@ const SignUp = () => {
                   prefix={<LockOutlined />}
                   type="password"
                   placeholder="Mật khẩu"
+                  disabled={saving}
                 />
               </Form.Item>
               <Form.Item
@@ -116,6 +132,7 @@ const SignUp = () => {
                     },
                   }),
                 ]}
+                disabled={saving}
               >
                 <Input
                   name="passwordConfirm"
@@ -127,7 +144,13 @@ const SignUp = () => {
               </Form.Item>
             </Space>
 
-            <Button size="large" type="primary" htmlType="submit" block>
+            <Button
+              size="large"
+              type="primary"
+              htmlType="submit"
+              block
+              loading={saving}
+            >
               Đăng kí
             </Button>
             <Typography>

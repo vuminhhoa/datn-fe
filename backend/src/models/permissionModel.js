@@ -1,19 +1,17 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/sequelizeConfig.js';
 
-const User = sequelize.define(
-  'User',
+const Permission = sequelize.define(
+  'Permission',
   {
+    alias: {
+      type: DataTypes.STRING,
+    },
     name: {
-      type: DataTypes.STRING,
-    },
-    email: {
-      type: DataTypes.STRING,
-    },
-    password: {
       type: DataTypes.STRING,
     },
   },
   {}
 );
-export default User;
+
+export default Permission;

@@ -1,9 +1,10 @@
-// src/App.js
 import React from 'react';
-import RoutesApp from './routes';
+
+import AppRoutes from './routes';
 import './index.css';
+
 function App() {
-  return <RoutesApp />;
+  return <AppRoutes />;
 }
 
 export default App;

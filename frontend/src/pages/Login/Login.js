@@ -12,28 +12,40 @@ import {
   message,
 } from 'antd';
 import axios from 'axios';
-import './Login.css'; // Import file CSS để tùy chỉnh căn giữa và background
+import './Login.css';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [messageApi, contextHolder] = message.useMessage();
 
   const onFinish = async (values) => {
-    const res = await axios({
-      method: 'POST',
-      url: 'http://localhost:5000/api/auth/login',
-      data: values,
-    });
-    if (!res.data.success) {
-      await messageApi.open({
-        type: 'error',
-        content: res.data.message,
+    try {
+      setLoading(true);
+      const res = await axios({
+        method: 'POST',
+        url: 'http://localhost:5000/api/auth/login',
+        data: values,
       });
+      if (!res.data.success) {
+        return messageApi.open({
+          type: 'error',
+          content: res.data.message,
+        });
+      }
+      localStorage.setItem('ACCESS_TOKEN', res.data.data.accessToken);
+      return navigate('/');
+    } catch (error) {
+      console.log(error);
+      return messageApi.open({
+        type: 'error',
+        content: 'Đăng nhập thất bại',
+      });
+    } finally {
+      setLoading(false);
     }
-
-    return navigate('/');
   };
 
   const handleInputChange = (e) => {
@@ -72,6 +84,7 @@ const Login = () => {
                   onChange={handleInputChange}
                   prefix={<UserOutlined />}
                   placeholder="Tên đăng nhập"
+                  disabled={loading}
                 />
               </Form.Item>
               <Form.Item
@@ -84,16 +97,23 @@ const Login = () => {
                   prefix={<LockOutlined />}
                   type="password"
                   placeholder="Mật khẩu"
+                  disabled={loading}
                 />
               </Form.Item>
             </Space>
 
             <Flex justify="space-between">
-              <Checkbox>Ghi nhớ đăng nhập</Checkbox>
+              <Checkbox disabled={loading}>Ghi nhớ đăng nhập</Checkbox>
               <Typography.Link>Quên mật khẩu</Typography.Link>
             </Flex>
 
-            <Button size="large" type="primary" htmlType="submit" block>
+            <Button
+              size="large"
+              type="primary"
+              htmlType="submit"
+              block
+              loading={loading}
+            >
               Đăng nhập
             </Button>
             <Typography>
