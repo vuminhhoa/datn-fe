@@ -45,6 +45,7 @@ function AppHeader() {
       style={{
         padding: 0,
         background: colorBgContainer,
+        height: '56px',
       }}
     >
       <Flex
@@ -58,7 +59,7 @@ function AppHeader() {
       >
         <div></div>
         <Typography.Title
-          level={4}
+          level={5}
           style={{ margin: 0, cursor: 'pointer' }}
           onClick={() => navigate('/')}
         >

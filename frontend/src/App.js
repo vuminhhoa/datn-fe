@@ -9,6 +9,8 @@ import EditProfile from './pages/Profile/Edit';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import RoleSetting from './pages/Settings/Role';
+import PermissionSetting from './pages/Settings/Permission';
 
 function App() {
   return (
@@ -34,6 +36,22 @@ function App() {
         element={
           <PrivateRoute permission={permissions.PROFILE_SETTING}>
             <EditProfile />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/settings/roles-settings"
+        element={
+          <PrivateRoute permission={permissions.SYSTEM_SETTING}>
+            <RoleSetting />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/settings/permissions-settings"
+        element={
+          <PrivateRoute permission={permissions.SYSTEM_SETTING}>
+            <PermissionSetting />
           </PrivateRoute>
         }
       />
