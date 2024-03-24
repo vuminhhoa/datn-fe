@@ -1,5 +1,3 @@
-// import User from '../models/userModel.js';
-// import Role from '../models/roleModel.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User, Permission, Role } from '../models/index.js';
@@ -35,7 +33,7 @@ export async function login(req, res) {
     const { email, password } = req.body;
     const user = await User.findOne({
       where: { email },
-      raw: false,
+      include: { model: Role, include: Permission },
     });
     if (!user)
       return res.send({

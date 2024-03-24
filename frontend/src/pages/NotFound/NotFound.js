@@ -9,7 +9,7 @@ const NotFound = () => {
       subTitle="Xin lỗi, trang bạn đang vào không tồn tại hoặc không được phép truy cập."
       extra={
         <Button type="primary">
-          <Link to="/">Quay lại Trang chủ</Link>
+          <Link to="/">Về trang chủ</Link>
         </Button>
       }
     />

@@ -1,10 +1,13 @@
 import React from 'react';
 import { Layout, theme, Flex, Typography, Avatar, Dropdown } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { useAuth } from '../contexts/authProvider';
 import { useNavigate } from 'react-router-dom';
+
 const { Header } = Layout;
 
-function AppHeader({ user }) {
+function AppHeader() {
+  const { user, logoutAction } = useAuth();
   const navigate = useNavigate();
   const {
     token: { colorBgContainer },
@@ -12,8 +15,7 @@ function AppHeader({ user }) {
 
   const onClick = ({ key }) => {
     if (Number(key) === 2) {
-      localStorage.removeItem('ACCESS_TOKEN');
-      return navigate('/login');
+      logoutAction();
     }
     if (Number(key) === 0) {
       return navigate('/profile');
@@ -62,7 +64,14 @@ function AppHeader({ user }) {
         >
           QUẢN LÝ ĐẤU THẦU TRONG BỆNH VIỆN
         </Typography.Title>
-        <Flex align="center" gap={12}>
+        <Flex
+          align="center"
+          justify="end"
+          gap={12}
+          style={{
+            width: '160px',
+          }}
+        >
           <Typography>{user?.name || user.email} </Typography>
           <Dropdown
             menu={{

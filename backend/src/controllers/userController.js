@@ -1,14 +1,14 @@
-import jwt from 'jsonwebtoken';
+import { User } from '../models/index.js';
 
-export async function getUserWithAccessToken(req, res) {
+export async function updateProfile(req, res) {
   try {
-    const { accessToken } = req.body;
-    const data = jwt.verify(accessToken, 'secretkey', (error, decoded) => {
-      if (error) return res.send({ success: false, error: error });
-      return decoded;
+    const data = req.body;
+    await User.update(data, {
+      where: {
+        email: data.email,
+      },
     });
-    console.log(data.user);
-    return;
+    return res.send({ data: req.body, success: true });
     // const accessToken = req.body;
   } catch (error) {
     console.log(error);

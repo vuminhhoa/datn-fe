@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import {
   Button,
@@ -11,12 +11,11 @@ import {
   Space,
   message,
 } from 'antd';
-import axios from 'axios';
 import './Login.css';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/authProvider';
 
 const Login = () => {
-  const navigate = useNavigate();
+  const auth = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [messageApi, contextHolder] = message.useMessage();
@@ -24,19 +23,7 @@ const Login = () => {
   const onFinish = async (values) => {
     try {
       setLoading(true);
-      const res = await axios({
-        method: 'POST',
-        url: 'http://localhost:5000/api/auth/login',
-        data: values,
-      });
-      if (!res.data.success) {
-        return messageApi.open({
-          type: 'error',
-          content: res.data.message,
-        });
-      }
-      localStorage.setItem('ACCESS_TOKEN', res.data.data.accessToken);
-      return navigate('/');
+      auth.loginAction(values);
     } catch (error) {
       console.log(error);
       return messageApi.open({
