@@ -17,7 +17,7 @@ import useFetchApi from '../../../hooks/useFetchApi';
 import isHasPermission from '../../../helpers/isHasPermission';
 import { permissionsConsts } from '../../../const/permissionConsts';
 
-const Profile = () => {
+const DetailUser = () => {
   const { id } = useParams();
   const { data } = useFetchApi({ url: `/user/${id}` });
 
@@ -131,4 +131,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default DetailUser;
