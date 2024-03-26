@@ -1,59 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import {
-  Card,
-  Descriptions,
-  Flex,
-  Row,
-  Col,
-  Avatar,
-  Typography,
-  Breadcrumb,
-  Button,
-  Table,
-  Checkbox,
-  Select,
-  Divider,
-  Empty,
-  Alert,
-  Skeleton,
-  Spin,
-} from 'antd';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { Card, Descriptions, Flex, Breadcrumb, Button } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 
 import useFetchApi from '../../../../hooks/useFetchApi.js';
 
-const columns = [
-  {
-    title: 'Vai trò',
-    dataIndex: 'role',
-    ellipsis: true,
-    width: 240,
-    render: (text, record, index) => {
-      return <Link to={`/settings/roles/${record.id}`}>{text}</Link>;
-    },
-  },
-  {
-    title: 'Quyền hạn',
-    dataIndex: 'permissions',
-  },
-];
-
 const DetailRole = () => {
   const { id } = useParams();
-  console.log(id);
-  // const [dataSource, setDataSource] = useState([]);
-
-  const { data, fetchApi, setData, loading, handleChangeInput } = useFetchApi({
-    url: `settings/role/${id}`,
+  const { data } = useFetchApi({
+    url: `/settings/role/${id}`,
   });
-
-  useEffect(() => {
-    if (loading) return;
-    if (!loading && data.roles) {
-      setData(data);
-    }
-  }, [loading]);
+  const borderedItems = [
+    {
+      key: '1',
+      label: 'Quyền hạn',
+      children: data.roles?.Permissions.map(
+        (permission) => permission?.name
+      ).join(', '),
+    },
+    {
+      key: '2',
+      labelStyle: { width: '300px' },
+      label: `Users có vai trò ${data.roles?.name}`,
+      children: data.roles?.Users.map((user) => {
+        return (
+          <Button type="link" href={`/user/${user.id}`} size="small">
+            {user.name || user.email}
+          </Button>
+        );
+      }),
+    },
+    {
+      key: '2',
+      label: `Ngày tạo`,
+      children: new Date(data.roles?.createdAt).toLocaleString(),
+    },
+    {
+      key: '2',
+      label: `Ngày sửa đổi gần nhất`,
+      children: new Date(data.roles?.updatedAt).toLocaleString(),
+    },
+  ];
 
   return (
     <Flex vertical gap={16}>
@@ -67,10 +54,18 @@ const DetailRole = () => {
             href: '/settings/permissions-settings',
             title: 'Cài đặt phân quyền',
           },
+          {
+            title: `Role: ${data.roles?.name}`,
+          },
         ]}
       />
-      <Card title="Phân quyền hệ thống">
-        <Flex vertical gap={16}></Flex>
+      <Card
+        title={`Thông tin vai trò: ${data.roles?.name}`}
+        extra={<Button type="primary">Chỉnh sửa</Button>}
+      >
+        <Flex vertical gap={16}>
+          <Descriptions bordered items={borderedItems} column={1} />
+        </Flex>
       </Card>
     </Flex>
   );

@@ -83,9 +83,17 @@ const PermissionSetting = () => {
           },
         ]}
       />
-      <Card title="Phân quyền hệ thống">
+      <Card
+        title="Phân quyền hệ thống"
+        extra={<Button type="primary">Tạo vai trò mới</Button>}
+      >
         <Flex vertical gap={16}>
-          <Table rowKey="key" columns={columns} dataSource={dataSource} />
+          <Table
+            rowKey="key"
+            columns={columns}
+            dataSource={dataSource}
+            bordered
+          />
         </Flex>
       </Card>
     </Flex>

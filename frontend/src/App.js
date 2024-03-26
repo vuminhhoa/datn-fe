@@ -12,6 +12,7 @@ import SignUp from './pages/SignUp';
 import RoleSetting from './pages/Settings/Role';
 import PermissionSetting from './pages/Settings/Permission';
 import DetailRole from './pages/Settings/Role/Detail';
+import DetailUser from './pages/User/Detail';
 
 function App() {
   return (
@@ -29,6 +30,14 @@ function App() {
         element={
           <PrivateRoute permission={permissionsConsts.PROFILE_SETTING}>
             <Profile />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/user/:id"
+        element={
+          <PrivateRoute permission={permissionsConsts.USER_READ}>
+            <DetailUser />
           </PrivateRoute>
         }
       />

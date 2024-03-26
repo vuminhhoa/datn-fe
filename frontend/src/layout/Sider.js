@@ -124,10 +124,6 @@ function AppSider() {
           label: 'Cài đặt phân quyền',
           key: '/permissions-settings',
         }),
-        getItem({
-          label: 'Cài đặt vai trò',
-          key: '/roles-settings',
-        }),
       ],
     }),
   ].filter(Boolean);
