@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function useFetchApi({ url, defaultData = {} }) {
+export default function useFetchApi({
+  url,
+  defaultData = {},
+  initLoad = true,
+}) {
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(false);
   const [data, setData] = useState(defaultData);
@@ -36,7 +40,7 @@ export default function useFetchApi({ url, defaultData = {} }) {
   };
 
   useEffect(() => {
-    if (!fetched) {
+    if (initLoad && !fetched) {
       fetchApi(url).then(() => {});
     }
   }, []);

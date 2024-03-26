@@ -1,4 +1,4 @@
-export const permissions = {
+export const permissionsConsts = {
   DASHBOARD_READ: 'dashboardRead',
   DEPARTMENT_READ: 'departmentRead',
   USER_READ: 'userRead',

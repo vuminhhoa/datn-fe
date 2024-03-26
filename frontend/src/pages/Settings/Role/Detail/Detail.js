@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   Card,
   Descriptions,
@@ -19,15 +19,9 @@ import {
   Skeleton,
   Spin,
 } from 'antd';
-import { HomeOutlined, UserOutlined } from '@ant-design/icons';
-import { EditOutlined } from '@ant-design/icons';
-import { useAuth } from '../../../contexts/authProvider.js';
-import useFetchApi from '../../../hooks/useFetchApi.js';
-import {
-  permissionsConsts,
-  defaultPermissions,
-} from '../../../const/permissionConsts.js';
-import chunk from '../../../helpers/chunk.js';
+import { HomeOutlined } from '@ant-design/icons';
+
+import useFetchApi from '../../../../hooks/useFetchApi.js';
 
 const columns = [
   {
@@ -45,11 +39,13 @@ const columns = [
   },
 ];
 
-const RoleSetting = () => {
+const DetailRole = () => {
+  const { id } = useParams();
+  console.log(id);
   // const [dataSource, setDataSource] = useState([]);
 
   const { data, fetchApi, setData, loading, handleChangeInput } = useFetchApi({
-    url: '/settings?type=getRoles',
+    url: `settings/role/${id}`,
   });
 
   useEffect(() => {
@@ -59,17 +55,6 @@ const RoleSetting = () => {
     }
   }, [loading]);
 
-  const dataSource = data?.roles?.map((role) => {
-    return {
-      id: role.id,
-      role: role.name,
-      permissions: role.Permissions.map((permission) => permission.name).join(
-        ', '
-      ),
-    };
-  });
-
-  console.log(dataSource);
   return (
     <Flex vertical gap={16}>
       <Breadcrumb
@@ -85,12 +70,10 @@ const RoleSetting = () => {
         ]}
       />
       <Card title="Phân quyền hệ thống">
-        <Flex vertical gap={16}>
-          <Table rowKey="key" columns={columns} dataSource={dataSource} />
-        </Flex>
+        <Flex vertical gap={16}></Flex>
       </Card>
     </Flex>
   );
 };
 
-export default RoleSetting;
+export default DetailRole;

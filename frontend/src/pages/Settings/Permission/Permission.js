@@ -16,46 +16,59 @@ import {
   Divider,
   Empty,
   Alert,
+  Skeleton,
+  Spin,
 } from 'antd';
 import { HomeOutlined, UserOutlined } from '@ant-design/icons';
 import { EditOutlined } from '@ant-design/icons';
 import { useAuth } from '../../../contexts/authProvider.js';
 import useFetchApi from '../../../hooks/useFetchApi.js';
+import {
+  permissionsConsts,
+  defaultPermissions,
+} from '../../../const/permissionConsts.js';
+import chunk from '../../../helpers/chunk.js';
+
+const columns = [
+  {
+    title: 'Vai trò',
+    dataIndex: 'role',
+    ellipsis: true,
+    width: 240,
+    render: (text, record, index) => {
+      return <Link to={`/settings/roles/${record.id}`}>{text}</Link>;
+    },
+  },
+  {
+    title: 'Quyền hạn',
+    dataIndex: 'permissions',
+  },
+];
 
 const PermissionSetting = () => {
-  const { user } = useAuth();
-  const [permissions, setPermissions] = useState([]);
-  const { fetchApi, data, setData, loading, handleChangeInput } = useFetchApi({
-    url: '/settings?type=getRole',
+  // const [dataSource, setDataSource] = useState([]);
+
+  const { data, fetchApi, setData, loading, handleChangeInput } = useFetchApi({
+    url: '/settings?type=getRoles',
   });
-  const [options, setOptions] = useState([]);
-
-  const [selected, setSelected] = useState();
-
-  const onChange = async (value) => {
-    setSelected(value);
-    const permissionsData = await fetchApi(
-      `/settings?type=getPermissions&alias=${value}`
-    );
-    console.log(permissionsData);
-  };
-  const onSearch = (value) => {
-    console.log('search:', value);
-  };
 
   useEffect(() => {
-    if (data.roles) {
-      const newOptions = data.roles.map((role) => ({
-        value: role.alias,
-        label: role.name,
-      }));
-      setOptions(newOptions);
+    if (loading) return;
+    if (!loading && data.roles) {
+      setData(data);
     }
-  }, [data.roles]);
+  }, [loading]);
 
-  // Filter `option.label` match the user type `input`
-  const filterOption = (input, option) =>
-    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+  const dataSource = data?.roles?.map((role) => {
+    return {
+      id: role.id,
+      role: role.name,
+      permissions: role.Permissions.map((permission) => permission.name).join(
+        ', '
+      ),
+    };
+  });
+
   return (
     <Flex vertical gap={16}>
       <Breadcrumb
@@ -70,53 +83,10 @@ const PermissionSetting = () => {
           },
         ]}
       />
-      <Card title="Phân quyền hệ thống" loading={loading}>
+      <Card title="Phân quyền hệ thống">
         <Flex vertical gap={16}>
-          {!selected && (
-            <Alert
-              closable
-              message="Chọn một vai trò để phân quyền!"
-              type="info"
-              showIcon
-            />
-          )}
-          <Row justify="space-around" align="middle">
-            <Col span={6}>
-              <Typography>Chọn vai trò:</Typography>
-            </Col>
-            <Col span={18}>
-              {' '}
-              <Select
-                style={{ width: '100%' }}
-                showSearch
-                placeholder="Chọn một vai trò"
-                optionFilterProp="children"
-                onChange={onChange}
-                onSearch={onSearch}
-                filterOption={filterOption}
-                options={options}
-              />
-            </Col>
-          </Row>
+          <Table rowKey="key" columns={columns} dataSource={dataSource} />
         </Flex>
-
-        <Divider />
-        <Row justify="space-around" align="middle">
-          <Col span={6}>
-            <Typography>Phân quyền:</Typography>
-          </Col>
-          <Col span={18}>
-            {!selected && <Empty description=""></Empty>}
-            {selected && (
-              <Row>
-                <Col span={6}>col-6</Col>
-                <Col span={6}>col-6</Col>
-                <Col span={6}>col-6</Col>
-                <Col span={6}>col-6</Col>
-              </Row>
-            )}
-          </Col>
-        </Row>
       </Card>
     </Flex>
   );

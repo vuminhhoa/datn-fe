@@ -1,11 +1,10 @@
-import { Permission, Role } from '../models/index.js';
+import { Permission, Role, User } from '../models/index.js';
 
 export async function getSettings(req, res) {
   try {
     const { type, alias } = req.query;
-    if (type === 'getRole') {
-      const roles = await Role.findAll();
-      console.log(roles);
+    if (type === 'getRoles') {
+      const roles = await Role.findAll({ include: Permission });
       return res.send({ roles, success: true });
     }
     if (type === 'getPermissions') {
@@ -16,6 +15,25 @@ export async function getSettings(req, res) {
       return res.send({ permissions, success: true });
     }
     return res.send({ alias, success: true });
+    // const accessToken = req.body;
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      message: 'Lấy dữ liệu user thất bại',
+      error: error,
+    });
+  }
+}
+
+export async function getRole(req, res) {
+  try {
+    const { id } = req.params;
+    const roles = await Role.findOne({
+      where: { id: id },
+      include: [{ model: Permission }, { model: User }],
+    });
+    return res.send({ roles: roles, success: true });
     // const accessToken = req.body;
   } catch (error) {
     console.log(error);

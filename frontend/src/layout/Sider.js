@@ -8,7 +8,7 @@ import {
   TeamOutlined,
 } from '@ant-design/icons';
 import { Menu, Layout } from 'antd';
-import { permissions } from '../const/permissionConsts';
+import { permissionsConsts } from '../const/permissionConsts';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/authProvider';
 
@@ -39,7 +39,7 @@ function AppSider() {
       label: 'Trang chủ',
       key: '/',
       icon: <PieChartOutlined />,
-      permission: permissions.DASHBOARD_READ,
+      permission: permissionsConsts.DASHBOARD_READ,
     }),
     getItem({
       label: 'Quản lý thiết bị',
@@ -49,17 +49,17 @@ function AppSider() {
         getItem({
           label: 'Danh sách thiết bị',
           key: '/list-equipments',
-          permission: permissions.EQUIPMENT_READ,
+          permission: permissionsConsts.EQUIPMENT_READ,
         }),
         getItem({
           label: 'Nhập thiết bị đơn lẻ',
           key: '/create-equipment',
-          permission: permissions.EQUIPMENT_CREATE,
+          permission: permissionsConsts.EQUIPMENT_CREATE,
         }),
         getItem({
           label: 'Nhập thiết bị excel',
           key: '/import-equipments',
-          permission: permissions.EQUIPMENT_CREATE,
+          permission: permissionsConsts.EQUIPMENT_CREATE,
         }),
       ],
     }),
@@ -71,12 +71,12 @@ function AppSider() {
         getItem({
           label: 'Danh sách đấu thầu',
           key: '/list-tenders',
-          permission: permissions.TENDER_READ,
+          permission: permissionsConsts.TENDER_READ,
         }),
         getItem({
           label: 'Tạo đấu thầu',
           key: '/create-tender',
-          permission: permissions.TENDER_CREATE,
+          permission: permissionsConsts.TENDER_CREATE,
         }),
       ],
     }),
@@ -88,12 +88,12 @@ function AppSider() {
         getItem({
           label: 'Danh sách khoa phòng',
           key: '/list-departments',
-          permission: permissions.DEPARTMENT_READ,
+          permission: permissionsConsts.DEPARTMENT_READ,
         }),
         getItem({
           label: 'Tạo khoa phòng',
           key: '/create-department',
-          permission: permissions.DEPARTMENT_CREATE,
+          permission: permissionsConsts.DEPARTMENT_CREATE,
         }),
       ],
     }),
@@ -105,12 +105,12 @@ function AppSider() {
         getItem({
           label: 'Danh sách thành viên',
           key: '/list-members',
-          permission: permissions.USER_READ,
+          permission: permissionsConsts.USER_READ,
         }),
         getItem({
           label: 'Tạo thành viên',
           key: '/create-member',
-          permission: permissions.USER_CREATE,
+          permission: permissionsConsts.USER_CREATE,
         }),
       ],
     }),
@@ -118,7 +118,7 @@ function AppSider() {
       label: 'Cài đặt',
       key: '/settings',
       icon: <SettingOutlined />,
-      permission: permissions.SYSTEM_SETTING,
+      permission: permissionsConsts.SYSTEM_SETTING,
       children: [
         getItem({
           label: 'Cài đặt phân quyền',

@@ -1,4 +1,4 @@
-export const permissions = {
+export const permissionsConsts = {
   DASHBOARD_READ: 'dashboardRead',
 
   DEPARTMENT_READ: 'departmentRead',
@@ -112,3 +112,89 @@ export const permissions = {
   // EXTERNAL_INSPECTION_EQUIPMENT_APPROVE: 'externalInspectionEquipmentApprove',
   // EXTERNAL_INSPECTION_EQUIPMENT_DELETE: 'externalInspectionEquipmentDelete',
 };
+
+export const defaultPermissions = [
+  {
+    alias: 'dashboardRead',
+    name: 'Xem bảng điều khiển',
+  },
+  {
+    alias: 'departmentRead',
+    name: 'Xem phòng ban',
+  },
+  {
+    alias: 'userRead',
+    name: 'Xem người dùng',
+  },
+  {
+    alias: 'tenderRead',
+    name: 'Xem thầu',
+  },
+  {
+    alias: 'equipmentRead',
+    name: 'Xem thiết bị',
+  },
+  {
+    alias: 'departmentCreate',
+    name: 'Tạo phòng ban',
+  },
+  {
+    alias: 'departmentUpdate',
+    name: 'Cập nhật phòng ban',
+  },
+  {
+    alias: 'departmentDelete',
+    name: 'Xóa phòng ban',
+  },
+  {
+    alias: 'profileSetting',
+    name: 'Cài đặt hồ sơ',
+  },
+  {
+    alias: 'systemSetting',
+    name: 'Cài đặt hệ thống',
+  },
+  {
+    alias: 'userCreate',
+    name: 'Tạo người dùng',
+  },
+
+  {
+    alias: 'userUpdate',
+    name: 'Cập nhật người dùng',
+  },
+  {
+    alias: 'userDelete',
+    name: 'Xóa người dùng',
+  },
+  {
+    alias: 'tenderCreate',
+    name: 'Tạo thầu',
+  },
+
+  {
+    alias: 'tenderUpdate',
+    name: 'Cập nhật thầu',
+  },
+  {
+    alias: 'tenderDelete',
+    name: 'Xóa thầu',
+  },
+  {
+    alias: 'equipmentCreate',
+    name: 'Tạo thiết bị',
+  },
+
+  {
+    alias: 'equipmentUpdate',
+    name: 'Cập nhật thiết bị',
+  },
+  {
+    alias: 'equipmentDelete',
+    name: 'Xóa thiết bị',
+  },
+  {
+    alias: 'equipmentImport',
+    name: 'Nhập thiết bị',
+  },
+];
