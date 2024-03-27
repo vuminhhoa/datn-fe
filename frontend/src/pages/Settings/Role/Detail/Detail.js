@@ -1,13 +1,13 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Descriptions, Flex, Breadcrumb, Button } from 'antd';
+import { Card, Descriptions, Flex, Breadcrumb, Button, Spin } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 
 import useFetchApi from '../../../../hooks/useFetchApi.js';
 
 const DetailRole = () => {
   const { id } = useParams();
-  const { data } = useFetchApi({
+  const { data, loading } = useFetchApi({
     url: `/settings/role/${id}`,
   });
   const borderedItems = [
@@ -42,6 +42,10 @@ const DetailRole = () => {
     },
   ];
 
+  if (loading) {
+    return <Spin />;
+  }
+
   return (
     <Flex vertical gap={16}>
       <Breadcrumb
@@ -51,7 +55,7 @@ const DetailRole = () => {
             title: <HomeOutlined />,
           },
           {
-            href: '/settings/permissions-settings',
+            href: '/settings/roles-settings',
             title: 'Cài đặt phân quyền',
           },
           {
@@ -61,7 +65,11 @@ const DetailRole = () => {
       />
       <Card
         title={`Thông tin vai trò: ${data.roles?.name}`}
-        extra={<Button type="primary">Chỉnh sửa</Button>}
+        extra={
+          <Button type="primary" href={`/settings/roles/edit/${data.roles.id}`}>
+            Chỉnh sửa
+          </Button>
+        }
       >
         <Flex vertical gap={16}>
           <Descriptions bordered items={borderedItems} column={1} />

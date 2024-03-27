@@ -1,3 +1,3 @@
-import RoleSetting from './Role';
+import ListRole from './Role';
 
-export default RoleSetting;
+export default ListRole;

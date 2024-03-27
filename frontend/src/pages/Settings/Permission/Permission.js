@@ -78,7 +78,7 @@ const PermissionSetting = () => {
             title: <HomeOutlined />,
           },
           {
-            href: '/settings/permissions-settings',
+            href: '/settings/roles-settings',
             title: 'Cài đặt phân quyền',
           },
         ]}

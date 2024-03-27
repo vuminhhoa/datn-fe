@@ -45,7 +45,7 @@ const columns = [
   },
 ];
 
-const RoleSetting = () => {
+const ListRole = () => {
   // const [dataSource, setDataSource] = useState([]);
 
   const { data, fetchApi, setData, loading, handleChangeInput } = useFetchApi({
@@ -93,4 +93,4 @@ const RoleSetting = () => {
   );
 };
 
-export default RoleSetting;
+export default ListRole;

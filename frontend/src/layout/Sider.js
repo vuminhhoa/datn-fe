@@ -122,7 +122,7 @@ function AppSider() {
       children: [
         getItem({
           label: 'Cài đặt phân quyền',
-          key: '/permissions-settings',
+          key: '/roles-settings',
         }),
       ],
     }),

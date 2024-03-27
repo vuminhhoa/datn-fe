@@ -10,6 +10,7 @@ import {
   Typography,
   Breadcrumb,
   Button,
+  Spin,
 } from 'antd';
 import { HomeOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { EditOutlined } from '@ant-design/icons';
@@ -19,7 +20,7 @@ import { permissionsConsts } from '../../../const/permissionConsts';
 
 const DetailUser = () => {
   const { id } = useParams();
-  const { data } = useFetchApi({ url: `/user/${id}` });
+  const { data, loading } = useFetchApi({ url: `/user/${id}` });
 
   const items = [
     {
@@ -61,6 +62,10 @@ const DetailUser = () => {
     },
   ];
 
+  if (loading) {
+    return <Spin></Spin>;
+  }
+
   return (
     <Flex vertical gap={16}>
       <Breadcrumb
@@ -86,7 +91,7 @@ const DetailUser = () => {
             extra={
               isHasPermission(permissionsConsts.USER_UPDATE) && (
                 <Button type="link">
-                  <Link to={'/profile/edit'}>
+                  <Link to={`/user/edit/${data.user?.id}`}>
                     <Flex gap={6}>
                       <EditOutlined />
                       Cập nhật

@@ -1,75 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import {
-  Card,
-  Descriptions,
-  Flex,
-  Row,
-  Col,
-  Avatar,
-  Typography,
-  Breadcrumb,
-  Button,
-  Table,
-  Checkbox,
-  Select,
-  Divider,
-  Empty,
-  Alert,
-  Skeleton,
-  Spin,
-} from 'antd';
-import { HomeOutlined, UserOutlined } from '@ant-design/icons';
-import { EditOutlined } from '@ant-design/icons';
-import { useAuth } from '../../../contexts/authProvider.js';
-import useFetchApi from '../../../hooks/useFetchApi.js';
-import {
-  permissionsConsts,
-  defaultPermissions,
-} from '../../../const/permissionConsts.js';
-import chunk from '../../../helpers/chunk.js';
+import { useParams } from 'react-router-dom';
+import { Card, Flex, Breadcrumb, Button, Spin, Alert, Checkbox } from 'antd';
+import { HomeOutlined } from '@ant-design/icons';
+import { defaultPermissions } from '../../../../const/permissionConsts.js';
+import useFetchApi from '../../../../hooks/useFetchApi.js';
+import useEditApi from '../../../../hooks/useEditApi.js';
 
-const columns = [
-  {
-    title: 'Vai trò',
-    dataIndex: 'role',
-    ellipsis: true,
-    width: 240,
-    render: (text, record, index) => {
-      return <Link to={`/settings/roles/${record.id}`}>{text}</Link>;
-    },
-  },
-  {
-    title: 'Quyền hạn',
-    dataIndex: 'permissions',
-  },
-];
-
-const RoleSetting = () => {
-  // const [dataSource, setDataSource] = useState([]);
-
-  const { data, fetchApi, setData, loading, handleChangeInput } = useFetchApi({
-    url: '/settings?type=getRoles',
+const EditRole = () => {
+  const { id } = useParams();
+  const { data, loading, fetched } = useFetchApi({
+    url: `/settings/role/${id}`,
   });
+  const [selected, setSelected] = useState([]);
+  const { editing, editApi } = useEditApi('/role/edit');
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    try {
+      const perpareData = { roleId: data.roles.id, permissions: selected };
+      console.log(perpareData);
+      const res = await editApi(perpareData);
+      console.log(res);
+      // if (res.data.success) {
+      //   setUser({ ...user, ...val });
+      //   setToast('Cập nhật thành công');
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onChange = (val) => {
+    console.log(val);
+    setSelected(val);
+  };
+
+  const plainOptions = defaultPermissions.map((permission) => permission.name);
 
   useEffect(() => {
-    if (loading) return;
-    if (!loading && data.roles) {
-      setData(data);
-    }
-  }, [loading]);
+    if (!fetched) return;
+    setSelected(data.roles.Permissions.map((permission) => permission.name));
+  }, [fetched]);
 
-  const dataSource = data?.roles?.map((role) => {
-    return {
-      id: role.id,
-      role: role.name,
-      permissions: role.Permissions.map((permission) => permission.name).join(
-        ', '
-      ),
-    };
-  });
-
-  console.log(dataSource);
+  if (loading || !fetched) {
+    return <Spin />;
+  }
   return (
     <Flex vertical gap={16}>
       <Breadcrumb
@@ -79,18 +54,44 @@ const RoleSetting = () => {
             title: <HomeOutlined />,
           },
           {
-            href: '/settings/permissions-settings',
+            href: '/settings/roles-settings',
             title: 'Cài đặt phân quyền',
+          },
+          {
+            title: `Role: ${data.roles?.name}`,
           },
         ]}
       />
-      <Card title="Phân quyền hệ thống">
+      <Card
+        title={`Cập nhật vai trò: ${data.roles?.name}`}
+        extra={
+          <Button
+            type="primary"
+            href={`/settings/roles/edit/${data.roles.id}`}
+            onClick={handleSave}
+          >
+            Lưu
+          </Button>
+        }
+      >
         <Flex vertical gap={16}>
-          <Table rowKey="key" columns={columns} dataSource={dataSource} />
+          {data.roles.alias === 'admin' && (
+            <Alert
+              message="Quản trị viên cần có tất cả các quyền!"
+              type="info"
+            />
+          )}
+          Chọn quyền hạn:
+          <Checkbox.Group
+            options={plainOptions}
+            value={selected}
+            onChange={onChange}
+            disabled={data.roles.alias === 'admin' || editing}
+          />
         </Flex>
       </Card>
     </Flex>
   );
 };
 
-export default RoleSetting;
+export default EditRole;
