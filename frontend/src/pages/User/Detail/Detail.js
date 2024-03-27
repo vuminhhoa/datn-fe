@@ -11,7 +11,7 @@ import {
   Breadcrumb,
   Button,
 } from 'antd';
-import { HomeOutlined, UserOutlined } from '@ant-design/icons';
+import { HomeOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { EditOutlined } from '@ant-design/icons';
 import useFetchApi from '../../../hooks/useFetchApi';
 import isHasPermission from '../../../helpers/isHasPermission';
@@ -71,19 +71,18 @@ const DetailUser = () => {
           },
           {
             href: '/profile',
-            title: (
-              <>
-                <UserOutlined />
-                <span>Thông tin cá nhân</span>
-              </>
-            ),
+            title: 'Danh sách người dùng',
+          },
+          {
+            href: '/',
+            title: data.user?.name ? data.user?.name : data.user?.email,
           },
         ]}
       />
       <Row gutter={12}>
         <Col span={16}>
           <Card
-            title="Thông tin tài khoản"
+            title="Thông tin người dùng"
             extra={
               isHasPermission(permissionsConsts.USER_UPDATE) && (
                 <Button type="link">
