@@ -9,14 +9,15 @@ const PrivateRoute = ({ children, permission }) => {
 
   const isLoggedIn = Boolean(localStorage.getItem('ACCESS_TOKEN'));
 
+  if (!isLoggedIn || !user) {
+    return <Navigate to="/sign-up" />;
+  }
+
   const userPermissons = user.Role.Permissions;
   const hasPermission = userPermissons.find(
     (userPermisson) => userPermisson.alias === permission
   );
 
-  if (!isLoggedIn) {
-    return <Navigate to="/login" />;
-  }
   if (!hasPermission) {
     return (
       <AppLayout>
