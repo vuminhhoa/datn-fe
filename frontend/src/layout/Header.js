@@ -63,7 +63,7 @@ function AppHeader() {
           style={{ margin: 0, cursor: 'pointer' }}
           onClick={() => navigate('/')}
         >
-          QUẢN LÝ ĐẤU THẦU TRONG BỆNH VIỆN
+          QUẢN LÝ HOẠT ĐỘNG PHÒNG VẬT TƯ TRANG THIẾT BỊ Y TẾ
         </Typography.Title>
         <Flex
           align="center"

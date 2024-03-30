@@ -36,11 +36,45 @@ function AppSider() {
 
   const items = [
     getItem({
-      label: 'Trang chủ',
-      key: '/',
-      icon: <PieChartOutlined />,
-      permission: permissionsConsts.DASHBOARD_READ,
+      label: 'Quản lý thành viên',
+      key: '/members',
+      icon: <TeamOutlined />,
+      children: [
+        getItem({
+          label: 'Danh sách thành viên',
+          key: '/list-members',
+          permission: permissionsConsts.USER_READ,
+        }),
+        getItem({
+          label: 'Tạo thành viên',
+          key: '/create-member',
+          permission: permissionsConsts.USER_CREATE,
+        }),
+      ],
     }),
+    getItem({
+      label: 'Quản lý hoạt động',
+      key: '/tenders',
+      icon: <AuditOutlined />,
+      children: [
+        getItem({
+          label: 'Danh sách hoạt động',
+          key: '/list-tenders',
+          permission: permissionsConsts.TENDER_READ,
+        }),
+        getItem({
+          label: 'Tạo hoạt động',
+          key: '/create-tender',
+          permission: permissionsConsts.TENDER_CREATE,
+        }),
+      ],
+    }),
+    // getItem({
+    //   label: 'Trang chủ',
+    //   key: '/',
+    //   icon: <PieChartOutlined />,
+    //   permission: permissionsConsts.DASHBOARD_READ,
+    // }),
     getItem({
       label: 'Quản lý thiết bị',
       key: '/equipments',
@@ -60,57 +94,6 @@ function AppSider() {
           label: 'Nhập thiết bị excel',
           key: '/import-equipments',
           permission: permissionsConsts.EQUIPMENT_CREATE,
-        }),
-      ],
-    }),
-    getItem({
-      label: 'Quản lý đấu thầu',
-      key: '/tenders',
-      icon: <AuditOutlined />,
-      children: [
-        getItem({
-          label: 'Danh sách đấu thầu',
-          key: '/list-tenders',
-          permission: permissionsConsts.TENDER_READ,
-        }),
-        getItem({
-          label: 'Tạo đấu thầu',
-          key: '/create-tender',
-          permission: permissionsConsts.TENDER_CREATE,
-        }),
-      ],
-    }),
-    getItem({
-      label: 'Quản lý khoa phòng',
-      key: '/departments',
-      icon: <ApartmentOutlined />,
-      children: [
-        getItem({
-          label: 'Danh sách khoa phòng',
-          key: '/list-departments',
-          permission: permissionsConsts.DEPARTMENT_READ,
-        }),
-        getItem({
-          label: 'Tạo khoa phòng',
-          key: '/create-department',
-          permission: permissionsConsts.DEPARTMENT_CREATE,
-        }),
-      ],
-    }),
-    getItem({
-      label: 'Quản lý thành viên',
-      key: '/members',
-      icon: <TeamOutlined />,
-      children: [
-        getItem({
-          label: 'Danh sách thành viên',
-          key: '/list-members',
-          permission: permissionsConsts.USER_READ,
-        }),
-        getItem({
-          label: 'Tạo thành viên',
-          key: '/create-member',
-          permission: permissionsConsts.USER_CREATE,
         }),
       ],
     }),
