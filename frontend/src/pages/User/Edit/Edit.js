@@ -20,7 +20,6 @@ import { useParams } from 'react-router-dom';
 
 const EditUser = () => {
   const { id } = useParams();
-  console.log(id);
   const { setToast } = useAuth();
   const { editing, editApi } = useEditApi('/profile/edit');
   const { data, loading, setData } = useFetchApi({ url: `/user/${id}` });

@@ -14,6 +14,8 @@ import DetailRole from './pages/Settings/Role/Detail';
 import DetailUser from './pages/User/Detail';
 import EditUser from './pages/User/Edit/Edit';
 import EditRole from './pages/Settings/Role/Edit';
+import Bidding from './pages/Bidding';
+import EditBidding from './pages/Bidding/Edit';
 
 function App() {
   return (
@@ -80,6 +82,22 @@ function App() {
         element={
           <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
             <EditRole />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/shopping/bidding"
+        element={
+          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+            <Bidding />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/shopping/bidding/:id"
+        element={
+          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+            <EditBidding />
           </PrivateRoute>
         }
       />

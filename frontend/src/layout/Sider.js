@@ -53,18 +53,18 @@ function AppSider() {
       ],
     }),
     getItem({
-      label: 'Quản lý hoạt động',
-      key: '/tenders',
+      label: 'Hoạt động mua sắm',
+      key: '/shopping',
       icon: <AuditOutlined />,
       children: [
         getItem({
-          label: 'Danh sách hoạt động',
-          key: '/list-tenders',
+          label: 'Mua sắm qua đấu thầu',
+          key: '/bidding',
           permission: permissionsConsts.TENDER_READ,
         }),
         getItem({
-          label: 'Tạo hoạt động',
-          key: '/create-tender',
+          label: 'Mua sắm không qua đấu thầu',
+          key: '/non-bidding',
           permission: permissionsConsts.TENDER_CREATE,
         }),
       ],
@@ -119,7 +119,7 @@ function AppSider() {
 
   return (
     <Sider
-      width={240}
+      width={260}
       theme="light"
       collapsible
       collapsed={collapsed}
