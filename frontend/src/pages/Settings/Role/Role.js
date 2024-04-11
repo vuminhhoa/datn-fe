@@ -86,7 +86,12 @@ const ListRole = () => {
       />
       <Card title="Phân quyền hệ thống">
         <Flex vertical gap={16}>
-          <Table rowKey="key" columns={columns} dataSource={dataSource} />
+          <Table
+            rowKey="key"
+            columns={columns}
+            dataSource={dataSource}
+            bordered
+          />
         </Flex>
       </Card>
     </Flex>

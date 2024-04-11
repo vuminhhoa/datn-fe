@@ -1,97 +1,236 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import {
   Card,
-  Descriptions,
   Flex,
-  Row,
-  Col,
   Tag,
-  Space,
-  Table,
-  Avatar,
-  Typography,
   Breadcrumb,
+  Descriptions,
+  Typography,
   Button,
 } from 'antd';
-import {
-  HomeOutlined,
-  UserOutlined,
-  DeleteOutlined,
-  EyeOutlined,
-} from '@ant-design/icons';
-import { EditOutlined } from '@ant-design/icons';
+import { HomeOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
+import BiddingContext from '../../../contexts/biddingContext';
+import BiddingRequest from '../Form/BiddingRequest';
+import ProcurementCouncil from '../Form/ProcurementCouncil';
+import ContractorSelectionPlan from '../Form/ContractorSelectionPlan';
+import Ehsmt from '../Form/Ehsmt';
 
-const columns = [
-  {
-    title: 'Tên hoạt động',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: 'Khoa phòng đề xuất',
-    dataIndex: 'departmentalProposal',
-    key: 'departmentalProposal',
-  },
+const defaultData = {
+  id: 12,
+  biddingName: 'Mua may sieu vi tinh',
+  // Tên khoa phòng đề xuất
+  proposedDepartmentName: 'Marketing Department',
+  // Ngày đề xuất
+  proposedDate: '2024-04-05',
+  // Nội dung đề xuất
+  proposedContent: '01 máy siêu âm 100 máy đẹp trai',
+  // Trạng thái đề xuất
+  proposedStatus: 'approved',
+  // Ngày phê duyệt đề xuất
+  approvedDate: '2024-04-07',
 
-  {
-    title: 'Trạng thái',
-    key: 'status',
-    dataIndex: 'status',
-    render: (_, record) => {
-      if (record.status === 'approved')
-        return <Tag color="success">Chấp thuận</Tag>;
-      if (record.status === 'reject') return <Tag color="error">Từ chối</Tag>;
-      return <Tag color="processing">Chờ duyệt</Tag>;
-    },
-  },
-  {
-    title: 'Hành động',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="small">
-        <Button type="link" icon={<EyeOutlined />}>
-          Xem chi tiết
-        </Button>
-        {record.status === 'processing' && (
-          <Button type="text" danger icon={<DeleteOutlined />}>
-            {' '}
-            Xóa
-          </Button>
-        )}
-      </Space>
-    ),
-  },
-];
-const data = {
-  id: 1,
-  name: 'Mua may sieu am',
-  departmentalProposal: 'Khoa vi sinh',
-  proposalDate: '01/04/2024',
-  substance: '10 may sieu am 100 may tinh 1000 may giat',
-  status: 'approved',
-  aprrovedDate: '2/04/2024', //null
+  // Ngày đăng yêu cầu chào giá
+  biddingRequestPublishedDate: null,
+  // Ngày hết hạn yêu cầu chào giá
+  biddingRequestDeadlineDate: null,
+
+  // Ngày họp hội đồng mua sắm
+  procurementCouncilMeetingDate: '2024-04-15',
+  // ngày phê duyệt dự toán
+  budgetApprovalDate: '2024-04-15',
+  // Tài liệu họp hội đồng mua sắm
+  budgetApprovalDocument: 'ProcurementCouncilMinutes.pdf',
+  // Tài liệu họp hội đồng mua sắm
+  procurementCouncilMeetingDocument: 'ProcurementCouncilMinutes.pdf',
+  // Ngày thành lập tổ chuyên gia
+  expertTeamEstablishmentDate: '2024-04-18',
+  // Tài liệu thành lập tổ chuyên gia
+  expertTeamEstablishmentDocument: 'ExpertTeamEstablishment.pdf',
+  // Ngày thành lập tổ thẩm định
+  appraisalTeamEstablishmentDate: '2024-04-19',
+  // Tài liệu thành lập tổ thẩm định
+  appraisalTeamEstablishmentDocument: 'AppraisalTeamEstablishment.pdf',
+
+  // ngày lập khlcnt
+  khlcntEstablishmentDate: null,
+  // Tài liệu lập khlcnt
+  khlcntDocumentEstablishment: 'khlcntDocument.pdf',
+  // ngày Báo cáo thẩm định khlcnt
+  khlcntAppraisalDate: '2024-04-19',
+  // Báo cáo thẩm định khlcnt
+  khlcntAppraisalReport: 'khlcntAppraisalReport.pdf',
+  // ngày phê duyệt khlcnt
+  khlcntApprovalDate: '2024-04-19',
+  // Tài liệu phê duyệt khlcnt
+  khlcntApprovalDocument: 'khlcntApprovalDocument.pdf',
+  // ngày quyết định phê duyệt khlcnt
+  khlcntApprovalDecisionDate: '2024-04-19',
+  // Tài liệu quyết định phê duyệt khlcnt
+  khlcntApprovalDecisionDocument: 'khlcntApprovalDecision.pdf',
+  // Ngày đăng tải kế hoạch lên mạng đấu thầu
+  biddingPlanPostingDate: '2024-04-25',
+
+  // Tài liệu dự thảo ehsmt
+  ehsmtDraftDocument: 'ehsmtDraftDocument.pdf',
+  // Tài liệu báo cáo xây dựng ehsmt
+  ehsmtConstructionReportDocument: 'ehsmtConstructionReport.pdf',
+  // Tài liệu phê duyệt ehsmt tổ chuyên gia
+  ehsmtExpertTeamApprovalDocument: 'ehsmtExpertTeamApproval.pdf',
+  // Tài liệu báo cáo thẩm định ehsmt
+  ehsmtAppraisalReportDocument: 'ehsmtAppraisalReport.pdf',
+  // Tài liệu phê duyệt ehsmt tổ thẩm định
+  ehsmtAppraisalApprovalDocument: 'ehsmtAppraisalApproval.pdf',
+  // Tài liệu quyết định phê duyệt ehsmt
+  ehsmtApprovalDecisionDocument: 'ehsmtApprovalDecision.pdf',
+  // Ngày đăng thông báo mời thầu lên mạng đấu thầu
+  biddingInvitationPostingDate: '2024-04-28',
 };
+
 const EditBidding = () => {
+  const [data, setData] = useState(defaultData);
+  const [isCollapseBiddingRequest, setIsCollapseBiddingRequest] =
+    useState(false);
+  const [isCollapseProcurementCouncil, setIsCollapseProcurementCouncil] =
+    useState(false);
+  const [
+    isCollapseContractorSelectionPlan,
+    setIsCollapseContractorSelectionPlan,
+  ] = useState(false);
+  const items = [
+    {
+      key: '1',
+      label: 'Tên khoa phòng',
+      children: data.proposedDepartmentName,
+    },
+    {
+      key: '2',
+      label: 'Ngày đề xuất',
+      children: data.proposedDate,
+    },
+    {
+      key: '3',
+      label: 'Nội dung',
+      children: data.proposedContent,
+    },
+    {
+      key: '4',
+      label: 'Trạng thái',
+      children: (
+        <>
+          {data.proposedStatus === 'approved' && (
+            <Tag color="success">Chấp thuận</Tag>
+          )}
+          {data.proposedStatus === 'reject' && <Tag color="error">Từ chối</Tag>}
+          {data.proposedStatus === 'processing' && (
+            <Tag color="processing">Chờ duyệt</Tag>
+          )}
+        </>
+      ),
+    },
+    (data.proposedStatus === 'approved' ||
+      data.proposedStatus === 'reject') && {
+      key: '5',
+      label: 'Ngày phê duyệt',
+      children: data.approvedDate,
+    },
+  ];
+
+  console.log(data);
+
   return (
-    <Flex vertical gap={16}>
-      <Breadcrumb
-        items={[
-          {
-            href: '/',
-            title: <HomeOutlined />,
-          },
-          {
-            href: '/shopping/bidding',
-            title: 'Hoạt động mua sắm qua đấu thầu',
-          },
-        ]}
-      />
-      <Card title="Danh sách hoạt động mua sắm qua đấu thầu">
-        <Table columns={columns} dataSource={data} bordered />
-      </Card>
-    </Flex>
+    <BiddingContext.Provider value={{ data, setData }}>
+      <Flex vertical gap={16}>
+        <Breadcrumb
+          items={[
+            {
+              href: '/',
+              title: <HomeOutlined />,
+            },
+            {
+              href: '/shopping/bidding',
+              title: 'Hoạt động mua sắm qua đấu thầu',
+            },
+            {
+              href: `/shopping/bidding/${data.id}`,
+              title: data.biddingName,
+            },
+          ]}
+        />
+        <Card
+          title={`Chi tiết hoạt động: ${data.biddingName}`}
+          extra={<Button type="primary">Lưu</Button>}
+        >
+          <Descriptions title="1. Khoa phòng đề xuất" items={items} />
+          <Typography.Title level={5}>2. Lập kế hoạch</Typography.Title>
+          <Flex vertical gap={16}>
+            <Flex justify="space-between">
+              <Typography.Text strong>2.1. Chào giá</Typography.Text>
+              <Button
+                size="small"
+                type="link"
+                icon={
+                  isCollapseBiddingRequest ? <DownOutlined /> : <UpOutlined />
+                }
+                onClick={() =>
+                  setIsCollapseBiddingRequest(!isCollapseBiddingRequest)
+                }
+              />
+            </Flex>
+            {!isCollapseBiddingRequest && <BiddingRequest />}
+
+            <Flex justify="space-between">
+              <Typography.Text strong>
+                2.2. Lên dự toán, thành lập tổ chuyên gia, tổ thẩm định
+              </Typography.Text>
+              <Button
+                size="small"
+                type="link"
+                icon={
+                  isCollapseProcurementCouncil ? (
+                    <DownOutlined />
+                  ) : (
+                    <UpOutlined />
+                  )
+                }
+                onClick={() =>
+                  setIsCollapseProcurementCouncil(!isCollapseProcurementCouncil)
+                }
+              />
+            </Flex>
+            {!isCollapseProcurementCouncil && <ProcurementCouncil />}
+
+            <Flex justify="space-between">
+              <Typography.Text strong>
+                2.3. Kế hoạch lựa chọn nhà thầu
+              </Typography.Text>
+              <Button
+                size="small"
+                type="link"
+                icon={
+                  isCollapseContractorSelectionPlan ? (
+                    <DownOutlined />
+                  ) : (
+                    <UpOutlined />
+                  )
+                }
+                onClick={() =>
+                  setIsCollapseContractorSelectionPlan(
+                    !isCollapseContractorSelectionPlan
+                  )
+                }
+              />
+            </Flex>
+            {!isCollapseContractorSelectionPlan && <ContractorSelectionPlan />}
+
+            <Typography.Text strong>2.4. E - Hồ sơ mời thầu</Typography.Text>
+            <Ehsmt />
+
+            <Typography.Text strong>2.5. E - Hồ sơ dự thầu</Typography.Text>
+            <ContractorSelectionPlan />
+          </Flex>
+        </Card>
+      </Flex>
+    </BiddingContext.Provider>
   );
 };
 

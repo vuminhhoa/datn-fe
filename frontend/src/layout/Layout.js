@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Typography } from 'antd';
+import { Flex, Layout, Typography } from 'antd';
 import AppHeader from './Header';
 import AppSider from './Sider';
 const { Content, Footer } = Layout;
@@ -14,15 +14,16 @@ function AppLayout({ children }) {
       <AppSider />
       <Layout>
         <AppHeader />
-
-        <Content
-          style={{
-            margin: '16px',
-          }}
-        >
-          {children}
-        </Content>
-
+        <Flex justify="center">
+          <Content
+            style={{
+              margin: '16px',
+              maxWidth: '800px',
+            }}
+          >
+            {children}
+          </Content>
+        </Flex>
         <Footer
           style={{
             textAlign: 'center',
