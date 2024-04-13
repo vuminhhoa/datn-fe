@@ -135,6 +135,7 @@ function AppSider() {
           '/departments',
           '/tenders',
           '/settings',
+          '/shopping',
         ]}
         mode="inline"
         items={items}

@@ -4,6 +4,11 @@ import { sequelize } from '../config/sequelizeConfig.js';
 const Bidding = sequelize.define(
   'Bidding',
   {
+    //Tên đề xuất
+    biddingName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     // Tên phòng ban đề xuất
     proposedDepartmentName: {
       type: DataTypes.STRING,

@@ -5,6 +5,8 @@ import { getRole, getSettings } from '../controllers/settingsController.js';
 import {
   updateBidding,
   getOneBidding,
+  createBidding,
+  getListBiddings,
 } from '../controllers/biddingController.js';
 const api = express.Router();
 
@@ -18,6 +20,8 @@ api.get('/settings', getSettings);
 api.get('/settings/role/:id', getRole);
 
 api.get('/bidding', getOneBidding);
+api.post('/bidding', createBidding);
+api.get('/biddings', getListBiddings);
 api.post('/bidding/:id', updateBidding);
 
 api.get('/user/:id', getOneUser);
