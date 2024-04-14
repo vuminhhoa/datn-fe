@@ -15,7 +15,6 @@ export async function updateBidding(req, res) {
   try {
     const data = req.body;
     const filteredData = filterFields(data, ['updatedAt', 'createdAt']);
-    console.log('filteredData', filteredData);
     await Bidding.update(filteredData, {
       where: {
         id: data.id,
@@ -60,14 +59,8 @@ export async function getOneBidding(req, res) {
       },
       raw: true,
     });
-    console.log(
-      'bidding',
-      typeof bidding.createdAt,
-      bidding.createdAt.toLocaleString()
-    );
-    const dateformat = formatDateFields2(bidding);
-    console.log('dateformat', dateformat);
-    return res.send(formatDateFields2(bidding));
+
+    return res.send(prepareDate(bidding));
   } catch (error) {
     console.log(error);
     return res.send({
@@ -102,48 +95,25 @@ export async function getListBiddings(req, res) {
   }
 }
 
-function prepareDate(obj, fields = null) {
-  if (Array.isArray(obj)) {
-    return obj.map((item) => prepareDate(item, fields));
-  } else if (typeof obj === 'object' && obj !== null) {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (!fields || (fields && fields.includes(key))) {
-          if (obj[key] instanceof Date) {
-            obj[key] = obj[key].toLocaleString();
-          } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-            obj[key] = prepareDate(obj[key], fields);
-          }
+function prepareDate(objOrArray) {
+  const fields = ['createdAt', 'updatedAt'];
+  if (Array.isArray(objOrArray)) {
+    return objOrArray.map((obj) => {
+      for (const field of fields) {
+        if (field in obj) {
+          obj[field] = new Date(obj[field]).toLocaleString();
         }
       }
-    }
-    return obj;
+      return obj;
+    });
   } else {
-    return obj;
-  }
-}
-
-function formatDateFields2(obj) {
-  const fieldsToFormat = findDateFields(obj);
-  fieldsToFormat.forEach((field) => {
-    if (obj[field]) {
-      const date = new Date(obj[field]);
-      const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
-      obj[field] = formattedDate;
+    for (const field of fields) {
+      if (field in objOrArray) {
+        objOrArray[field] = new Date(objOrArray[field]).toLocaleString();
+      }
     }
-  });
-
-  return obj;
-}
-
-function findDateFields(obj) {
-  const dateFields = [];
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key) && key.endsWith('Date')) {
-      dateFields.push(key);
-    }
+    return objOrArray;
   }
-  return dateFields;
 }
 
 function filterFields(obj, fieldsToRemove) {

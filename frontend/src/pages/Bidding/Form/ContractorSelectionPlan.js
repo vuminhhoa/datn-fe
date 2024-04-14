@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import { SmileOutlined, UploadOutlined } from '@ant-design/icons';
 import BiddingContext from '../../../contexts/biddingContext';
+import DatePickerFormat from '../Component/DatePickerFormat';
 
 const ContractorSelectionPlan = () => {
   const { data, setData } = useContext(BiddingContext);
@@ -76,20 +77,7 @@ const ContractorSelectionPlan = () => {
               {isEditKhlcntEstablishment && (
                 <Typography.Text>
                   Ngày nộp:{' '}
-                  <DatePicker
-                    maxDate={dayjs()}
-                    value={
-                      data.khlcntEstablishmentDate
-                        ? dayjs(data.khlcntEstablishmentDate)
-                        : undefined
-                    }
-                    onChange={(_, val) => {
-                      setData({
-                        ...data,
-                        khlcntEstablishmentDate: val,
-                      });
-                    }}
-                  />
+                  <DatePickerFormat field={'khlcntEstablishmentDate'} />
                 </Typography.Text>
               )}
             </Flex>
@@ -139,20 +127,7 @@ const ContractorSelectionPlan = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày nộp:</Typography.Text>
-                    <DatePicker
-                      maxDate={dayjs()}
-                      value={
-                        data.khlcntAppraisalDate
-                          ? dayjs(data.khlcntAppraisalDate)
-                          : undefined
-                      }
-                      onChange={(_, val) => {
-                        setData({
-                          ...data,
-                          khlcntAppraisalDate: val,
-                        });
-                      }}
-                    />
+                    <DatePickerFormat field={'khlcntAppraisalDate'} />
                   </Flex>
                 </Flex>
               )}
@@ -203,20 +178,7 @@ const ContractorSelectionPlan = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày nộp:</Typography.Text>
-                    <DatePicker
-                      maxDate={dayjs()}
-                      value={
-                        data.khlcntApprovalDate
-                          ? dayjs(data.khlcntApprovalDate)
-                          : undefined
-                      }
-                      onChange={(_, val) => {
-                        setData({
-                          ...data,
-                          khlcntApprovalDate: val,
-                        });
-                      }}
-                    />
+                    <DatePickerFormat field={'khlcntApprovalDate'} />
                   </Flex>
                 </Flex>
               )}
@@ -269,20 +231,7 @@ const ContractorSelectionPlan = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày nộp:</Typography.Text>
-                    <DatePicker
-                      maxDate={dayjs()}
-                      value={
-                        data.khlcntApprovalDecisionDate
-                          ? dayjs(data.khlcntApprovalDecisionDate)
-                          : undefined
-                      }
-                      onChange={(_, val) => {
-                        setData({
-                          ...data,
-                          khlcntApprovalDecisionDate: val,
-                        });
-                      }}
-                    />
+                    <DatePickerFormat field={'khlcntApprovalDecisionDate'} />
                   </Flex>
                 </Flex>
               )}
@@ -335,20 +284,7 @@ const ContractorSelectionPlan = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày đăng:</Typography.Text>
-                    <DatePicker
-                      maxDate={dayjs()}
-                      value={
-                        data.biddingPlanPostingDate
-                          ? dayjs(data.biddingPlanPostingDate)
-                          : undefined
-                      }
-                      onChange={(_, val) => {
-                        setData({
-                          ...data,
-                          biddingPlanPostingDate: val,
-                        });
-                      }}
-                    />
+                    <DatePickerFormat field={'biddingPlanPostingDate'} />
                   </Flex>
                 </Flex>
               )}

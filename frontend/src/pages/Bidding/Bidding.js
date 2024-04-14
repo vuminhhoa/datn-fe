@@ -11,15 +11,9 @@ import {
   Button,
   Select,
   Form,
-  Dropdown,
   Popover,
 } from 'antd';
-import {
-  HomeOutlined,
-  DeleteOutlined,
-  EyeOutlined,
-  DownOutlined,
-} from '@ant-design/icons';
+import { HomeOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/authProvider';
 import axios from 'axios';
@@ -41,6 +35,7 @@ const Bidding = () => {
   const defaultCreateFormData = {
     proposedStatus: 'processing',
     proposedDepartmentName: '',
+    proposedContent: '',
     biddingName: '',
   };
   const [createFormData, setCreateFormData] = useState(defaultCreateFormData);
@@ -272,6 +267,15 @@ const Bidding = () => {
                       label: 'Khoa xinh gai',
                     },
                   ]}
+                />
+              </Form.Item>
+              <Form.Item name="proposedContent" label="Nội dung hoạt động">
+                <Input.TextArea
+                  name="proposedContent"
+                  allowClear
+                  placeholder="Nhập nội dung hoạt động hoạt động"
+                  rows={4}
+                  onChange={handleCreateFormChange}
                 />
               </Form.Item>
 

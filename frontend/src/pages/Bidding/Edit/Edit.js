@@ -7,8 +7,9 @@ import {
   Descriptions,
   Typography,
   Button,
+  Skeleton,
 } from 'antd';
-import { HomeOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
+import { HomeOutlined } from '@ant-design/icons';
 import BiddingContext from '../../../contexts/biddingContext';
 import BiddingRequest from '../Form/BiddingRequest';
 import ProcurementCouncil from '../Form/ProcurementCouncil';
@@ -18,7 +19,7 @@ import useFetchApi from '../../../hooks/useFetchApi';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../../contexts/authProvider';
-
+import CollapsibleForm from '../Component/CollapsibleForm';
 const defaultData = {
   id: 12,
   biddingName: 'Mua may sieu vi tinh',
@@ -93,35 +94,24 @@ const defaultData = {
 const EditBidding = () => {
   const { id } = useParams();
   const { setToast } = useAuth();
-  const { data, fetchApi, setData, loading } = useFetchApi({
+  const { data, setData, loading } = useFetchApi({
     url: `/bidding/${id}`,
     defaultData: defaultData,
   });
   const [saving, setSaving] = useState(false);
-  const [isCollapseBiddingRequest, setIsCollapseBiddingRequest] =
-    useState(false);
-  const [isCollapseProcurementCouncil, setIsCollapseProcurementCouncil] =
-    useState(false);
-  const [
-    isCollapseContractorSelectionPlan,
-    setIsCollapseContractorSelectionPlan,
-  ] = useState(false);
+
   const items = [
     {
       key: '1',
       label: 'Tên khoa phòng',
       children: data.proposedDepartmentName,
     },
-    {
+    data.proposedDate !== null && {
       key: '2',
       label: 'Ngày đề xuất',
       children: data.proposedDate,
     },
-    {
-      key: '3',
-      label: 'Nội dung',
-      children: data.proposedContent,
-    },
+
     {
       key: '4',
       label: 'Trạng thái',
@@ -143,9 +133,23 @@ const EditBidding = () => {
       label: 'Ngày phê duyệt',
       children: data.approvedDate,
     },
+    {
+      key: '6',
+      label: 'Ngày tạo hoạt động',
+      children: data.createdAt,
+    },
+    {
+      key: '7',
+      label: 'Lần cập nhật cuối',
+      children: data.updatedAt,
+    },
+    {
+      key: '3',
+      label: 'Nội dung',
+      children: data.proposedContent,
+    },
   ];
 
-  console.log(data);
   const handleSaveBidding = async () => {
     try {
       setSaving(true);
@@ -167,7 +171,48 @@ const EditBidding = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <Flex vertical gap={16}>
+        <Breadcrumb
+          items={[
+            {
+              href: '/',
+              title: <HomeOutlined />,
+            },
+            {
+              href: '/shopping/bidding',
+              title: 'Hoạt động mua sắm qua đấu thầu',
+            },
+            {
+              href: `/shopping/bidding/${data.id}`,
+              title: data.biddingName,
+            },
+          ]}
+        />
+        <Card
+          title={
+            <Flex align="center" gap={8}>
+              <Typography.Title level={5} style={{ margin: '0' }}>
+                Chi tiết hoạt động:
+              </Typography.Title>
+              <Skeleton.Input />
+            </Flex>
+          }
+          extra={
+            <Button type="primary" disabled={loading}>
+              Lưu
+            </Button>
+          }
+        >
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </Card>
+      </Flex>
+    );
   return (
     <BiddingContext.Provider value={{ data, setData }}>
       <Flex vertical gap={16}>
@@ -195,73 +240,34 @@ const EditBidding = () => {
             </Button>
           }
         >
-          <Descriptions title="1. Khoa phòng đề xuất" items={items} />
+          <Descriptions
+            title="1. Khoa phòng đề xuất"
+            items={items}
+            column={2}
+          />
           <Typography.Title level={5}>2. Lập kế hoạch</Typography.Title>
-          <Flex vertical gap={16}>
-            <Flex justify="space-between">
-              <Typography.Text strong>2.1. Chào giá</Typography.Text>
-              <Button
-                size="small"
-                type="link"
-                icon={
-                  isCollapseBiddingRequest ? <DownOutlined /> : <UpOutlined />
-                }
-                onClick={() =>
-                  setIsCollapseBiddingRequest(!isCollapseBiddingRequest)
-                }
-              />
-            </Flex>
-            {!isCollapseBiddingRequest && <BiddingRequest />}
 
-            <Flex justify="space-between">
-              <Typography.Text strong>
-                2.2. Lên dự toán, thành lập tổ chuyên gia, tổ thẩm định
-              </Typography.Text>
-              <Button
-                size="small"
-                type="link"
-                icon={
-                  isCollapseProcurementCouncil ? (
-                    <DownOutlined />
-                  ) : (
-                    <UpOutlined />
-                  )
-                }
-                onClick={() =>
-                  setIsCollapseProcurementCouncil(!isCollapseProcurementCouncil)
-                }
-              />
-            </Flex>
-            {!isCollapseProcurementCouncil && <ProcurementCouncil />}
-
-            <Flex justify="space-between">
-              <Typography.Text strong>
-                2.3. Kế hoạch lựa chọn nhà thầu
-              </Typography.Text>
-              <Button
-                size="small"
-                type="link"
-                icon={
-                  isCollapseContractorSelectionPlan ? (
-                    <DownOutlined />
-                  ) : (
-                    <UpOutlined />
-                  )
-                }
-                onClick={() =>
-                  setIsCollapseContractorSelectionPlan(
-                    !isCollapseContractorSelectionPlan
-                  )
-                }
-              />
-            </Flex>
-            {!isCollapseContractorSelectionPlan && <ContractorSelectionPlan />}
-
-            <Typography.Text strong>2.4. E - Hồ sơ mời thầu</Typography.Text>
-            <Ehsmt />
-
-            <Typography.Text strong>2.5. E - Hồ sơ dự thầu</Typography.Text>
-            <ContractorSelectionPlan />
+          <Flex vertical gap={8}>
+            <CollapsibleForm
+              title="2.1. Chào giá"
+              children={<BiddingRequest />}
+            />
+            <CollapsibleForm
+              title="2.2. Lên dự toán, thành lập tổ chuyên gia, tổ thẩm định"
+              children={<ProcurementCouncil />}
+            />
+            <CollapsibleForm
+              title="2.3. Kế hoạch lựa chọn nhà thầu"
+              children={<ContractorSelectionPlan />}
+            />
+            <CollapsibleForm
+              title="2.4. E - Hồ sơ mời thầu"
+              children={<Ehsmt />}
+            />
+            <CollapsibleForm
+              title="2.5. E - Hồ sơ dự thầu"
+              children={<ContractorSelectionPlan />}
+            />
           </Flex>
         </Card>
       </Flex>

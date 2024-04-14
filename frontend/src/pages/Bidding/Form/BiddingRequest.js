@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import dayjs from 'dayjs';
 import { Flex, Button, Typography, DatePicker, Timeline, Tag } from 'antd';
 import BiddingContext from '../../../contexts/biddingContext';
+import DatePickerFormat from '../Component/DatePickerFormat';
 
 const BiddingRequest = () => {
   const { data, setData } = useContext(BiddingContext);
@@ -71,35 +72,13 @@ const BiddingRequest = () => {
                 <Flex vertical gap={8}>
                   <Typography.Text>
                     Ngày hết hạn:{' '}
-                    <DatePicker
-                      value={
-                        data.biddingRequestDeadlineDate
-                          ? dayjs(data.biddingRequestDeadlineDate)
-                          : undefined
-                      }
-                      onChange={(_, val) => {
-                        setData({
-                          ...data,
-                          biddingRequestDeadlineDate: val,
-                        });
-                      }}
-                    />
+                    <DatePickerFormat field={'biddingRequestDeadlineDate'} />
                   </Typography.Text>
                   <Typography.Text>
                     Ngày đăng:{' '}
-                    <DatePicker
+                    <DatePickerFormat
+                      field={'biddingRequestPublishedDate'}
                       maxDate={dayjs()}
-                      value={
-                        data.biddingRequestPublishedDate
-                          ? dayjs(data.biddingRequestPublishedDate)
-                          : undefined
-                      }
-                      onChange={(_, val) => {
-                        setData({
-                          ...data,
-                          biddingRequestPublishedDate: val,
-                        });
-                      }}
                     />
                   </Typography.Text>
                 </Flex>

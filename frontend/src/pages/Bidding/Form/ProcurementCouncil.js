@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import { SmileOutlined, UploadOutlined } from '@ant-design/icons';
 import BiddingContext from '../../../contexts/biddingContext';
+import DatePickerFormat from '../Component/DatePickerFormat';
 
 const ProcurementCouncil = () => {
   const { data, setData } = useContext(BiddingContext);
@@ -69,20 +70,7 @@ const ProcurementCouncil = () => {
               {isEditProcurementCouncil && (
                 <Typography.Text>
                   Ngày họp:{' '}
-                  <DatePicker
-                    maxDate={dayjs()}
-                    value={
-                      data.procurementCouncilMeetingDate
-                        ? dayjs(data.procurementCouncilMeetingDate)
-                        : undefined
-                    }
-                    onChange={(_, val) => {
-                      setData({
-                        ...data,
-                        procurementCouncilMeetingDate: val,
-                      });
-                    }}
-                  />
+                  <DatePickerFormat field={'procurementCouncilMeetingDate'} />
                 </Typography.Text>
               )}
             </Flex>
@@ -132,20 +120,7 @@ const ProcurementCouncil = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày duyệt:</Typography.Text>
-                    <DatePicker
-                      maxDate={dayjs()}
-                      value={
-                        data.budgetApprovalDate
-                          ? dayjs(data.budgetApprovalDate)
-                          : undefined
-                      }
-                      onChange={(_, val) => {
-                        setData({
-                          ...data,
-                          budgetApprovalDate: val,
-                        });
-                      }}
-                    />
+                    <DatePickerFormat field={'budgetApprovalDate'} />
                   </Flex>
                 </Flex>
               )}
@@ -195,20 +170,7 @@ const ProcurementCouncil = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày thành lập:</Typography.Text>
-                    <DatePicker
-                      maxDate={dayjs()}
-                      value={
-                        data.expertTeamEstablishmentDate
-                          ? dayjs(data.expertTeamEstablishmentDate)
-                          : undefined
-                      }
-                      onChange={(_, val) => {
-                        setData({
-                          ...data,
-                          expertTeamEstablishmentDate: val,
-                        });
-                      }}
-                    />
+                    <DatePickerFormat field={'expertTeamEstablishmentDate'} />
                   </Flex>
                 </Flex>
               )}
@@ -261,19 +223,8 @@ const ProcurementCouncil = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày thành lập:</Typography.Text>
-                    <DatePicker
-                      maxDate={dayjs()}
-                      value={
-                        data.appraisalTeamEstablishmentDate
-                          ? dayjs(data.appraisalTeamEstablishmentDate)
-                          : undefined
-                      }
-                      onChange={(_, val) => {
-                        setData({
-                          ...data,
-                          appraisalTeamEstablishmentDate: val,
-                        });
-                      }}
+                    <DatePickerFormat
+                      field={'appraisalTeamEstablishmentDate'}
                     />
                   </Flex>
                 </Flex>

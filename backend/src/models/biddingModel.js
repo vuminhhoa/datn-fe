@@ -16,7 +16,7 @@ const Bidding = sequelize.define(
     },
     // Ngày đề xuất
     proposedDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Nội dung đề xuất
@@ -31,27 +31,27 @@ const Bidding = sequelize.define(
     },
     // Ngày phê duyệt đề xuất
     approvedDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Ngày đăng yêu cầu chào giá
     biddingRequestPublishedDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true, // Có thể không có ngày đăng
     },
     // Ngày hết hạn yêu cầu chào giá
     biddingRequestDeadlineDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true, // Có thể không có ngày hết hạn
     },
     // Ngày họp hội đồng mua sắm
     procurementCouncilMeetingDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Ngày phê duyệt dự toán
     budgetApprovalDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Tài liệu họp hội đồng mua sắm
@@ -66,7 +66,7 @@ const Bidding = sequelize.define(
     },
     // Ngày thành lập tổ chuyên gia
     expertTeamEstablishmentDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Tài liệu thành lập tổ chuyên gia
@@ -76,7 +76,7 @@ const Bidding = sequelize.define(
     },
     // Ngày thành lập tổ thẩm định
     appraisalTeamEstablishmentDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Tài liệu thành lập tổ thẩm định
@@ -86,7 +86,7 @@ const Bidding = sequelize.define(
     },
     // ngày lập khlcnt
     khlcntEstablishmentDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Tài liệu lập khlcnt
@@ -96,7 +96,7 @@ const Bidding = sequelize.define(
     },
     // ngày Báo cáo thẩm định khlcnt
     khlcntAppraisalDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Báo cáo thẩm định khlcnt
@@ -106,7 +106,7 @@ const Bidding = sequelize.define(
     },
     // ngày phê duyệt khlcnt
     khlcntApprovalDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Tài liệu phê duyệt khlcnt
@@ -116,7 +116,7 @@ const Bidding = sequelize.define(
     },
     // ngày quyết định phê duyệt khlcnt
     khlcntApprovalDecisionDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Tài liệu quyết định phê duyệt khlcnt
@@ -126,7 +126,7 @@ const Bidding = sequelize.define(
     },
     // Ngày đăng tải kế hoạch lên mạng đấu thầu
     biddingPlanPostingDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     // Tài liệu dự thảo ehsmt
@@ -161,7 +161,7 @@ const Bidding = sequelize.define(
     },
     // Ngày đăng thông báo mời thầu lên mạng đấu thầu
     biddingInvitationPostingDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true,
     },
   },
