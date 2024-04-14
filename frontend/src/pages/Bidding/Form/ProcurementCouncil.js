@@ -25,6 +25,7 @@ const ProcurementCouncil = () => {
   return (
     <Timeline
       mode="left"
+      style={{ marginLeft: '-300px' }}
       items={[
         {
           color: data.procurementCouncilMeetingDate
@@ -49,22 +50,14 @@ const ProcurementCouncil = () => {
                   )}
                 </Typography.Text>
 
-                {!isEditProcurementCouncil && (
-                  <Button
-                    type="link"
-                    onClick={() => setIsEditProcurementCouncil(true)}
-                  >
-                    Cập nhật
-                  </Button>
-                )}
-                {isEditProcurementCouncil && (
-                  <Button
-                    type="link"
-                    onClick={() => setIsEditProcurementCouncil(false)}
-                  >
-                    Xác nhận
-                  </Button>
-                )}
+                <Button
+                  type="link"
+                  onClick={() =>
+                    setIsEditProcurementCouncil(!isEditProcurementCouncil)
+                  }
+                >
+                  {isEditProcurementCouncil ? 'Xác nhận' : 'Cập nhật'}
+                </Button>
               </Flex>
 
               {isEditProcurementCouncil && (
@@ -98,22 +91,12 @@ const ProcurementCouncil = () => {
                   )}
                 </Typography.Text>
 
-                {!isEditBudgetApproval && (
-                  <Button
-                    type="link"
-                    onClick={() => setIsEditBudgetApproval(true)}
-                  >
-                    Cập nhật
-                  </Button>
-                )}
-                {isEditBudgetApproval && (
-                  <Button
-                    type="link"
-                    onClick={() => setIsEditBudgetApproval(false)}
-                  >
-                    Xác nhận
-                  </Button>
-                )}
+                <Button
+                  type="link"
+                  onClick={() => setIsEditBudgetApproval(!isEditBudgetApproval)}
+                >
+                  {isEditBudgetApproval ? 'Xác nhận' : 'Cập nhật'}
+                </Button>
               </Flex>
 
               {isEditBudgetApproval && (
@@ -151,19 +134,12 @@ const ProcurementCouncil = () => {
                   )}
                 </Typography.Text>
 
-                {!isEditExpertTeam && (
-                  <Button type="link" onClick={() => setIsEditExpertTeam(true)}>
-                    Cập nhật
-                  </Button>
-                )}
-                {isEditExpertTeam && (
-                  <Button
-                    type="link"
-                    onClick={() => setIsEditExpertTeam(false)}
-                  >
-                    Xác nhận
-                  </Button>
-                )}
+                <Button
+                  type="link"
+                  onClick={() => setIsEditExpertTeam(!isEditExpertTeam)}
+                >
+                  {isEditExpertTeam ? 'Xác nhận' : 'Cập nhật'}
+                </Button>
               </Flex>
 
               {isEditExpertTeam && (
@@ -201,22 +177,12 @@ const ProcurementCouncil = () => {
                   )}
                 </Typography.Text>
 
-                {!isEditAppraisalTeam && (
-                  <Button
-                    type="link"
-                    onClick={() => setIsEditAppraisalTeam(true)}
-                  >
-                    Cập nhật
-                  </Button>
-                )}
-                {isEditAppraisalTeam && (
-                  <Button
-                    type="link"
-                    onClick={() => setIsEditAppraisalTeam(false)}
-                  >
-                    Xác nhận
-                  </Button>
-                )}
+                <Button
+                  type="link"
+                  onClick={() => setIsEditAppraisalTeam(!isEditAppraisalTeam)}
+                >
+                  {isEditAppraisalTeam ? 'Xác nhận' : 'Cập nhật'}
+                </Button>
               </Flex>
 
               {isEditAppraisalTeam && (

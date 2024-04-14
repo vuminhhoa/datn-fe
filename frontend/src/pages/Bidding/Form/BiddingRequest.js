@@ -11,6 +11,7 @@ const BiddingRequest = () => {
   return (
     <Timeline
       mode="left"
+      style={{ marginLeft: '-300px' }}
       items={[
         {
           color:
