@@ -14,6 +14,10 @@ import BiddingRequest from '../Form/BiddingRequest';
 import ProcurementCouncil from '../Form/ProcurementCouncil';
 import ContractorSelectionPlan from '../Form/ContractorSelectionPlan';
 import Ehsmt from '../Form/Ehsmt';
+import useFetchApi from '../../../hooks/useFetchApi';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../../../contexts/authProvider';
 
 const defaultData = {
   id: 12,
@@ -87,7 +91,13 @@ const defaultData = {
 };
 
 const EditBidding = () => {
-  const [data, setData] = useState(defaultData);
+  const { id } = useParams();
+  const { setToast } = useAuth();
+  const { data, fetchApi, setData, loading } = useFetchApi({
+    url: `/bidding/${id}`,
+    defaultData: defaultData,
+  });
+  const [saving, setSaving] = useState(false);
   const [isCollapseBiddingRequest, setIsCollapseBiddingRequest] =
     useState(false);
   const [isCollapseProcurementCouncil, setIsCollapseProcurementCouncil] =
@@ -136,7 +146,28 @@ const EditBidding = () => {
   ];
 
   console.log(data);
+  const handleSaveBidding = async () => {
+    try {
+      setSaving(true);
+      await axios({
+        method: 'POST',
+        url: `http://localhost:5000/api/bidding/${id}`,
+        data: {
+          ...data,
+          createdAt: new Date(data.createdAt),
+          updatedAt: new Date(data.updatedAt),
+        },
+      });
+      setToast('Lưu thành công');
+    } catch (error) {
+      console.log(error);
+      setToast('Lưu thất bại', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
 
+  if (loading) return <p>Loading...</p>;
   return (
     <BiddingContext.Provider value={{ data, setData }}>
       <Flex vertical gap={16}>
@@ -158,7 +189,11 @@ const EditBidding = () => {
         />
         <Card
           title={`Chi tiết hoạt động: ${data.biddingName}`}
-          extra={<Button type="primary">Lưu</Button>}
+          extra={
+            <Button type="primary" onClick={handleSaveBidding} loading={saving}>
+              Lưu
+            </Button>
+          }
         >
           <Descriptions title="1. Khoa phòng đề xuất" items={items} />
           <Typography.Title level={5}>2. Lập kế hoạch</Typography.Title>

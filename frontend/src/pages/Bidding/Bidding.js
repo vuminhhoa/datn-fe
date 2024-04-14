@@ -1,110 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import {
   Card,
-  Descriptions,
   Flex,
-  Row,
-  Col,
   Tag,
   Space,
   Table,
-  Avatar,
-  Typography,
   Breadcrumb,
   Modal,
   Input,
   Button,
   Select,
   Form,
+  Dropdown,
+  Popover,
 } from 'antd';
 import {
   HomeOutlined,
-  UserOutlined,
   DeleteOutlined,
   EyeOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
-import {
-  EditOutlined,
-  PlusCircleOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/authProvider';
 import axios from 'axios';
 import useFetchApi from '../../hooks/useFetchApi';
+import { Link, useNavigate } from 'react-router-dom';
 
-const columns = [
-  {
-    title: 'Tên hoạt động',
-    dataIndex: 'biddingName',
-    key: 'biddingName',
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: 'Khoa phòng đề xuất',
-    dataIndex: 'proposedDepartmentName',
-    key: 'proposedDepartmentName',
-  },
-
-  {
-    title: 'Trạng thái',
-    key: 'proposedStatus',
-    dataIndex: 'proposedStatus',
-    render: (_, record) => {
-      if (record.proposedStatus === 'approved')
-        return <Tag color="success">Chấp thuận</Tag>;
-      if (record.proposedStatus === 'reject')
-        return <Tag color="error">Từ chối</Tag>;
-      return <Tag color="processing">Chờ duyệt</Tag>;
-    },
-  },
-  {
-    title: 'Hành động',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="small">
-        <Button type="link" icon={<EyeOutlined />}>
-          Xem chi tiết
-        </Button>
-        {record.proposedStatus === 'processing' && (
-          <Button type="text" danger icon={<DeleteOutlined />}>
-            {' '}
-            Xóa
-          </Button>
-        )}
-      </Space>
-    ),
-  },
-];
-const dataDefault = [
-  {
-    id: 1,
-    biddingName: 'Mua may sieu am',
-    proposedDepartmentName: 'Khoa vi sinh',
-    proposedStatus: 'approved',
-  },
-  {
-    id: 2,
-    biddingName: 'Mua may tinh luong tu',
-    proposedDepartmentName: 'Khoa deptrai',
-    proposedStatus: 'reject',
-  },
-  {
-    id: 3,
-    biddingName: 'Mua may tinh deptrai',
-    proposedDepartmentName: 'Khoa ádasdas',
-    proposedStatus: 'processing',
-  },
-];
 const Bidding = () => {
+  const navigate = useNavigate();
   const { setToast } = useAuth();
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [form] = Form.useForm();
 
-  const { data, fetchApi, setData, loading, handleChangeInput } = useFetchApi({
+  const { data, fetchApi, setData, loading } = useFetchApi({
     url: '/biddings',
-    defaultData: dataDefault,
+    defaultData: [],
   });
   const defaultCreateFormData = {
     proposedStatus: 'processing',
@@ -118,6 +50,67 @@ const Bidding = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const columns = [
+    {
+      title: 'Tên hoạt động',
+      dataIndex: 'biddingName',
+      key: 'biddingName',
+      render: (text, record) => (
+        <Link to={`/shopping/bidding/${record.id}`}>{text}</Link>
+      ),
+    },
+    {
+      title: 'Khoa phòng đề xuất',
+      dataIndex: 'proposedDepartmentName',
+      key: 'proposedDepartmentName',
+    },
+
+    {
+      title: 'Trạng thái',
+      key: 'proposedStatus',
+      dataIndex: 'proposedStatus',
+      render: (_, record) => {
+        if (record.proposedStatus === 'approved')
+          return <Tag color="success">Chấp thuận</Tag>;
+        if (record.proposedStatus === 'reject')
+          return <Tag color="error">Từ chối</Tag>;
+        return <Tag color="processing">Chờ duyệt</Tag>;
+      },
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+    },
+
+    {
+      title: 'Hành động',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="small">
+          <Popover content="Xem chi tiết" trigger="hover">
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              onClick={() => navigate(`/shopping/bidding/${record.id}`)}
+            />
+          </Popover>
+
+          {record.proposedStatus === 'processing' && (
+            <Popover content="Xóa hoạt động" trigger="hover">
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => handleDeleteBidding(record.id)}
+              />
+            </Popover>
+          )}
+        </Space>
+      ),
+    },
+  ];
 
   const handleCreateBidding = async () => {
     try {
@@ -137,6 +130,25 @@ const Bidding = () => {
       setCreating(false);
       setIsShowCreateForm(false);
       fetchApi();
+    }
+  };
+
+  const handleDeleteBidding = async (id) => {
+    try {
+      setDeleting(true);
+      const res = await axios({
+        method: 'DELETE',
+        url: `http://localhost:5000/api/bidding/${id}`,
+      });
+      if (res.data.success) {
+        setData(data.filter((item) => item.id !== id));
+      }
+    } catch (error) {
+      console.log(error);
+      setToast('Xóa thất bại', 'error');
+    } finally {
+      setToast('Xóa thành công');
+      setDeleting(false);
     }
   };
 
@@ -189,6 +201,7 @@ const Bidding = () => {
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => setIsShowCreateForm(true)}
+            disabled={deleting}
           >
             Tạo mới
           </Button>
@@ -273,7 +286,12 @@ const Bidding = () => {
             </Form>
           </Modal>
 
-          <Table columns={columns} dataSource={data} bordered />
+          <Table
+            columns={columns}
+            dataSource={data}
+            bordered
+            disabled={deleting}
+          />
         </Flex>
       </Card>
     </Flex>
