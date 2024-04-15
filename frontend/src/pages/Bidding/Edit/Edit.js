@@ -20,75 +20,77 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../../contexts/authProvider';
 import CollapsibleForm from '../Component/CollapsibleForm';
+import Ehsdt from '../Form/Ehsdt';
+import KyKetThucHienHopDong from '../Form/KyKetThucHienHopDong';
+
 const defaultData = {
   id: 12,
-  biddingName: 'Mua may sieu vi tinh',
-  // Tên khoa phòng đề xuất
-  proposedDepartmentName: 'Marketing Department',
-  // Ngày đề xuất
-  proposedDate: '2024-04-05',
-  // Nội dung đề xuất
-  proposedContent: '01 máy siêu âm 100 máy đẹp trai',
-  // Trạng thái đề xuất
-  proposedStatus: 'approved',
-  // Ngày phê duyệt đề xuất
-  approvedDate: '2024-04-07',
+  tenDeXuat: 'Mua may sieu vi tinh',
+  khoaPhongDeXuat: 'Marketing Department',
+  ngayDeXuat: '2024-04-05',
+  noiDungDeXuat: '01 máy siêu âm 100 máy đẹp trai',
+  trangThaiDeXuat: 'approved',
+  ngayPheDuyetDeXuat: '2024-04-07',
 
-  // Ngày đăng yêu cầu chào giá
-  biddingRequestPublishedDate: null,
-  // Ngày hết hạn yêu cầu chào giá
-  biddingRequestDeadlineDate: null,
+  ngayDangYeuCauChaoGia: null,
+  ngayHetHanYeuCauChaoGia: null,
 
-  // Ngày họp hội đồng mua sắm
-  procurementCouncilMeetingDate: '2024-04-15',
-  // ngày phê duyệt dự toán
-  budgetApprovalDate: '2024-04-15',
-  // Tài liệu họp hội đồng mua sắm
-  budgetApprovalDocument: 'ProcurementCouncilMinutes.pdf',
-  // Tài liệu họp hội đồng mua sắm
-  procurementCouncilMeetingDocument: 'ProcurementCouncilMinutes.pdf',
-  // Ngày thành lập tổ chuyên gia
-  expertTeamEstablishmentDate: '2024-04-18',
-  // Tài liệu thành lập tổ chuyên gia
-  expertTeamEstablishmentDocument: 'ExpertTeamEstablishment.pdf',
-  // Ngày thành lập tổ thẩm định
-  appraisalTeamEstablishmentDate: '2024-04-19',
-  // Tài liệu thành lập tổ thẩm định
-  appraisalTeamEstablishmentDocument: 'AppraisalTeamEstablishment.pdf',
+  ngayHopHoiDongMuaSam: '2024-04-15',
+  ngayPheDuyetDuToan: '2024-04-15',
+  taiLieuPheDuyetDuToan: 'ProcurementCouncilMinutes.pdf',
+  taiLieuHopHoiDongMuaSam: 'ProcurementCouncilMinutes.pdf',
+  ngayThanhLapToChuyenGia: '2024-04-18',
+  taiLieuThanhLapToChuyenGia: 'ExpertTeamEstablishment.pdf',
+  ngayThanhLapToThamDinh: '2024-04-19',
+  taiLieuThanhLapToThamDinh: 'AppraisalTeamEstablishment.pdf',
 
-  // ngày lập khlcnt
-  khlcntEstablishmentDate: null,
-  // Tài liệu lập khlcnt
-  khlcntDocumentEstablishment: 'khlcntDocument.pdf',
-  // ngày Báo cáo thẩm định khlcnt
-  khlcntAppraisalDate: '2024-04-19',
-  // Báo cáo thẩm định khlcnt
-  khlcntAppraisalReport: 'khlcntAppraisalReport.pdf',
-  // ngày phê duyệt khlcnt
-  khlcntApprovalDate: '2024-04-19',
-  // Tài liệu phê duyệt khlcnt
-  khlcntApprovalDocument: 'khlcntApprovalDocument.pdf',
-  // ngày quyết định phê duyệt khlcnt
-  khlcntApprovalDecisionDate: '2024-04-19',
-  // Tài liệu quyết định phê duyệt khlcnt
-  khlcntApprovalDecisionDocument: 'khlcntApprovalDecision.pdf',
-  // Ngày đăng tải kế hoạch lên mạng đấu thầu
-  biddingPlanPostingDate: '2024-04-25',
+  ngayLapKhlcnt: null,
+  taiLieuLapKhlcnt: 'khlcntDocument.pdf',
+  ngayBaoCaoThamDinhKhclnt: '2024-04-19',
+  taiLieuBaoCaoThamDinhKhclnt: 'taiLieuBaoCaoThamDinhKhclnt.pdf',
+  ngayPheDuyetKhclnt: '2024-04-19',
+  taiLieuPheDuyetKhclnt: 'taiLieuPheDuyetKhclnt.pdf',
+  ngayQuyetDinhPheDuyetKhlcnt: '2024-04-19',
+  taiLieuQuyetDinhPheDuyetKhlcnt: 'khlcntApprovalDecision.pdf',
+  ngayDangTaiKeHoachLenMangDauThau: '2024-04-25',
 
-  // Tài liệu dự thảo ehsmt
-  ehsmtDraftDocument: 'ehsmtDraftDocument.pdf',
-  // Tài liệu báo cáo xây dựng ehsmt
-  ehsmtConstructionReportDocument: 'ehsmtConstructionReport.pdf',
-  // Tài liệu phê duyệt ehsmt tổ chuyên gia
-  ehsmtExpertTeamApprovalDocument: 'ehsmtExpertTeamApproval.pdf',
-  // Tài liệu báo cáo thẩm định ehsmt
-  ehsmtAppraisalReportDocument: 'ehsmtAppraisalReport.pdf',
-  // Tài liệu phê duyệt ehsmt tổ thẩm định
-  ehsmtAppraisalApprovalDocument: 'ehsmtAppraisalApproval.pdf',
-  // Tài liệu quyết định phê duyệt ehsmt
-  ehsmtApprovalDecisionDocument: 'ehsmtApprovalDecision.pdf',
-  // Ngày đăng thông báo mời thầu lên mạng đấu thầu
-  biddingInvitationPostingDate: '2024-04-28',
+  taiLieuDuThaoEhsmt: 'taiLieuDuThaoEhsmt.pdf',
+  ngayDuThaoEhsmt: '2024-04-19',
+  taiLieuBcXayDungEhsmt: 'ehsmtConstructionReport.pdf',
+  ngayTaiLieuBcXayDungEhsmt: '2024-04-19',
+  taiLieuPheDuyetEhsmtToChuyenGia: 'ehsmtExpertTeamApproval.pdf',
+  ngayPheDuyetEhsmtToChuyenGia: '2024-04-19',
+  taiLieuBcThamDinhEhsmt: 'ehsmtAppraisalReport.pdf',
+  ngayBcThamDinhEhsmt: '2024-04-19',
+  taiLieuPheDuyetEhsmtToThamDinh: 'ehsmtAppraisalApproval.pdf',
+  ngayPheDuyetEhsmtToThamDinh: '2024-04-19',
+  quyetDinhPheDuyetEhsmt: 'ehsmtApprovalDecision.pdf',
+  ngayPheDuyetEhsmt: '2024-04-19',
+  ngayDangThongBaoMoiThauLenMangDauThau: '2024-04-28',
+
+  bcDanhGiaCuaToChuyenGia: 'ehsmtApprovalDecision.pdf',
+  ngayBcDanhGiaCuaToChuyenGia: '2024-04-28',
+  bienBanThuongThaoVoiCacNhaThau: 'ehsmtApprovalDecision.pdf',
+  ngayThuongThaoVoiCacNhaThau: '2024-04-28',
+  bcThamDinhKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
+  ngayThamDinhKetQuaLcnt: '2024-04-28',
+  toTrinhXinPheDuyetKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
+  ngayXinPheDuyetKetQuaLcnt: '2024-04-28',
+  quyetDinhPheDuyetKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
+  ngayPheDuyetKetQuaLcnt: '2024-04-28',
+
+  taiLieuThongBaoKqLcntDenCacNhaThau: 'ehsmtApprovalDecision.pdf',
+  ngayThongBaoKqLcntDenCacNhaThau: '2024-04-28',
+  taiLieuDangKqLcntLenMangDauThau: 'ehsmtApprovalDecision.pdf',
+  ngayDangKqLcntLenMangDauThau: '2024-04-28',
+  taiLieuBaoLanhThucHienHopDong: 'ehsmtApprovalDecision.pdf',
+  ngayNhaThauNopBaoLanhThucHienHopDong: '2024-04-28',
+  taiLieuKyKetHopDongMuaBan: 'ehsmtApprovalDecision.pdf',
+  ngayKyKetHopDongMuaBan: '2024-04-28',
+  taiLieuBanGiaoDuaVaoSuDung: 'ehsmtApprovalDecision.pdf',
+  ngayBanGiaoDuaVaoSuDung: '2024-04-28',
+  taiLieuBaoLanhBaoHanh: 'ehsmtApprovalDecision.pdf',
+  ngayNopBaoLanhBaoHanh: '2024-04-28',
 };
 
 const EditBidding = () => {
@@ -104,12 +106,12 @@ const EditBidding = () => {
     {
       key: '1',
       label: 'Tên khoa phòng',
-      children: data.proposedDepartmentName,
+      children: data.khoaPhongDeXuat,
     },
-    data.proposedDate !== null && {
+    data.ngayDeXuat !== null && {
       key: '2',
       label: 'Ngày đề xuất',
-      children: data.proposedDate,
+      children: data.ngayDeXuat,
     },
 
     {
@@ -117,21 +119,23 @@ const EditBidding = () => {
       label: 'Trạng thái',
       children: (
         <>
-          {data.proposedStatus === 'approved' && (
+          {data.trangThaiDeXuat === 'approved' && (
             <Tag color="success">Chấp thuận</Tag>
           )}
-          {data.proposedStatus === 'reject' && <Tag color="error">Từ chối</Tag>}
-          {data.proposedStatus === 'processing' && (
+          {data.trangThaiDeXuat === 'reject' && (
+            <Tag color="error">Từ chối</Tag>
+          )}
+          {data.trangThaiDeXuat === 'processing' && (
             <Tag color="processing">Chờ duyệt</Tag>
           )}
         </>
       ),
     },
-    (data.proposedStatus === 'approved' ||
-      data.proposedStatus === 'reject') && {
+    (data.trangThaiDeXuat === 'approved' ||
+      data.trangThaiDeXuat === 'reject') && {
       key: '5',
       label: 'Ngày phê duyệt',
-      children: data.approvedDate,
+      children: data.ngayPheDuyetDeXuat,
     },
     {
       key: '6',
@@ -146,7 +150,7 @@ const EditBidding = () => {
     {
       key: '3',
       label: 'Nội dung',
-      children: data.proposedContent,
+      children: data.noiDungDeXuat,
     },
   ];
 
@@ -186,7 +190,7 @@ const EditBidding = () => {
             },
             {
               href: `/shopping/bidding/${data.id}`,
-              title: data.biddingName,
+              title: data.tenDeXuat,
             },
           ]}
         />
@@ -228,12 +232,12 @@ const EditBidding = () => {
             },
             {
               href: `/shopping/bidding/${data.id}`,
-              title: data.biddingName,
+              title: data.tenDeXuat,
             },
           ]}
         />
         <Card
-          title={`Chi tiết hoạt động: ${data.biddingName}`}
+          title={`Chi tiết hoạt động: ${data.tenDeXuat}`}
           extra={
             <Button type="primary" onClick={handleSaveBidding} loading={saving}>
               Lưu
@@ -261,12 +265,16 @@ const EditBidding = () => {
               children={<ContractorSelectionPlan />}
             />
             <CollapsibleForm
-              title="2.4. E - Hồ sơ mời thầu"
+              title="2.4. E - Hồ sơ mời thầu (E-HSMT)"
               children={<Ehsmt />}
             />
             <CollapsibleForm
-              title="2.5. E - Hồ sơ dự thầu"
-              children={<ContractorSelectionPlan />}
+              title="2.5. E - Hồ sơ dự thầu (E-HSDT)"
+              children={<Ehsdt />}
+            />
+            <CollapsibleForm
+              title="2.6. Ký kết thực hiện hợp đồng"
+              children={<KyKetThucHienHopDong />}
             />
           </Flex>
         </Card>

@@ -15,7 +15,6 @@ const DatePickerFormat = ({ field, maxDate = null }) => {
       value={dateValue}
       format={'DD/MM/YYYY'}
       onChange={(_, val) => {
-        console.log(val);
         setData({
           ...data,
           [field]: val,

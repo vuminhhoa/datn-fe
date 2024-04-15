@@ -76,9 +76,9 @@ export async function getListBiddings(req, res) {
     const biddings = await Bidding.findAll({
       attributes: [
         'id',
-        'biddingName',
-        'proposedDepartmentName',
-        'proposedStatus',
+        'tenDeXuat',
+        'khoaPhongDeXuat',
+        'trangThaiDeXuat',
         'createdAt',
         'updatedAt',
       ],

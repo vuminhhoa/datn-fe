@@ -3,34 +3,29 @@ import { Timeline } from 'antd';
 import BiddingContext from '../../../contexts/biddingContext';
 import BiddingItem from '../Component/BiddingItem';
 
-const Ehsmt = () => {
+const Ehsdt = () => {
   const { data } = useContext(BiddingContext);
 
   const items = [
-    { title: 'Dự thảo E-HSMT', field: 'ngayDuThaoEhsmt' },
     {
-      title: 'Báo cáo xây dựng E-HSMT',
-      field: 'ngayTaiLieuBcXayDungEhsmt',
+      title: 'Báo cáo đánh giá của tổ Chuyên gia Đấu thầu',
+      field: 'ngayBcDanhGiaCuaToChuyenGia',
     },
     {
-      title: 'Phê duyệt E-HSMT tổ chuyên gia',
-      field: 'ngayPheDuyetEhsmtToChuyenGia',
+      title: 'Biên bản thương thảo với các nhà thầu',
+      field: 'ngayThuongThaoVoiCacNhaThau',
     },
     {
-      title: 'Báo cáo thẩm định E-HSMT',
-      field: 'ngayBcThamDinhEhsmt',
+      title: 'Báo cáo thẩm định kết quả LCNT',
+      field: 'ngayThamDinhKetQuaLcnt',
     },
     {
-      title: 'Phê duyệt E-HSMT tổ thẩm định',
-      field: 'ngayPheDuyetEhsmtToThamDinh',
+      title: 'Tờ trình xin phê duyệt kết quả LCNT',
+      field: 'ngayXinPheDuyetKetQuaLcnt',
     },
     {
-      title: 'Quyết định phê duyệt E-HSMT',
-      field: 'ngayPheDuyetEhsmt',
-    },
-    {
-      title: 'Đăng thông báo mời thầu lên mạng đấu thầu',
-      field: 'ngayDangThongBaoMoiThauLenMangDauThau',
+      title: 'Quyết định phê duyệt kết quả LCNT',
+      field: 'ngayPheDuyetKetQuaLcnt',
     },
   ];
 
@@ -53,4 +48,4 @@ const Ehsmt = () => {
   );
 };
 
-export default Ehsmt;
+export default Ehsdt;

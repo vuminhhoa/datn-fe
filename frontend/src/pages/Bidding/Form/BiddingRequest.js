@@ -15,30 +15,30 @@ const BiddingRequest = () => {
       items={[
         {
           color:
-            data.biddingRequestPublishedDate !== null &&
-            data.biddingRequestPublishedDate !== ''
+            data.ngayDangYeuCauChaoGia !== null &&
+            data.ngayDangYeuCauChaoGia !== ''
               ? 'green'
-              : data.biddingRequestPublishedDate === '' ||
-                  data.biddingRequestDeadlineDate !== null
+              : data.ngayDangYeuCauChaoGia === '' ||
+                  data.ngayHetHanYeuCauChaoGia !== null
                 ? 'orange'
                 : 'grey',
-          label: data.biddingRequestPublishedDate || ' ',
+          label: data.ngayDangYeuCauChaoGia || ' ',
           children: (
             <Flex vertical gap={8}>
               <Flex align="flex-start" gap={8} justify="space-between">
                 <Typography.Text>
                   Đăng yêu cầu chào giá{' '}
-                  {data.biddingRequestPublishedDate === null &&
-                    data.biddingRequestDeadlineDate === null && (
+                  {data.ngayDangYeuCauChaoGia === null &&
+                    data.ngayHetHanYeuCauChaoGia === null && (
                       <Tag color="default">Chưa cập nhật</Tag>
                     )}
-                  {(data.biddingRequestPublishedDate === null ||
-                    data.biddingRequestPublishedDate === '') &&
-                    data.biddingRequestDeadlineDate !== null && (
+                  {(data.ngayDangYeuCauChaoGia === null ||
+                    data.ngayDangYeuCauChaoGia === '') &&
+                    data.ngayHetHanYeuCauChaoGia !== null && (
                       <Tag color="warning">Chưa đăng</Tag>
                     )}
-                  {data.biddingRequestPublishedDate !== null &&
-                    data.biddingRequestPublishedDate !== '' && (
+                  {data.ngayDangYeuCauChaoGia !== null &&
+                    data.ngayDangYeuCauChaoGia !== '' && (
                       <Tag color="success">Đã đăng</Tag>
                     )}
                 </Typography.Text>
@@ -62,9 +62,9 @@ const BiddingRequest = () => {
               </Flex>
               {!isEditBiddingRequest && (
                 <>
-                  {data.biddingRequestDeadlineDate && (
+                  {data.ngayHetHanYeuCauChaoGia && (
                     <Typography.Text>
-                      Ngày hết hạn: {data.biddingRequestDeadlineDate}
+                      Ngày hết hạn: {data.ngayHetHanYeuCauChaoGia}
                     </Typography.Text>
                   )}
                 </>
@@ -73,12 +73,12 @@ const BiddingRequest = () => {
                 <Flex vertical gap={8}>
                   <Typography.Text>
                     Ngày hết hạn:{' '}
-                    <DatePickerFormat field={'biddingRequestDeadlineDate'} />
+                    <DatePickerFormat field={'ngayHetHanYeuCauChaoGia'} />
                   </Typography.Text>
                   <Typography.Text>
                     Ngày đăng:{' '}
                     <DatePickerFormat
-                      field={'biddingRequestPublishedDate'}
+                      field={'ngayDangYeuCauChaoGia'}
                       maxDate={dayjs()}
                     />
                   </Typography.Text>

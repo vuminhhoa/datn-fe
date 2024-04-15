@@ -4,166 +4,108 @@ import { sequelize } from '../config/sequelizeConfig.js';
 const Bidding = sequelize.define(
   'Bidding',
   {
-    //Tên đề xuất
-    biddingName: {
+    tenDeXuat: { type: DataTypes.STRING, allowNull: true },
+    khoaPhongDeXuat: { type: DataTypes.STRING, allowNull: true },
+    ngayDeXuat: { type: DataTypes.STRING, allowNull: true },
+    noiDungDeXuat: { type: DataTypes.STRING, allowNull: true },
+    trangThaiDeXuat: { type: DataTypes.STRING, allowNull: true },
+    ngayPheDuyetDeXuat: { type: DataTypes.STRING, allowNull: true },
+    ngayDangYeuCauChaoGia: { type: DataTypes.STRING, allowNull: true },
+    ngayHetHanYeuCauChaoGia: { type: DataTypes.STRING, allowNull: true },
+    ngayHopHoiDongMuaSam: { type: DataTypes.STRING, allowNull: true },
+    ngayPheDuyetDuToan: { type: DataTypes.STRING, allowNull: true },
+    taiLieuPheDuyetDuToan: { type: DataTypes.STRING, allowNull: true },
+    taiLieuHopHoiDongMuaSam: { type: DataTypes.STRING, allowNull: true },
+    ngayThanhLapToChuyenGia: { type: DataTypes.STRING, allowNull: true },
+    taiLieuThanhLapToChuyenGia: { type: DataTypes.STRING, allowNull: true },
+    ngayThanhLapToThamDinh: { type: DataTypes.STRING, allowNull: true },
+    taiLieuThanhLapToThamDinh: { type: DataTypes.STRING, allowNull: true },
+    ngayLapKhlcnt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuLapKhlcnt: { type: DataTypes.STRING, allowNull: true },
+    ngayBaoCaoThamDinhKhclnt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuBaoCaoThamDinhKhclnt: { type: DataTypes.STRING, allowNull: true },
+    ngayPheDuyetKhclnt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuPheDuyetKhclnt: { type: DataTypes.STRING, allowNull: true },
+    ngayQuyetDinhPheDuyetKhlcnt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuQuyetDinhPheDuyetKhlcnt: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Tên phòng ban đề xuất
-    proposedDepartmentName: {
+    ngayDangTaiKeHoachLenMangDauThau: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Ngày đề xuất
-    proposedDate: {
+    taiLieuDuThaoEhsmt: { type: DataTypes.STRING, allowNull: true },
+    ngayDuThaoEhsmt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuBcXayDungEhsmt: { type: DataTypes.STRING, allowNull: true },
+    ngayTaiLieuBcXayDungEhsmt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuPheDuyetEhsmtToChuyenGia: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Nội dung đề xuất
-    proposedContent: {
+    ngayPheDuyetEhsmtToChuyenGia: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Trạng thái đề xuất
-    proposedStatus: {
+    taiLieuBcThamDinhEhsmt: { type: DataTypes.STRING, allowNull: true },
+    ngayBcThamDinhEhsmt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuPheDuyetEhsmtToThamDinh: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Ngày phê duyệt đề xuất
-    approvedDate: {
+    ngayPheDuyetEhsmtToThamDinh: { type: DataTypes.STRING, allowNull: true },
+    quyetDinhPheDuyetEhsmt: { type: DataTypes.STRING, allowNull: true },
+    ngayPheDuyetEhsmt: { type: DataTypes.STRING, allowNull: true },
+    ngayDangThongBaoMoiThauLenMangDauThau: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Ngày đăng yêu cầu chào giá
-    biddingRequestPublishedDate: {
-      type: DataTypes.STRING,
-      allowNull: true, // Có thể không có ngày đăng
-    },
-    // Ngày hết hạn yêu cầu chào giá
-    biddingRequestDeadlineDate: {
-      type: DataTypes.STRING,
-      allowNull: true, // Có thể không có ngày hết hạn
-    },
-    // Ngày họp hội đồng mua sắm
-    procurementCouncilMeetingDate: {
+    bcDanhGiaCuaToChuyenGia: { type: DataTypes.STRING, allowNull: true },
+    ngayBcDanhGiaCuaToChuyenGia: { type: DataTypes.STRING, allowNull: true },
+    bienBanThuongThaoVoiCacNhaThau: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Ngày phê duyệt dự toán
-    budgetApprovalDate: {
+    ngayThuongThaoVoiCacNhaThau: { type: DataTypes.STRING, allowNull: true },
+    bcThamDinhKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
+    ngayThamDinhKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
+    toTrinhXinPheDuyetKetQuaLcnt: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Tài liệu họp hội đồng mua sắm
-    budgetApprovalDocument: {
+    ngayXinPheDuyetKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
+    quyetDinhPheDuyetKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
+    ngayPheDuyetKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuThongBaoKqLcntDenCacNhaThau: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Tài liệu họp hội đồng mua sắm
-    procurementCouncilMeetingDocument: {
+    ngayThongBaoKqLcntDenCacNhaThau: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Ngày thành lập tổ chuyên gia
-    expertTeamEstablishmentDate: {
+    taiLieuDangKqLcntLenMangDauThau: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Tài liệu thành lập tổ chuyên gia
-    expertTeamEstablishmentDocument: {
+    ngayDangKqLcntLenMangDauThau: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Ngày thành lập tổ thẩm định
-    appraisalTeamEstablishmentDate: {
+    taiLieuBaoLanhThucHienHopDong: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // Tài liệu thành lập tổ thẩm định
-    appraisalTeamEstablishmentDocument: {
+    ngayNhaThauNopBaoLanhThucHienHopDong: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // ngày lập khlcnt
-    khlcntEstablishmentDate: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Tài liệu lập khlcnt
-    khlcntDocumentEstablishment: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // ngày Báo cáo thẩm định khlcnt
-    khlcntAppraisalDate: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Báo cáo thẩm định khlcnt
-    khlcntAppraisalReport: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // ngày phê duyệt khlcnt
-    khlcntApprovalDate: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Tài liệu phê duyệt khlcnt
-    khlcntApprovalDocument: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // ngày quyết định phê duyệt khlcnt
-    khlcntApprovalDecisionDate: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Tài liệu quyết định phê duyệt khlcnt
-    khlcntApprovalDecisionDocument: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Ngày đăng tải kế hoạch lên mạng đấu thầu
-    biddingPlanPostingDate: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Tài liệu dự thảo ehsmt
-    ehsmtDraftDocument: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Tài liệu báo cáo xây dựng ehsmt
-    ehsmtConstructionReportDocument: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Tài liệu phê duyệt ehsmt tổ chuyên gia
-    ehsmtExpertTeamApprovalDocument: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Tài liệu báo cáo thẩm định ehsmt
-    ehsmtAppraisalReportDocument: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Tài liệu phê duyệt ehsmt tổ thẩm định
-    ehsmtAppraisalApprovalDocument: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Tài liệu quyết định phê duyệt ehsmt
-    ehsmtApprovalDecisionDocument: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // Ngày đăng thông báo mời thầu lên mạng đấu thầu
-    biddingInvitationPostingDate: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
+    taiLieuKyKetHopDongMuaBan: { type: DataTypes.STRING, allowNull: true },
+    ngayKyKetHopDongMuaBan: { type: DataTypes.STRING, allowNull: true },
+    taiLieuBanGiaoDuaVaoSuDung: { type: DataTypes.STRING, allowNull: true },
+    ngayBanGiaoDuaVaoSuDung: { type: DataTypes.STRING, allowNull: true },
+    taiLieuBaoLanhBaoHanh: { type: DataTypes.STRING, allowNull: true },
+    ngayNopBaoLanhBaoHanh: { type: DataTypes.STRING, allowNull: true },
   },
   {}
 );

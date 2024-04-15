@@ -33,10 +33,10 @@ const Bidding = () => {
     defaultData: [],
   });
   const defaultCreateFormData = {
-    proposedStatus: 'processing',
-    proposedDepartmentName: '',
-    proposedContent: '',
-    biddingName: '',
+    trangThaiDeXuat: 'processing',
+    khoaPhongDeXuat: '',
+    noiDungDeXuat: '',
+    tenDeXuat: '',
   };
   const [createFormData, setCreateFormData] = useState(defaultCreateFormData);
   const handleCreateFormChange = (e) => {
@@ -49,26 +49,26 @@ const Bidding = () => {
   const columns = [
     {
       title: 'Tên hoạt động',
-      dataIndex: 'biddingName',
-      key: 'biddingName',
+      dataIndex: 'tenDeXuat',
+      key: 'tenDeXuat',
       render: (text, record) => (
         <Link to={`/shopping/bidding/${record.id}`}>{text}</Link>
       ),
     },
     {
       title: 'Khoa phòng đề xuất',
-      dataIndex: 'proposedDepartmentName',
-      key: 'proposedDepartmentName',
+      dataIndex: 'khoaPhongDeXuat',
+      key: 'khoaPhongDeXuat',
     },
 
     {
       title: 'Trạng thái',
-      key: 'proposedStatus',
-      dataIndex: 'proposedStatus',
+      key: 'trangThaiDeXuat',
+      dataIndex: 'trangThaiDeXuat',
       render: (_, record) => {
-        if (record.proposedStatus === 'approved')
+        if (record.trangThaiDeXuat === 'approved')
           return <Tag color="success">Chấp thuận</Tag>;
-        if (record.proposedStatus === 'reject')
+        if (record.trangThaiDeXuat === 'reject')
           return <Tag color="error">Từ chối</Tag>;
         return <Tag color="processing">Chờ duyệt</Tag>;
       },
@@ -92,7 +92,7 @@ const Bidding = () => {
             />
           </Popover>
 
-          {record.proposedStatus === 'processing' && (
+          {record.trangThaiDeXuat === 'processing' && (
             <Popover content="Xóa hoạt động" trigger="hover">
               <Button
                 type="text"
@@ -216,7 +216,7 @@ const Bidding = () => {
               layout="vertical"
             >
               <Form.Item
-                name="biddingName"
+                name="tenDeXuat"
                 label="Tên hoạt động"
                 rules={[
                   { required: true, message: 'Vui lòng nhập tên hoạt động!' },
@@ -224,14 +224,14 @@ const Bidding = () => {
               >
                 <Input
                   allowClear
-                  name="biddingName"
+                  name="tenDeXuat"
                   placeholder="Nhập tên hoạt động"
                   onChange={handleCreateFormChange}
                   autoComplete="off"
                 />
               </Form.Item>
               <Form.Item
-                name="proposedDepartmentName"
+                name="khoaPhongDeXuat"
                 label="Khoa phòng đề xuất"
                 rules={[
                   {
@@ -246,7 +246,7 @@ const Bidding = () => {
                   onChange={(value) =>
                     setCreateFormData({
                       ...createFormData,
-                      proposedDepartmentName: value,
+                      khoaPhongDeXuat: value,
                     })
                   }
                   options={[
@@ -269,9 +269,9 @@ const Bidding = () => {
                   ]}
                 />
               </Form.Item>
-              <Form.Item name="proposedContent" label="Nội dung hoạt động">
+              <Form.Item name="noiDungDeXuat" label="Nội dung hoạt động">
                 <Input.TextArea
-                  name="proposedContent"
+                  name="noiDungDeXuat"
                   allowClear
                   placeholder="Nhập nội dung hoạt động hoạt động"
                   rows={4}

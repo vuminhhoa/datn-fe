@@ -35,24 +35,22 @@ const ContractorSelectionPlan = () => {
       style={{ marginLeft: '-300px' }}
       items={[
         {
-          color: data.khlcntEstablishmentDate
+          color: data.ngayLapKhlcnt
             ? 'green'
-            : data.khlcntEstablishmentDate === null
+            : data.ngayLapKhlcnt === null
               ? 'gray'
               : 'orange',
-          label: data.khlcntEstablishmentDate || ' ',
+          label: data.ngayLapKhlcnt || ' ',
           children: (
             <Flex vertical gap={8}>
               <Flex align="flex-start" gap={8} justify="space-between">
                 <Typography.Text>
                   Tờ trình tổ chuyên gia đấu thầu về lập KHLCNT{' '}
-                  {data.khlcntEstablishmentDate && (
-                    <Tag color="success">Đã có</Tag>
-                  )}
-                  {data.khlcntEstablishmentDate === '' && (
+                  {data.ngayLapKhlcnt && <Tag color="success">Đã có</Tag>}
+                  {data.ngayLapKhlcnt === '' && (
                     <Tag color="warning">Chưa có</Tag>
                   )}
-                  {data.khlcntEstablishmentDate === null && (
+                  {data.ngayLapKhlcnt === null && (
                     <Tag color="default">Chưa cập nhật</Tag>
                   )}
                 </Typography.Text>
@@ -77,8 +75,7 @@ const ContractorSelectionPlan = () => {
 
               {isEditKhlcntEstablishment && (
                 <Typography.Text>
-                  Ngày nộp:{' '}
-                  <DatePickerFormat field={'khlcntEstablishmentDate'} />
+                  Ngày nộp: <DatePickerFormat field={'ngayLapKhlcnt'} />
                 </Typography.Text>
               )}
             </Flex>
@@ -86,22 +83,24 @@ const ContractorSelectionPlan = () => {
         },
 
         {
-          color: data.khlcntAppraisalDate
+          color: data.ngayBaoCaoThamDinhKhclnt
             ? 'green'
-            : data.khlcntAppraisalDate === null
+            : data.ngayBaoCaoThamDinhKhclnt === null
               ? 'grey'
               : 'orange',
-          label: data.khlcntAppraisalDate || ' ',
+          label: data.ngayBaoCaoThamDinhKhclnt || ' ',
           children: (
             <Flex vertical gap={8}>
               <Flex align="flex-start" gap={8} justify="space-between">
                 <Typography.Text>
                   Báo cáo thẩm định KHLCNT{' '}
-                  {data.khlcntAppraisalDate && <Tag color="success">Đã có</Tag>}
-                  {data.khlcntAppraisalDate === null && (
+                  {data.ngayBaoCaoThamDinhKhclnt && (
+                    <Tag color="success">Đã có</Tag>
+                  )}
+                  {data.ngayBaoCaoThamDinhKhclnt === null && (
                     <Tag color="default">Chưa cập nhật</Tag>
                   )}
-                  {data.khlcntAppraisalDate === '' && (
+                  {data.ngayBaoCaoThamDinhKhclnt === '' && (
                     <Tag color="warning">Chưa có</Tag>
                   )}
                 </Typography.Text>
@@ -128,7 +127,7 @@ const ContractorSelectionPlan = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày nộp:</Typography.Text>
-                    <DatePickerFormat field={'khlcntAppraisalDate'} />
+                    <DatePickerFormat field={'ngayBaoCaoThamDinhKhclnt'} />
                   </Flex>
                 </Flex>
               )}
@@ -137,22 +136,22 @@ const ContractorSelectionPlan = () => {
         },
 
         {
-          color: data.khlcntApprovalDate
+          color: data.ngayPheDuyetKhclnt
             ? 'green'
-            : data.khlcntApprovalDate === null
+            : data.ngayPheDuyetKhclnt === null
               ? 'grey'
               : 'orange',
-          label: data.khlcntApprovalDate || ' ',
+          label: data.ngayPheDuyetKhclnt || ' ',
           children: (
             <Flex vertical gap={8}>
               <Flex align="flex-start" gap={8} justify="space-between">
                 <Typography.Text>
                   Tờ trình tổ thẩm định về phê duyệt KHLCNT{' '}
-                  {data.khlcntApprovalDate && <Tag color="success">Đã có</Tag>}{' '}
-                  {data.khlcntApprovalDate === '' && (
+                  {data.ngayPheDuyetKhclnt && <Tag color="success">Đã có</Tag>}{' '}
+                  {data.ngayPheDuyetKhclnt === '' && (
                     <Tag color="warning">Chưa có</Tag>
                   )}
-                  {data.khlcntApprovalDate === null && (
+                  {data.ngayPheDuyetKhclnt === null && (
                     <Tag color="default">Chưa cập nhật</Tag>
                   )}
                 </Typography.Text>
@@ -179,7 +178,7 @@ const ContractorSelectionPlan = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày nộp:</Typography.Text>
-                    <DatePickerFormat field={'khlcntApprovalDate'} />
+                    <DatePickerFormat field={'ngayPheDuyetKhclnt'} />
                   </Flex>
                 </Flex>
               )}
@@ -188,24 +187,24 @@ const ContractorSelectionPlan = () => {
         },
 
         {
-          color: data.khlcntApprovalDecisionDate
+          color: data.ngayQuyetDinhPheDuyetKhlcnt
             ? 'green'
-            : data.khlcntApprovalDecisionDate === null
+            : data.ngayQuyetDinhPheDuyetKhlcnt === null
               ? 'grey'
               : 'orange',
-          label: data.khlcntApprovalDecisionDate || ' ',
+          label: data.ngayQuyetDinhPheDuyetKhlcnt || ' ',
           children: (
             <Flex vertical gap={8}>
               <Flex align="flex-start" gap={8} justify="space-between">
                 <Typography.Text>
                   Quyết định phê duyệt KHLCNT{' '}
-                  {data.khlcntApprovalDecisionDate && (
+                  {data.ngayQuyetDinhPheDuyetKhlcnt && (
                     <Tag color="success">Đã có</Tag>
                   )}
-                  {data.khlcntApprovalDecisionDate === '' && (
+                  {data.ngayQuyetDinhPheDuyetKhlcnt === '' && (
                     <Tag color="warning">Chưa có</Tag>
                   )}
-                  {data.khlcntApprovalDecisionDate === null && (
+                  {data.ngayQuyetDinhPheDuyetKhlcnt === null && (
                     <Tag color="default">Chưa cập nhật</Tag>
                   )}
                 </Typography.Text>
@@ -232,7 +231,7 @@ const ContractorSelectionPlan = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày nộp:</Typography.Text>
-                    <DatePickerFormat field={'khlcntApprovalDecisionDate'} />
+                    <DatePickerFormat field={'ngayQuyetDinhPheDuyetKhlcnt'} />
                   </Flex>
                 </Flex>
               )}
@@ -241,24 +240,24 @@ const ContractorSelectionPlan = () => {
         },
 
         {
-          color: data.biddingPlanPostingDate
+          color: data.ngayDangTaiKeHoachLenMangDauThau
             ? 'green'
-            : data.biddingPlanPostingDate === null
+            : data.ngayDangTaiKeHoachLenMangDauThau === null
               ? 'grey'
               : 'orange',
-          label: data.biddingPlanPostingDate || ' ',
+          label: data.ngayDangTaiKeHoachLenMangDauThau || ' ',
           children: (
             <Flex vertical gap={8}>
               <Flex align="flex-start" gap={8} justify="space-between">
                 <Typography.Text>
                   Đăng tải kế hoạch lên mạng đấu thầu{' '}
-                  {data.biddingPlanPostingDate && (
+                  {data.ngayDangTaiKeHoachLenMangDauThau && (
                     <Tag color="success">Đã đăng</Tag>
                   )}
-                  {data.biddingPlanPostingDate === '' && (
+                  {data.ngayDangTaiKeHoachLenMangDauThau === '' && (
                     <Tag color="warning">Chưa đăng</Tag>
                   )}
-                  {data.biddingPlanPostingDate === null && (
+                  {data.ngayDangTaiKeHoachLenMangDauThau === null && (
                     <Tag color="default">Chưa cập nhật</Tag>
                   )}
                 </Typography.Text>
@@ -285,7 +284,9 @@ const ContractorSelectionPlan = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày đăng:</Typography.Text>
-                    <DatePickerFormat field={'biddingPlanPostingDate'} />
+                    <DatePickerFormat
+                      field={'ngayDangTaiKeHoachLenMangDauThau'}
+                    />
                   </Flex>
                 </Flex>
               )}

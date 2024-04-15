@@ -28,24 +28,24 @@ const ProcurementCouncil = () => {
       style={{ marginLeft: '-300px' }}
       items={[
         {
-          color: data.procurementCouncilMeetingDate
+          color: data.ngayHopHoiDongMuaSam
             ? 'green'
-            : data.procurementCouncilMeetingDate === null
+            : data.ngayHopHoiDongMuaSam === null
               ? 'grey'
               : 'orange',
-          label: data.procurementCouncilMeetingDate || ' ',
+          label: data.ngayHopHoiDongMuaSam || ' ',
           children: (
             <Flex vertical gap={8}>
               <Flex align="flex-start" gap={8} justify="space-between">
                 <Typography.Text>
                   Họp hội đồng mua sắm{' '}
-                  {data.procurementCouncilMeetingDate && (
+                  {data.ngayHopHoiDongMuaSam && (
                     <Tag color="success">Đã họp</Tag>
                   )}
-                  {data.procurementCouncilMeetingDate === '' && (
+                  {data.ngayHopHoiDongMuaSam === '' && (
                     <Tag color="warning">Chưa họp</Tag>
                   )}
-                  {data.procurementCouncilMeetingDate === null && (
+                  {data.ngayHopHoiDongMuaSam === null && (
                     <Tag color="default">Chưa cập nhật</Tag>
                   )}
                 </Typography.Text>
@@ -62,8 +62,7 @@ const ProcurementCouncil = () => {
 
               {isEditProcurementCouncil && (
                 <Typography.Text>
-                  Ngày họp:{' '}
-                  <DatePickerFormat field={'procurementCouncilMeetingDate'} />
+                  Ngày họp: <DatePickerFormat field={'ngayHopHoiDongMuaSam'} />
                 </Typography.Text>
               )}
             </Flex>
@@ -71,22 +70,22 @@ const ProcurementCouncil = () => {
         },
 
         {
-          color: data.budgetApprovalDate
+          color: data.ngayPheDuyetDuToan
             ? 'green'
-            : data.budgetApprovalDate === null
+            : data.ngayPheDuyetDuToan === null
               ? 'grey'
               : 'orange',
-          label: data.budgetApprovalDate || ' ',
+          label: data.ngayPheDuyetDuToan || ' ',
           children: (
             <Flex vertical gap={8}>
               <Flex align="flex-start" gap={8} justify="space-between">
                 <Typography.Text>
                   Quyết định phê duyệt dự toán{' '}
-                  {data.budgetApprovalDate && <Tag color="success">Đã có</Tag>}
-                  {data.budgetApprovalDate === '' && (
+                  {data.ngayPheDuyetDuToan && <Tag color="success">Đã có</Tag>}
+                  {data.ngayPheDuyetDuToan === '' && (
                     <Tag color="warning">Chưa có</Tag>
                   )}
-                  {data.budgetApprovalDate === null && (
+                  {data.ngayPheDuyetDuToan === null && (
                     <Tag color="default">Chưa cập nhật</Tag>
                   )}
                 </Typography.Text>
@@ -103,7 +102,7 @@ const ProcurementCouncil = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày duyệt:</Typography.Text>
-                    <DatePickerFormat field={'budgetApprovalDate'} />
+                    <DatePickerFormat field={'ngayPheDuyetDuToan'} />
                   </Flex>
                 </Flex>
               )}
@@ -112,24 +111,24 @@ const ProcurementCouncil = () => {
         },
 
         {
-          color: data.expertTeamEstablishmentDate
+          color: data.ngayThanhLapToChuyenGia
             ? 'green'
-            : data.expertTeamEstablishmentDate === null
+            : data.ngayThanhLapToChuyenGia === null
               ? 'grey'
               : 'orange',
-          label: data.expertTeamEstablishmentDate || ' ',
+          label: data.ngayThanhLapToChuyenGia || ' ',
           children: (
             <Flex vertical gap={8}>
               <Flex align="flex-start" gap={8} justify="space-between">
                 <Typography.Text>
                   Thành lập tổ chuyên gia{' '}
-                  {data.expertTeamEstablishmentDate && (
+                  {data.ngayThanhLapToChuyenGia && (
                     <Tag color="success">Đã thành lập</Tag>
                   )}
-                  {data.expertTeamEstablishmentDate === '' && (
+                  {data.ngayThanhLapToChuyenGia === '' && (
                     <Tag color="warning">Chưa thành lập</Tag>
                   )}
-                  {data.expertTeamEstablishmentDate === null && (
+                  {data.ngayThanhLapToChuyenGia === null && (
                     <Tag color="default">Chưa cập nhật</Tag>
                   )}
                 </Typography.Text>
@@ -146,7 +145,7 @@ const ProcurementCouncil = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày thành lập:</Typography.Text>
-                    <DatePickerFormat field={'expertTeamEstablishmentDate'} />
+                    <DatePickerFormat field={'ngayThanhLapToChuyenGia'} />
                   </Flex>
                 </Flex>
               )}
@@ -155,24 +154,24 @@ const ProcurementCouncil = () => {
         },
 
         {
-          color: data.appraisalTeamEstablishmentDate
+          color: data.ngayThanhLapToThamDinh
             ? 'green'
-            : data.appraisalTeamEstablishmentDate === null
+            : data.ngayThanhLapToThamDinh === null
               ? 'grey'
               : 'orange',
-          label: data.appraisalTeamEstablishmentDate || ' ',
+          label: data.ngayThanhLapToThamDinh || ' ',
           children: (
             <Flex vertical gap={8}>
               <Flex align="flex-start" gap={8} justify="space-between">
                 <Typography.Text>
                   Thành lập tổ thẩm định{' '}
-                  {data.appraisalTeamEstablishmentDate && (
+                  {data.ngayThanhLapToThamDinh && (
                     <Tag color="success">Đã thành lập</Tag>
                   )}
-                  {data.appraisalTeamEstablishmentDate === '' && (
+                  {data.ngayThanhLapToThamDinh === '' && (
                     <Tag color="warning">Chưa thành lập</Tag>
                   )}
-                  {data.appraisalTeamEstablishmentDate === null && (
+                  {data.ngayThanhLapToThamDinh === null && (
                     <Tag color="default">Chưa cập nhật</Tag>
                   )}
                 </Typography.Text>
@@ -189,9 +188,7 @@ const ProcurementCouncil = () => {
                 <Flex vertical justify="right" gap={8}>
                   <Flex gap={8} align="center">
                     <Typography.Text>Ngày thành lập:</Typography.Text>
-                    <DatePickerFormat
-                      field={'appraisalTeamEstablishmentDate'}
-                    />
+                    <DatePickerFormat field={'ngayThanhLapToThamDinh'} />
                   </Flex>
                 </Flex>
               )}
