@@ -44,3 +44,17 @@ export async function getRole(req, res) {
     });
   }
 }
+
+export async function getRoles(req, res) {
+  try {
+    const roles = await Role.findAll();
+    return res.send({ roles: roles, success: true });
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      message: 'Lấy dữ liệu roles thất bại',
+      error: error,
+    });
+  }
+}

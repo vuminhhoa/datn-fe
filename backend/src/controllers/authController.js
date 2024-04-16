@@ -5,7 +5,7 @@ import { User, Permission, Role } from '../models/index.js';
 const salt = bcrypt.genSaltSync(10);
 export async function register(req, res) {
   try {
-    const { email, password } = req.body;
+    const { email, password, name, department, role } = req.body;
     const user = await User.findOne({
       where: { email: email },
     });
@@ -18,7 +18,9 @@ export async function register(req, res) {
     const createdUser = await User.create({
       email,
       password: hashPassword,
-      RoleId: 1,
+      name,
+      department,
+      RoleId: role ? role : 2,
     });
     await createdUser.save();
     return res.send({ success: true, data: createdUser });

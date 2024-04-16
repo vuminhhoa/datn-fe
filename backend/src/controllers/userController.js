@@ -20,6 +20,42 @@ export async function updateProfile(req, res) {
   }
 }
 
+export async function deleteUser(req, res) {
+  try {
+    const { id } = req.params;
+    await User.destroy({
+      where: {
+        id: id,
+      },
+    });
+    return res.send({ success: true });
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      message: 'Xóa người dùng thất bại',
+      error: error,
+    });
+  }
+}
+
+export async function getListUsers(req, res) {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'name', 'email'],
+      include: Role,
+    });
+    return res.send(users);
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      message: 'Lấy dữ liệu hoạt động thất bại',
+      error: error,
+    });
+  }
+}
+
 export async function getOneUser(req, res) {
   try {
     const { id } = req.params;

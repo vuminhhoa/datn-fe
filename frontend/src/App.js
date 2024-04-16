@@ -16,6 +16,7 @@ import EditUser from './pages/User/Edit/Edit';
 import EditRole from './pages/Settings/Role/Edit';
 import Bidding from './pages/Bidding';
 import EditBidding from './pages/Bidding/Edit';
+import User from './pages/User';
 
 function App() {
   return (
@@ -41,6 +42,14 @@ function App() {
         element={
           <PrivateRoute permission={permissionsConsts.USER_READ}>
             <DetailUser />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <PrivateRoute permission={permissionsConsts.USER_READ}>
+            <User />
           </PrivateRoute>
         }
       />

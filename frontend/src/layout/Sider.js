@@ -37,20 +37,8 @@ function AppSider() {
   const items = [
     getItem({
       label: 'Quản lý thành viên',
-      key: '/members',
+      key: '/users',
       icon: <TeamOutlined />,
-      children: [
-        getItem({
-          label: 'Danh sách thành viên',
-          key: '/list-members',
-          permission: permissionsConsts.USER_READ,
-        }),
-        getItem({
-          label: 'Tạo thành viên',
-          key: '/create-member',
-          permission: permissionsConsts.USER_CREATE,
-        }),
-      ],
     }),
     getItem({
       label: 'Hoạt động mua sắm',
