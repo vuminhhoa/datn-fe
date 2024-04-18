@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import './index.css';
 import { Routes, Route } from 'react-router-dom';
@@ -5,18 +6,17 @@ import PrivateRoute from './routes/PrivateRoute';
 import Home from './pages/Home';
 import { permissionsConsts } from './const/permissionConsts';
 import Profile from './pages/Profile';
-import EditProfile from './pages/Profile/Edit';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import ListRole from './pages/Settings/Role';
 import DetailRole from './pages/Settings/Role/Detail';
-import DetailUser from './pages/User/Detail';
 import EditUser from './pages/User/Edit/Edit';
 import EditRole from './pages/Settings/Role/Edit';
 import Bidding from './pages/Bidding';
 import EditBidding from './pages/Bidding/Edit';
 import User from './pages/User';
+import Equipment from './pages/Equipment';
 
 function App() {
   return (
@@ -37,14 +37,7 @@ function App() {
           </PrivateRoute>
         }
       />
-      <Route
-        path="/user/:id"
-        element={
-          <PrivateRoute permission={permissionsConsts.USER_READ}>
-            <DetailUser />
-          </PrivateRoute>
-        }
-      />
+
       <Route
         path="/users"
         element={
@@ -54,18 +47,10 @@ function App() {
         }
       />
       <Route
-        path="/user/edit/:id"
+        path="/user/:id"
         element={
           <PrivateRoute permission={permissionsConsts.USER_UPDATE}>
             <EditUser />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/profile/edit"
-        element={
-          <PrivateRoute permission={permissionsConsts.PROFILE_SETTING}>
-            <EditProfile />
           </PrivateRoute>
         }
       />
@@ -96,6 +81,22 @@ function App() {
       />
       <Route
         path="/shopping/bidding"
+        element={
+          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+            <Bidding />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/equipments"
+        element={
+          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+            <Equipment />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/shopping/non-bidding"
         element={
           <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
             <Bidding />

@@ -1,9 +1,8 @@
-import React, { useContext, useState } from 'react';
+// @ts-nocheck
+import React, { useState } from 'react';
 import {
-  ApartmentOutlined,
   AuditOutlined,
   DesktopOutlined,
-  PieChartOutlined,
   SettingOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
@@ -41,6 +40,11 @@ function AppSider() {
       icon: <TeamOutlined />,
     }),
     getItem({
+      label: 'Quản lý thiết bị',
+      key: '/equipments',
+      icon: <DesktopOutlined />,
+    }),
+    getItem({
       label: 'Hoạt động mua sắm',
       key: '/shopping',
       icon: <AuditOutlined />,
@@ -57,34 +61,7 @@ function AppSider() {
         }),
       ],
     }),
-    // getItem({
-    //   label: 'Trang chủ',
-    //   key: '/',
-    //   icon: <PieChartOutlined />,
-    //   permission: permissionsConsts.DASHBOARD_READ,
-    // }),
-    getItem({
-      label: 'Quản lý thiết bị',
-      key: '/equipments',
-      icon: <DesktopOutlined />,
-      children: [
-        getItem({
-          label: 'Danh sách thiết bị',
-          key: '/list-equipments',
-          permission: permissionsConsts.EQUIPMENT_READ,
-        }),
-        getItem({
-          label: 'Nhập thiết bị đơn lẻ',
-          key: '/create-equipment',
-          permission: permissionsConsts.EQUIPMENT_CREATE,
-        }),
-        getItem({
-          label: 'Nhập thiết bị excel',
-          key: '/import-equipments',
-          permission: permissionsConsts.EQUIPMENT_CREATE,
-        }),
-      ],
-    }),
+
     getItem({
       label: 'Cài đặt',
       key: '/settings',

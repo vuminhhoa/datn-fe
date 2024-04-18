@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { User, Role, Permission } from '../models/index.js';
 
 export async function updateProfile(req, res) {
@@ -72,6 +73,25 @@ export async function getOneUser(req, res) {
     return res.send({
       success: false,
       message: 'Lấy dữ liệu user thất bại',
+      error: error,
+    });
+  }
+}
+
+export async function updateUser(req, res) {
+  try {
+    const data = req.body;
+    await User.update(data, {
+      where: {
+        id: data.id,
+      },
+    });
+    return res.send({ success: true });
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      message: 'Cập nhật người dùng thất bại',
       error: error,
     });
   }

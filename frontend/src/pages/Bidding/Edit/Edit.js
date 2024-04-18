@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import {
   Card,
@@ -190,7 +191,7 @@ const EditBidding = () => {
             },
             {
               href: `/shopping/bidding/${data.id}`,
-              title: data.tenDeXuat,
+              title: '-----------------',
             },
           ]}
         />

@@ -1,10 +1,8 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import {
   Card,
   Flex,
-  Tag,
-  Space,
-  Table,
   Breadcrumb,
   Modal,
   Input,
@@ -12,7 +10,6 @@ import {
   Select,
   List,
   Form,
-  Popover,
   Avatar,
 } from 'antd';
 import { HomeOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
@@ -39,13 +36,8 @@ const User = () => {
     defaultData: [],
   });
   const roles = rolesData.roles;
-  const defaultCreateFormData = {
-    name: '',
-    email: '',
-    password: '',
-    department: '',
-  };
-  const [createFormData, setCreateFormData] = useState(defaultCreateFormData);
+
+  const [createFormData, setCreateFormData] = useState({});
   const handleCreateFormChange = (e) => {
     setCreateFormData({
       ...createFormData,
@@ -207,6 +199,20 @@ const User = () => {
                   placeholder="Tên người dùng"
                 />
               </Form.Item>
+              <Form.Item name="address" label="Địa chỉ">
+                <Input
+                  name="address"
+                  onChange={handleCreateFormChange}
+                  placeholder="Địa chỉ"
+                />
+              </Form.Item>
+              <Form.Item name="phone" label="Số điện thoại">
+                <Input
+                  name="phone"
+                  onChange={handleCreateFormChange}
+                  placeholder="Số điện thoại"
+                />
+              </Form.Item>
               <Form.Item
                 name="department"
                 label="Khoa phòng"
@@ -285,7 +291,7 @@ const User = () => {
             dataSource={data}
             renderItem={(item, index) => (
               <List.Item
-                actions={[
+                extra={[
                   <Button
                     type="link"
                     icon={<EyeOutlined />}
@@ -293,7 +299,7 @@ const User = () => {
                   >
                     Xem chi tiết
                   </Button>,
-                  item.Role.alias !== 'admin' && (
+                  item.Role.alias !== 'admin' ? (
                     <Button
                       type="link"
                       danger
@@ -302,7 +308,7 @@ const User = () => {
                     >
                       Xóa
                     </Button>
-                  ),
+                  ) : null,
                 ]}
               >
                 <List.Item.Meta

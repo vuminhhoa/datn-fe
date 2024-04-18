@@ -57,7 +57,7 @@ function AppHeader() {
         justify={'space-between'}
         align={'center'}
       >
-        <div></div>
+        <div style={{ width: '160px' }}></div>
         <Typography.Title
           level={5}
           style={{ margin: 0, cursor: 'pointer' }}

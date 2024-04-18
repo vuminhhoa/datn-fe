@@ -5,6 +5,7 @@ import {
   getOneUser,
   getListUsers,
   deleteUser,
+  updateUser,
 } from '../controllers/userController.js';
 import {
   getRole,
@@ -37,6 +38,7 @@ api.post('/bidding/:id', updateBidding);
 api.delete('/bidding/:id', deleteBidding);
 
 api.get('/user/:id', getOneUser);
+api.post('/user', updateUser);
 api.delete('/user/:id', deleteUser);
 api.get('/users', getListUsers);
 

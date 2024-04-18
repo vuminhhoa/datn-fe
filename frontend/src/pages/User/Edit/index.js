@@ -1,3 +1,3 @@
-import DetailUser from './Edit';
+import Edit from './Edit';
 
-export default DetailUser;
+export default Edit;
