@@ -9,10 +9,10 @@ import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
-import ListRole from './pages/Settings/Role';
-import DetailRole from './pages/Settings/Role/Detail';
+import ListRole from './pages/Role';
+import DetailRole from './pages/Role/Detail';
 import EditUser from './pages/User/Edit/Edit';
-import EditRole from './pages/Settings/Role/Edit';
+import EditRole from './pages/Role/Edit';
 import Bidding from './pages/Bidding';
 import EditBidding from './pages/Bidding/Edit';
 import User from './pages/User';
@@ -55,7 +55,7 @@ function App() {
         }
       />
       <Route
-        path="/settings/roles-settings"
+        path="/roles"
         element={
           <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
             <ListRole />
@@ -64,7 +64,7 @@ function App() {
       />
 
       <Route
-        path="/settings/roles/:id"
+        path="/role/:id"
         element={
           <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
             <DetailRole />
@@ -72,7 +72,7 @@ function App() {
         }
       />
       <Route
-        path="/settings/roles/edit/:id"
+        path="/role/edit/:id"
         element={
           <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
             <EditRole />

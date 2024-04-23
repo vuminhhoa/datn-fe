@@ -36,7 +36,7 @@ const columns = [
     ellipsis: true,
     width: 240,
     render: (text, record, index) => {
-      return <Link to={`/settings/roles/${record.id}`}>{text}</Link>;
+      return <Link to={`/role/${record.id}`}>{text}</Link>;
     },
   },
   {
@@ -45,7 +45,7 @@ const columns = [
   },
 ];
 
-const PermissionSetting = () => {
+const RoleSetting = () => {
   // const [dataSource, setDataSource] = useState([]);
 
   const { data, fetchApi, setData, loading, handleChangeInput } = useFetchApi({
@@ -69,6 +69,7 @@ const PermissionSetting = () => {
     };
   });
 
+  console.log(dataSource);
   return (
     <Flex vertical gap={16}>
       <Breadcrumb
@@ -83,21 +84,13 @@ const PermissionSetting = () => {
           },
         ]}
       />
-      <Card
-        title="Phân quyền hệ thống"
-        extra={<Button type="primary">Tạo vai trò mới</Button>}
-      >
+      <Card title="Phân quyền hệ thống">
         <Flex vertical gap={16}>
-          <Table
-            rowKey="key"
-            columns={columns}
-            dataSource={dataSource}
-            bordered
-          />
+          <Table rowKey="key" columns={columns} dataSource={dataSource} />
         </Flex>
       </Card>
     </Flex>
   );
 };
 
-export default PermissionSetting;
+export default RoleSetting;

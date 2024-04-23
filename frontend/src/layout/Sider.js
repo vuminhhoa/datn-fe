@@ -61,18 +61,11 @@ function AppSider() {
         }),
       ],
     }),
-
     getItem({
-      label: 'Cài đặt',
-      key: '/settings',
+      label: 'Cài đặt phân quyền',
+      key: '/roles',
       icon: <SettingOutlined />,
       permission: permissionsConsts.SYSTEM_SETTING,
-      children: [
-        getItem({
-          label: 'Cài đặt phân quyền',
-          key: '/roles-settings',
-        }),
-      ],
     }),
   ].filter(Boolean);
 

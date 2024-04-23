@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Card, Descriptions, Flex, Breadcrumb, Button, Spin } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 
-import useFetchApi from '../../../../hooks/useFetchApi.js';
+import useFetchApi from '../../../hooks/useFetchApi.js';
 
 const DetailRole = () => {
   const { id } = useParams();
@@ -66,7 +66,7 @@ const DetailRole = () => {
       <Card
         title={`Thông tin vai trò: ${data.roles?.name}`}
         extra={
-          <Button type="primary" href={`/settings/roles/edit/${data.roles.id}`}>
+          <Button type="primary" href={`/role/edit/${data.roles.id}`}>
             Chỉnh sửa
           </Button>
         }

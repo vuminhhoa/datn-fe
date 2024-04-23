@@ -21,13 +21,13 @@ import {
 } from 'antd';
 import { HomeOutlined, UserOutlined } from '@ant-design/icons';
 import { EditOutlined } from '@ant-design/icons';
-import { useAuth } from '../../../contexts/authProvider.js';
-import useFetchApi from '../../../hooks/useFetchApi.js';
+import { useAuth } from '../../contexts/authProvider.js';
+import useFetchApi from '../../hooks/useFetchApi.js';
 import {
   permissionsConsts,
   defaultPermissions,
-} from '../../../const/permissionConsts.js';
-import chunk from '../../../helpers/chunk.js';
+} from '../../const/permissionConsts.js';
+import chunk from '../../helpers/chunk.js';
 
 const columns = [
   {
@@ -36,7 +36,7 @@ const columns = [
     ellipsis: true,
     width: 240,
     render: (text, record, index) => {
-      return <Link to={`/settings/roles/${record.id}`}>{text}</Link>;
+      return <Link to={`/role/${record.id}`}>{text}</Link>;
     },
   },
   {
@@ -45,7 +45,7 @@ const columns = [
   },
 ];
 
-const ListRole = () => {
+const Role = () => {
   // const [dataSource, setDataSource] = useState([]);
 
   const { data, fetchApi, setData, loading, handleChangeInput } = useFetchApi({
@@ -98,4 +98,4 @@ const ListRole = () => {
   );
 };
 
-export default ListRole;
+export default Role;

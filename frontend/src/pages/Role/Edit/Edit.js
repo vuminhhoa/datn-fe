@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Flex, Breadcrumb, Button, Spin, Alert, Checkbox } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
-import { defaultPermissions } from '../../../../const/permissionConsts.js';
-import useFetchApi from '../../../../hooks/useFetchApi.js';
-import useEditApi from '../../../../hooks/useEditApi.js';
+import { defaultPermissions } from '../../../const/permissionConsts.js';
+import useFetchApi from '../../../hooks/useFetchApi.js';
+import useEditApi from '../../../hooks/useEditApi.js';
 
 const EditRole = () => {
   const { id } = useParams();
@@ -67,7 +67,7 @@ const EditRole = () => {
         extra={
           <Button
             type="primary"
-            href={`/settings/roles/edit/${data.roles.id}`}
+            href={`/roles/edit/${data.roles.id}`}
             onClick={handleSave}
           >
             Lưu
