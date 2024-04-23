@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Flex, Breadcrumb, Button, Spin, Alert, Checkbox } from 'antd';
+import {
+  Card,
+  Flex,
+  Breadcrumb,
+  Button,
+  Spin,
+  Alert,
+  Checkbox,
+  Skeleton,
+} from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 import { defaultPermissions } from '../../../const/permissionConsts.js';
 import useFetchApi from '../../../hooks/useFetchApi.js';
@@ -43,7 +52,35 @@ const EditRole = () => {
   }, [fetched]);
 
   if (loading || !fetched) {
-    return <Spin />;
+    return (
+      <Flex vertical gap={16}>
+        <Breadcrumb
+          items={[
+            {
+              href: '/',
+              title: <HomeOutlined />,
+            },
+            {
+              href: '/roles',
+              title: 'Cài đặt phân quyền',
+            },
+            {
+              title: `Role: ---------------`,
+            },
+          ]}
+        />
+        <Card
+          title={`Cập nhật vai trò: -------------`}
+          extra={
+            <Button type="primary" disabled>
+              Lưu
+            </Button>
+          }
+        >
+          <Skeleton />
+        </Card>
+      </Flex>
+    );
   }
   return (
     <Flex vertical gap={16}>
@@ -54,7 +91,7 @@ const EditRole = () => {
             title: <HomeOutlined />,
           },
           {
-            href: '/settings/roles-settings',
+            href: '/roles',
             title: 'Cài đặt phân quyền',
           },
           {

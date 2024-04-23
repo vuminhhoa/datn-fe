@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Descriptions, Flex, Breadcrumb, Button, Spin } from 'antd';
+import { Card, Descriptions, Flex, Breadcrumb, Button, Skeleton } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 
 import useFetchApi from '../../../hooks/useFetchApi.js';
@@ -43,7 +43,35 @@ const DetailRole = () => {
   ];
 
   if (loading) {
-    return <Spin />;
+    return (
+      <Flex vertical gap={16}>
+        <Breadcrumb
+          items={[
+            {
+              href: '/',
+              title: <HomeOutlined />,
+            },
+            {
+              href: '/roles',
+              title: 'Cài đặt phân quyền',
+            },
+            {
+              title: `Role: ------------`,
+            },
+          ]}
+        />
+        <Card
+          title={`Thông tin vai trò: -------------`}
+          extra={
+            <Button type="primary" disabled>
+              Chỉnh sửa
+            </Button>
+          }
+        >
+          <Skeleton />
+        </Card>
+      </Flex>
+    );
   }
 
   return (
@@ -55,7 +83,7 @@ const DetailRole = () => {
             title: <HomeOutlined />,
           },
           {
-            href: '/settings/roles-settings',
+            href: '/roles',
             title: 'Cài đặt phân quyền',
           },
           {

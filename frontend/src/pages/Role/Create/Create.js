@@ -79,7 +79,7 @@ const RoleSetting = () => {
             title: <HomeOutlined />,
           },
           {
-            href: '/settings/roles-settings',
+            href: '/roles',
             title: 'Cài đặt phân quyền',
           },
         ]}

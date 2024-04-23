@@ -1,33 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Card,
-  Descriptions,
-  Flex,
-  Row,
-  Col,
-  Avatar,
-  Typography,
-  Breadcrumb,
-  Button,
-  Table,
-  Checkbox,
-  Select,
-  Divider,
-  Empty,
-  Alert,
-  Skeleton,
-  Spin,
-} from 'antd';
-import { HomeOutlined, UserOutlined } from '@ant-design/icons';
-import { EditOutlined } from '@ant-design/icons';
-import { useAuth } from '../../contexts/authProvider.js';
+import { Card, Flex, Breadcrumb, Table } from 'antd';
+import { HomeOutlined } from '@ant-design/icons';
 import useFetchApi from '../../hooks/useFetchApi.js';
-import {
-  permissionsConsts,
-  defaultPermissions,
-} from '../../const/permissionConsts.js';
-import chunk from '../../helpers/chunk.js';
 
 const columns = [
   {
@@ -35,7 +10,7 @@ const columns = [
     dataIndex: 'role',
     ellipsis: true,
     width: 240,
-    render: (text, record, index) => {
+    render: (text, record) => {
       return <Link to={`/role/${record.id}`}>{text}</Link>;
     },
   },
@@ -46,9 +21,7 @@ const columns = [
 ];
 
 const Role = () => {
-  // const [dataSource, setDataSource] = useState([]);
-
-  const { data, fetchApi, setData, loading, handleChangeInput } = useFetchApi({
+  const { data, setData, loading } = useFetchApi({
     url: '/settings?type=getRoles',
   });
 
@@ -69,7 +42,6 @@ const Role = () => {
     };
   });
 
-  console.log(dataSource);
   return (
     <Flex vertical gap={16}>
       <Breadcrumb
@@ -87,6 +59,7 @@ const Role = () => {
       <Card title="Phân quyền hệ thống">
         <Flex vertical gap={16}>
           <Table
+            loading={loading}
             rowKey="key"
             columns={columns}
             dataSource={dataSource}
