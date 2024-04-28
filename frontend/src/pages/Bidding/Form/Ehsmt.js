@@ -2,51 +2,71 @@ import React, { useContext } from 'react';
 import { Timeline } from 'antd';
 import BiddingContext from '../../../contexts/biddingContext';
 import BiddingItem from '../Component/BiddingItem';
+import getStatus from '../../../helpers/getBiddingItemStatus';
 
 const Ehsmt = () => {
   const { data } = useContext(BiddingContext);
 
   const items = [
-    { title: 'Dự thảo E-HSMT', field: 'ngayDuThaoEhsmt' },
+    {
+      title: 'Dự thảo E-HSMT',
+      dateField: 'ngayDuThaoEhsmt',
+      documentField: 'taiLieuDuThaoEhsmt',
+    },
     {
       title: 'Báo cáo xây dựng E-HSMT',
-      field: 'ngayTaiLieuBcXayDungEhsmt',
+      dateField: 'ngayTaiLieuBcXayDungEhsmt',
+      documentField: 'taiLieuBcXayDungEhsmt',
     },
     {
       title: 'Phê duyệt E-HSMT tổ chuyên gia',
-      field: 'ngayPheDuyetEhsmtToChuyenGia',
+      dateField: 'ngayPheDuyetEhsmtToChuyenGia',
+      documentField: 'taiLieuPheDuyetEhsmtToChuyenGia',
     },
     {
       title: 'Báo cáo thẩm định E-HSMT',
-      field: 'ngayBcThamDinhEhsmt',
+      dateField: 'ngayBcThamDinhEhsmt',
+      documentField: 'taiLieuBcThamDinhEhsmt',
     },
     {
       title: 'Phê duyệt E-HSMT tổ thẩm định',
-      field: 'ngayPheDuyetEhsmtToThamDinh',
+      dateField: 'ngayPheDuyetEhsmtToThamDinh',
+      documentField: 'taiLieuPheDuyetEhsmtToThamDinh',
     },
     {
       title: 'Quyết định phê duyệt E-HSMT',
-      field: 'ngayPheDuyetEhsmt',
+      dateField: 'ngayPheDuyetEhsmt',
+      documentField: 'taiLieuQuyetDinhPheDuyetEhsmt',
     },
     {
       title: 'Đăng thông báo mời thầu lên mạng đấu thầu',
-      field: 'ngayDangThongBaoMoiThauLenMangDauThau',
+      dateField: 'ngayDangThongBaoMoiThauLenMangDauThau',
     },
   ];
+
+  const itemsWithStatus = items.map((val) => {
+    return {
+      ...val,
+      status: getStatus(data, val.dateField, val.documentField),
+    };
+  });
 
   return (
     <Timeline
       mode="left"
-      style={{ marginLeft: '-300px' }}
-      items={items.map((val) => {
+      style={{ marginLeft: '-500px' }}
+      items={itemsWithStatus.map((val) => {
         return {
-          color: data[val.field]
-            ? 'green'
-            : data[val.field] === null
-              ? 'gray'
-              : 'orange',
-          label: data[val.field] || ' ',
-          children: <BiddingItem title={val.title} field={val.field} />,
+          color: val.status.dotColor,
+          label: data[val.dateField] || ' ',
+          children: (
+            <BiddingItem
+              title={val.title}
+              tagStatus={val.status}
+              dateField={val.dateField}
+              documentField={val.documentField}
+            />
+          ),
         };
       })}
     />

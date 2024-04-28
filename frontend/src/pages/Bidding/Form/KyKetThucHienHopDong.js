@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Timeline } from 'antd';
 import BiddingContext from '../../../contexts/biddingContext';
 import BiddingItem from '../Component/BiddingItem';
+import getStatus from '../../../helpers/getBiddingItemStatus';
 
 const KyKetThucHienHopDong = () => {
   const { data } = useContext(BiddingContext);
@@ -9,43 +10,59 @@ const KyKetThucHienHopDong = () => {
   const items = [
     {
       title: 'Thông báo kết quả LCNT đến các nhà thầu',
-      field: 'ngayThongBaoKqLcntDenCacNhaThau',
+      dateField: 'ngayThongBaoKqLcntDenCacNhaThau',
+      documentField: 'taiLieuThongBaoKqLcntDenCacNhaThau',
     },
     {
       title: 'Đăng kết quả LCNT lên mạng đấu thầu',
-      field: 'ngayDangKqLcntLenMangDauThau',
+      dateField: 'ngayDangKqLcntLenMangDauThau',
+      documentField: 'taiLieuDangKqLcntLenMangDauThau',
     },
     {
       title: 'Nhà thầu nộp bảo lãnh thực hiện hợp đồng',
-      field: 'ngayNhaThauNopBaoLanhThucHienHopDong',
+      dateField: 'ngayNhaThauNopBaoLanhThucHienHopDong',
+      documentField: 'taiLieuBaoLanhThucHienHopDong',
     },
     {
       title: 'Ký kết hợp đồng mua bán',
-      field: 'ngayKyKetHopDongMuaBan',
+      dateField: 'ngayKyKetHopDongMuaBan',
+      documentField: 'taiLieuKyKetHopDongMuaBan',
     },
     {
       title: 'Bàn giao và đưa vào sử dụng',
-      field: 'ngayBanGiaoDuaVaoSuDung',
+      dateField: 'ngayBanGiaoDuaVaoSuDung',
+      documentField: 'taiLieuBanGiaoDuaVaoSuDung',
     },
     {
       title: 'Nộp bảo lãnh bảo hành',
-      field: 'ngayNopBaoLanhBaoHanh',
+      dateField: 'ngayNopBaoLanhBaoHanh',
+      documentField: 'taiLieuBaoLanhBaoHanh',
     },
   ];
+
+  const itemsWithStatus = items.map((val) => {
+    return {
+      ...val,
+      status: getStatus(data, val.dateField, val.documentField),
+    };
+  });
 
   return (
     <Timeline
       mode="left"
-      style={{ marginLeft: '-300px' }}
-      items={items.map((val) => {
+      style={{ marginLeft: '-500px' }}
+      items={itemsWithStatus.map((val) => {
         return {
-          color: data[val.field]
-            ? 'green'
-            : data[val.field] === null
-              ? 'gray'
-              : 'orange',
-          label: data[val.field] || ' ',
-          children: <BiddingItem title={val.title} field={val.field} />,
+          color: val.status.dotColor,
+          label: data[val.dateField] || ' ',
+          children: (
+            <BiddingItem
+              title={val.title}
+              dateField={val.dateField}
+              tagStatus={val.status}
+              documentField={val.documentField}
+            />
+          ),
         };
       })}
     />

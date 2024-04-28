@@ -91,6 +91,7 @@ const Edit = ({
       setUploading(false);
     }
   };
+
   return (
     <Modal
       title="Cập nhật thông tin cá nhân"

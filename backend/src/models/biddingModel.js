@@ -54,27 +54,30 @@ const Bidding = sequelize.define(
       allowNull: true,
     },
     ngayPheDuyetEhsmtToThamDinh: { type: DataTypes.STRING, allowNull: true },
-    quyetDinhPheDuyetEhsmt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuQuyetDinhPheDuyetEhsmt: { type: DataTypes.STRING, allowNull: true },
     ngayPheDuyetEhsmt: { type: DataTypes.STRING, allowNull: true },
     ngayDangThongBaoMoiThauLenMangDauThau: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    bcDanhGiaCuaToChuyenGia: { type: DataTypes.STRING, allowNull: true },
+    taiLieuBcDanhGiaCuaToChuyenGia: { type: DataTypes.STRING, allowNull: true },
     ngayBcDanhGiaCuaToChuyenGia: { type: DataTypes.STRING, allowNull: true },
-    bienBanThuongThaoVoiCacNhaThau: {
+    taiLieuBienBanThuongThaoVoiCacNhaThau: {
       type: DataTypes.STRING,
       allowNull: true,
     },
     ngayThuongThaoVoiCacNhaThau: { type: DataTypes.STRING, allowNull: true },
-    bcThamDinhKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuBcThamDinhKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
     ngayThamDinhKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
-    toTrinhXinPheDuyetKetQuaLcnt: {
+    taiLieuToTrinhXinPheDuyetKetQuaLcnt: {
       type: DataTypes.STRING,
       allowNull: true,
     },
     ngayXinPheDuyetKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
-    quyetDinhPheDuyetKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
+    taiLieuQuyetDinhPheDuyetKetQuaLcnt: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     ngayPheDuyetKetQuaLcnt: { type: DataTypes.STRING, allowNull: true },
     taiLieuThongBaoKqLcntDenCacNhaThau: {
       type: DataTypes.STRING,

@@ -13,8 +13,8 @@ import {
 import { HomeOutlined } from '@ant-design/icons';
 import BiddingContext from '../../../contexts/biddingContext';
 import BiddingRequest from '../Form/BiddingRequest';
-import ProcurementCouncil from '../Form/ProcurementCouncil';
-import ContractorSelectionPlan from '../Form/ContractorSelectionPlan';
+import LenDuToanThanhLapCacTo from '../Form/LenDuToanThanhLapCacTo';
+import KeHoachLuaChonNhaThau from '../Form/KeHoachLuaChonNhaThau';
 import Ehsmt from '../Form/Ehsmt';
 import useFetchApi from '../../../hooks/useFetchApi';
 import { useParams } from 'react-router-dom';
@@ -65,19 +65,19 @@ const defaultData = {
   ngayBcThamDinhEhsmt: '2024-04-19',
   taiLieuPheDuyetEhsmtToThamDinh: 'ehsmtAppraisalApproval.pdf',
   ngayPheDuyetEhsmtToThamDinh: '2024-04-19',
-  quyetDinhPheDuyetEhsmt: 'ehsmtApprovalDecision.pdf',
+  taiLieuQuyetDinhPheDuyetEhsmt: 'ehsmtApprovalDecision.pdf',
   ngayPheDuyetEhsmt: '2024-04-19',
   ngayDangThongBaoMoiThauLenMangDauThau: '2024-04-28',
 
-  bcDanhGiaCuaToChuyenGia: 'ehsmtApprovalDecision.pdf',
+  taiLieuBcDanhGiaCuaToChuyenGia: 'ehsmtApprovalDecision.pdf',
   ngayBcDanhGiaCuaToChuyenGia: '2024-04-28',
-  bienBanThuongThaoVoiCacNhaThau: 'ehsmtApprovalDecision.pdf',
+  taiLieuBienBanThuongThaoVoiCacNhaThau: 'ehsmtApprovalDecision.pdf',
   ngayThuongThaoVoiCacNhaThau: '2024-04-28',
-  bcThamDinhKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
+  taiLieuBcThamDinhKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
   ngayThamDinhKetQuaLcnt: '2024-04-28',
-  toTrinhXinPheDuyetKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
+  taiLieuToTrinhXinPheDuyetKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
   ngayXinPheDuyetKetQuaLcnt: '2024-04-28',
-  quyetDinhPheDuyetKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
+  taiLieuQuyetDinhPheDuyetKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
   ngayPheDuyetKetQuaLcnt: '2024-04-28',
 
   taiLieuThongBaoKqLcntDenCacNhaThau: 'ehsmtApprovalDecision.pdf',
@@ -94,7 +94,7 @@ const defaultData = {
   ngayNopBaoLanhBaoHanh: '2024-04-28',
 };
 
-const EditBidding = () => {
+const Edit = () => {
   const { id } = useParams();
   const { setToast } = useAuth();
   const { data, setData, loading } = useFetchApi({
@@ -105,18 +105,17 @@ const EditBidding = () => {
 
   const items = [
     {
-      key: '1',
+      key: 'decs1',
       label: 'Tên khoa phòng',
       children: data.khoaPhongDeXuat,
     },
     data.ngayDeXuat !== null && {
-      key: '2',
+      key: 'decs2',
       label: 'Ngày đề xuất',
       children: data.ngayDeXuat,
     },
-
     {
-      key: '4',
+      key: 'decs3',
       label: 'Trạng thái',
       children: (
         <>
@@ -134,22 +133,22 @@ const EditBidding = () => {
     },
     (data.trangThaiDeXuat === 'approved' ||
       data.trangThaiDeXuat === 'reject') && {
-      key: '5',
+      key: 'decs4',
       label: 'Ngày phê duyệt',
       children: data.ngayPheDuyetDeXuat,
     },
     {
-      key: '6',
+      key: 'decs5',
       label: 'Ngày tạo hoạt động',
       children: data.createdAt,
     },
     {
-      key: '7',
+      key: 'decs6',
       label: 'Lần cập nhật cuối',
       children: data.updatedAt,
     },
     {
-      key: '3',
+      key: 'decs7',
       label: 'Nội dung',
       children: data.noiDungDeXuat,
     },
@@ -218,6 +217,8 @@ const EditBidding = () => {
         </Card>
       </Flex>
     );
+
+  console.log(data);
   return (
     <BiddingContext.Provider value={{ data, setData }}>
       <Flex vertical gap={16}>
@@ -259,11 +260,11 @@ const EditBidding = () => {
             />
             <CollapsibleForm
               title="2.2. Lên dự toán, thành lập tổ chuyên gia, tổ thẩm định"
-              children={<ProcurementCouncil />}
+              children={<LenDuToanThanhLapCacTo />}
             />
             <CollapsibleForm
               title="2.3. Kế hoạch lựa chọn nhà thầu"
-              children={<ContractorSelectionPlan />}
+              children={<KeHoachLuaChonNhaThau />}
             />
             <CollapsibleForm
               title="2.4. E - Hồ sơ mời thầu (E-HSMT)"
@@ -284,4 +285,4 @@ const EditBidding = () => {
   );
 };
 
-export default EditBidding;
+export default Edit;

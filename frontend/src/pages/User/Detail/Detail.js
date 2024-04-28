@@ -98,7 +98,7 @@ const Detail = () => {
             },
             {
               href: '/users',
-              title: 'Danh sách người dùng',
+              title: 'Quản lý thành viên',
             },
             {
               href: `/user/${id}`,
@@ -143,7 +143,7 @@ const Detail = () => {
           },
           {
             href: '/users',
-            title: 'Danh sách người dùng',
+            title: 'Quản lý thành viên',
           },
           {
             href: '/',

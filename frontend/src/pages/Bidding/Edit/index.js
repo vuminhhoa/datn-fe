@@ -1,3 +1,3 @@
-import EditBidding from './Edit';
+import Edit from './Edit';
 
-export default EditBidding;
+export default Edit;

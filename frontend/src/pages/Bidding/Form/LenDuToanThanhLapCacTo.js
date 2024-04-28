@@ -4,34 +4,29 @@ import BiddingContext from '../../../contexts/biddingContext';
 import BiddingItem from '../Component/BiddingItem';
 import getStatus from '../../../helpers/getBiddingItemStatus';
 
-const Ehsdt = () => {
+const LenDuToanThanhLapCacTo = () => {
   const { data } = useContext(BiddingContext);
 
   const items = [
     {
-      title: 'Báo cáo đánh giá của tổ Chuyên gia Đấu thầu',
-      dateField: 'ngayBcDanhGiaCuaToChuyenGia',
-      documentField: 'taiLieuBcDanhGiaCuaToChuyenGia',
+      title: 'Họp hội đồng mua sắm',
+      dateField: 'ngayHopHoiDongMuaSam',
+      documentField: 'taiLieuHopHoiDongMuaSam',
     },
     {
-      title: 'Biên bản thương thảo với các nhà thầu',
-      dateField: 'ngayThuongThaoVoiCacNhaThau',
-      documentField: 'taiLieuBienBanThuongThaoVoiCacNhaThau',
+      title: 'Quyết định phê duyệt dự toán',
+      dateField: 'ngayPheDuyetDuToan',
+      documentField: 'taiLieuPheDuyetDuToan',
     },
     {
-      title: 'Báo cáo thẩm định kết quả LCNT',
-      dateField: 'taiLieuBcThamDinhKetQuaLcnt',
-      documentField: 'taiLieuBcDanhGiaCuaToChuyenGia',
+      title: 'Thành lập tổ chuyên gia',
+      dateField: 'ngayThanhLapToChuyenGia',
+      documentField: 'taiLieuThanhLapToChuyenGia',
     },
     {
-      title: 'Tờ trình xin phê duyệt kết quả LCNT',
-      dateField: 'ngayXinPheDuyetKetQuaLcnt',
-      documentField: 'taiLieuToTrinhXinPheDuyetKetQuaLcnt',
-    },
-    {
-      title: 'Quyết định phê duyệt kết quả LCNT',
-      dateField: 'ngayPheDuyetKetQuaLcnt',
-      documentField: 'taiLieuQuyetDinhPheDuyetKetQuaLcnt',
+      title: 'Thành lập tổ thẩm định',
+      dateField: 'ngayThanhLapToThamDinh',
+      documentField: 'taiLieuThanhLapToThamDinh',
     },
   ];
 
@@ -53,8 +48,8 @@ const Ehsdt = () => {
           children: (
             <BiddingItem
               title={val.title}
-              tagStatus={val.status}
               dateField={val.dateField}
+              tagStatus={val.status}
               documentField={val.documentField}
             />
           ),
@@ -64,4 +59,4 @@ const Ehsdt = () => {
   );
 };
 
-export default Ehsdt;
+export default LenDuToanThanhLapCacTo;

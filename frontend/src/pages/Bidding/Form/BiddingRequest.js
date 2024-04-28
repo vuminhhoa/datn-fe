@@ -1,17 +1,17 @@
 import React, { useContext, useState } from 'react';
 import dayjs from 'dayjs';
-import { Flex, Button, Typography, DatePicker, Timeline, Tag } from 'antd';
+import { Flex, Button, Typography, Timeline, Tag } from 'antd';
 import BiddingContext from '../../../contexts/biddingContext';
 import DatePickerFormat from '../Component/DatePickerFormat';
 
 const BiddingRequest = () => {
-  const { data, setData } = useContext(BiddingContext);
+  const { data } = useContext(BiddingContext);
   const [isEditBiddingRequest, setIsEditBiddingRequest] = useState(false);
 
   return (
     <Timeline
       mode="left"
-      style={{ marginLeft: '-300px' }}
+      style={{ marginLeft: '-500px' }}
       items={[
         {
           color:
