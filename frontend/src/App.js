@@ -11,12 +11,13 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import ListRole from './pages/Role';
 import DetailRole from './pages/Role/Detail';
-import EditUser from './pages/User/Edit/Edit';
+import DetailUser from './pages/User/Detail';
 import EditRole from './pages/Role/Edit';
 import Bidding from './pages/Bidding';
 import EditBidding from './pages/Bidding/Edit';
 import User from './pages/User';
 import Equipment from './pages/Equipment';
+import DetailEquipment from './pages/Equipment/Detail';
 
 function App() {
   return (
@@ -50,7 +51,7 @@ function App() {
         path="/user/:id"
         element={
           <PrivateRoute permission={permissionsConsts.USER_UPDATE}>
-            <EditUser />
+            <DetailUser />
           </PrivateRoute>
         }
       />
@@ -90,8 +91,16 @@ function App() {
       <Route
         path="/equipments"
         element={
-          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+          <PrivateRoute permission={permissionsConsts.EQUIPMENT_READ}>
             <Equipment />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/equipment/:id"
+        element={
+          <PrivateRoute permission={permissionsConsts.EQUIPMENT_READ}>
+            <DetailEquipment />
           </PrivateRoute>
         }
       />

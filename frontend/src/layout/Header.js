@@ -82,7 +82,7 @@ function AppHeader() {
             trigger={['click']}
           >
             <a onClick={(e) => e.preventDefault()}>
-              <Avatar src={user.img} icon={<UserOutlined />} />
+              <Avatar src={user.image} icon={<UserOutlined />} />
             </a>
           </Dropdown>
         </Flex>

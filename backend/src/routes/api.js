@@ -8,6 +8,13 @@ import {
   updateUser,
 } from '../controllers/userController.js';
 import {
+  getOneEquipment,
+  getListEquipments,
+  createEquipment,
+  deleteEquipment,
+  updateEquipment,
+} from '../controllers/equipmentController.js';
+import {
   getRole,
   getSettings,
   getRoles,
@@ -41,5 +48,11 @@ api.get('/user/:id', getOneUser);
 api.post('/user', updateUser);
 api.delete('/user/:id', deleteUser);
 api.get('/users', getListUsers);
+
+api.get('/equipment/:id', getOneEquipment);
+api.post('/equipment', createEquipment);
+api.put('/equipment', updateEquipment);
+api.delete('/equipment/:id', deleteEquipment);
+api.get('/equipments', getListEquipments);
 
 export default api;

@@ -12,7 +12,12 @@ import {
   Form,
   Avatar,
 } from 'antd';
-import { HomeOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import {
+  HomeOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/authProvider';
 import axios from 'axios';
@@ -312,15 +317,7 @@ const User = () => {
                 ]}
               >
                 <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      src={
-                        item.image
-                          ? item.image
-                          : `https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1114445501.jpg`
-                      }
-                    />
-                  }
+                  avatar={<Avatar src={item.image} icon={<UserOutlined />} />}
                   title={
                     <Link to={`/user/${item.id}`}>
                       {item.name ? item.name : item.email}

@@ -1,21 +1,43 @@
-import { DataTypes } from "sequelize";
-import { ROLE_USER } from "../const/roles.js";
-import { sequelize } from "../config/sequelizeConfig.js";
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../config/sequelizeConfig.js';
 
 const Equipment = sequelize.define(
-  "Equipment",
+  'Equipment',
   {
-    firstName: {
+    maThietBi: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
-    lastName: {
+    tenThietBi: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
-    role: {
+    serial: {
       type: DataTypes.STRING,
-      defaultValue: ROLE_USER,
+      allowNull: true,
+    },
+    model: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    namSanXuat: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    khoaPhong: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    trangThai: {
+      type: DataTypes.STRING,
+      defaultValue: 'Mới nhập',
+      allowNull: true,
     },
   },
-  {},
+  {}
 );
 export default Equipment;
