@@ -16,7 +16,7 @@ import { EditOutlined, UserOutlined } from '@ant-design/icons';
 import useFetchApi from '../../../hooks/useFetchApi';
 import isHasPermission from '../../../helpers/isHasPermission';
 import { permissionsConsts } from '../../../const/permissionConsts';
-import CreateModal from '../EditModal';
+import EditModal from '../EditModal';
 import { useAuth } from '../../../contexts/authProvider';
 
 const Detail = () => {
@@ -151,7 +151,7 @@ const Detail = () => {
           },
         ]}
       />
-      <CreateModal
+      <EditModal
         open={isShowEditForm}
         value={editFormData}
         setValue={setEditFormData}
