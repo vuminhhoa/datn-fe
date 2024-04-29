@@ -30,8 +30,6 @@ export default function useFetchApi({
     !isSilent && setLoading(true);
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Change the delay time as needed
-
       const resp = await axios({
         method: 'GET',
         url: `${process.env.REACT_APP_BASE_API_URL}${fetchUrl || url}`,
