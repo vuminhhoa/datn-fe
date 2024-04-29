@@ -14,25 +14,28 @@ function AppLayout({ children }) {
       <AppSider />
       <Layout>
         <AppHeader />
-        <Flex justify="center">
-          <Content
+        <Flex vertical style={{ width: '100%' }}>
+          <Flex justify="center">
+            <Content
+              style={{
+                paddingTop: '24px',
+                maxWidth: '800px',
+              }}
+            >
+              {children}
+            </Content>
+          </Flex>
+
+          <Footer
             style={{
-              margin: '16px',
-              maxWidth: '800px',
+              textAlign: 'center',
             }}
           >
-            {children}
-          </Content>
+            ĐATN HUST ©{new Date().getFullYear()} SVTH:
+            <Typography.Text strong> Vũ Minh Hòa</Typography.Text> - GVHD:
+            <Typography.Text strong> ThS. Hoàng Quang Huy</Typography.Text>
+          </Footer>
         </Flex>
-        <Footer
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          ĐATN HUST ©{new Date().getFullYear()} SVTH:
-          <Typography.Text strong> Vũ Minh Hòa</Typography.Text> - GVHD:
-          <Typography.Text strong> ThS. Hoàng Quang Huy</Typography.Text>
-        </Footer>
       </Layout>
     </Layout>
   );

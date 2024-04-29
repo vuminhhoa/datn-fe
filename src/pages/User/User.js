@@ -10,6 +10,7 @@ import {
   List,
   Form,
   Avatar,
+  Popover,
 } from 'antd';
 import {
   HomeOutlined,
@@ -296,22 +297,23 @@ const User = () => {
             renderItem={(item) => (
               <List.Item
                 extra={[
-                  <Button
-                    type="link"
-                    icon={<EyeOutlined />}
-                    onClick={() => navigate(`/user/${item.id}`)}
-                  >
-                    Xem chi tiết
-                  </Button>,
-                  item.Role.alias !== 'admin' ? (
+                  <Popover content="Xem chi tiết" trigger="hover">
                     <Button
                       type="link"
-                      danger
-                      icon={<DeleteOutlined />}
-                      onClick={() => handleDeleteUser(item.id)}
-                    >
-                      Xóa
-                    </Button>
+                      icon={<EyeOutlined />}
+                      onClick={() => navigate(`/user/${item.id}`)}
+                    />
+                  </Popover>,
+
+                  item.Role.alias !== 'admin' ? (
+                    <Popover content="Xóa thành viên" trigger="hover">
+                      <Button
+                        type="link"
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleDeleteUser(item.id)}
+                      />
+                    </Popover>
                   ) : null,
                 ]}
               >

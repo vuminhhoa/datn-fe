@@ -1,5 +1,13 @@
 import React from 'react';
-import { Layout, theme, Flex, Typography, Avatar, Dropdown } from 'antd';
+import {
+  Layout,
+  theme,
+  Flex,
+  Typography,
+  Avatar,
+  Dropdown,
+  Button,
+} from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/authProvider';
 import { useNavigate } from 'react-router-dom';
@@ -43,8 +51,8 @@ function AppHeader() {
   return (
     <Header
       style={{
+        backgroundColor: colorBgContainer,
         padding: 0,
-        background: colorBgContainer,
         height: '56px',
       }}
     >
@@ -58,22 +66,34 @@ function AppHeader() {
         align={'center'}
       >
         <div style={{ width: '160px' }}></div>
-        <Typography.Title
-          level={5}
-          style={{ margin: 0, cursor: 'pointer' }}
-          onClick={() => navigate('/')}
-        >
-          QUẢN LÝ HOẠT ĐỘNG PHÒNG VẬT TƯ TRANG THIẾT BỊ Y TẾ
-        </Typography.Title>
+        <Flex align="center" gap={16}>
+          <Avatar
+            size={'large'}
+            src="https://inhoangkien.vn/wp-content/uploads/2020/04/Logo-B%E1%BB%99-Y-t%E1%BA%BF-01-e1585994422207-300x213.png"
+          />
+          <Typography.Title
+            level={5}
+            style={{ margin: 0, cursor: 'pointer' }}
+            onClick={() => navigate('/')}
+          >
+            Phòng Vật tư Trang thiết bị Y tế
+          </Typography.Title>
+        </Flex>
+
         <Flex
           align="center"
-          justify="end"
+          justify="flex-end"
           gap={12}
           style={{
             width: '160px',
           }}
         >
-          <Typography>{user?.name || user.email} </Typography>
+          <Flex vertical align="flex-end">
+            <Typography.Text strong>
+              {user?.name || user.email}{' '}
+            </Typography.Text>
+            <Typography.Text italic>{user.Role.name} </Typography.Text>
+          </Flex>
           <Dropdown
             menu={{
               items,
@@ -82,7 +102,7 @@ function AppHeader() {
             trigger={['click']}
           >
             <a onClick={(e) => e.preventDefault()}>
-              <Avatar src={user.image} icon={<UserOutlined />} />
+              <Avatar src={user.image} icon={<UserOutlined />} size={'large'} />
             </a>
           </Dropdown>
         </Flex>

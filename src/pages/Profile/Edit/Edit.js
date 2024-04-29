@@ -1,20 +1,12 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react';
-import { Flex, Avatar, Button, Modal, Form, Input, Select, Upload } from 'antd';
+import { Flex, Avatar, Button, Modal, Form, Input, Upload } from 'antd';
 import axios from 'axios';
 import { useAuth } from '../../../contexts/authProvider';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { convertBase64 } from '../../../helpers/uploadFile';
 
-const Edit = ({
-  open,
-  input,
-  setInput,
-  roles,
-  setOpen,
-  formValue,
-  setFormValue,
-}) => {
+const Edit = ({ open, input, setInput, setOpen, formValue, setFormValue }) => {
   const { setToast, setUser } = useAuth();
   const [updating, setUpdating] = useState(false);
   const [form] = Form.useForm();
@@ -112,7 +104,13 @@ const Edit = ({
         <Form.Item name="image" label="Ảnh đại diện">
           <Flex align="center" gap={'16px'} vertical>
             <Avatar size={128} src={input.image} icon={<UserOutlined />} />
-            <Upload showUploadList={false} onChange={handleChangeFile}>
+            <Upload
+              showUploadList={false}
+              onChange={handleChangeFile}
+              beforeUpload={() => {
+                return false;
+              }}
+            >
               <Flex vertical align="center">
                 <Button icon={<UploadOutlined />} loading={uploading}>
                   Thay đổi
@@ -149,64 +147,6 @@ const Edit = ({
             name="phone"
             onChange={handleEditFormChange}
             placeholder="Số điện thoại"
-          />
-        </Form.Item>
-        <Form.Item
-          name="department"
-          label="Khoa phòng"
-          rules={[{ required: true, message: 'Vui lòng chọn khoa phòng!' }]}
-          initialValue={input.department}
-        >
-          <Select
-            allowClear
-            placeholder="Chọn khoa phòng"
-            onChange={(val) =>
-              setFormValue({
-                ...formValue,
-                department: val,
-              })
-            }
-            options={[
-              {
-                value: 'Khoa vi sinh',
-                label: 'Khoa vi sinh',
-              },
-              {
-                value: 'Khoa y te',
-                label: 'Khoa y te',
-              },
-              {
-                value: 'Khoa dep trai',
-                label: 'Khoa dep trai',
-              },
-              {
-                value: 'Khoa xinh gai',
-                label: 'Khoa xinh gai',
-              },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item
-          name="role"
-          label="Vai trò"
-          rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
-          initialValue={input.Role.name}
-        >
-          <Select
-            allowClear
-            placeholder="Chọn vai trò"
-            onChange={(val) =>
-              setFormValue({
-                ...formValue,
-                role: val,
-              })
-            }
-            options={roles.map((role) => {
-              return {
-                value: role.id,
-                label: role.name,
-              };
-            })}
           />
         </Form.Item>
 

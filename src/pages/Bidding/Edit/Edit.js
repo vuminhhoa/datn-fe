@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   Flex,
@@ -102,6 +102,13 @@ const Edit = () => {
     defaultData: defaultData,
   });
   const [saving, setSaving] = useState(false);
+  const [initData, setInitData] = useState(null);
+  const [deletedFields, setDeletedFields] = useState([]);
+
+  useEffect(() => {
+    if (loading || initData) return;
+    setInitData(data);
+  }, [data, loading, initData]);
 
   const items = [
     {
@@ -160,7 +167,7 @@ const Edit = () => {
       await axios({
         method: 'POST',
         url: `${process.env.REACT_APP_BASE_API_URL}/bidding/${id}`,
-        data: data,
+        data: { ...data, deletedFields: deletedFields },
       });
       setToast('Lưu thành công');
     } catch (error) {
@@ -215,9 +222,11 @@ const Edit = () => {
       </Flex>
     );
 
-  console.log(data);
+  console.log(deletedFields);
   return (
-    <BiddingContext.Provider value={{ data, setData, saving }}>
+    <BiddingContext.Provider
+      value={{ data, setData, saving, initData, setDeletedFields }}
+    >
       <Flex vertical gap={16}>
         <Breadcrumb
           items={[

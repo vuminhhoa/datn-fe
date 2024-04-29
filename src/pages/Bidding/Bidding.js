@@ -89,7 +89,7 @@ const Bidding = () => {
         <Space size="small">
           <Popover content="Xem chi tiết" trigger="hover">
             <Button
-              type="text"
+              type="link"
               icon={<EyeOutlined />}
               onClick={() => navigate(`/shopping/bidding/${record.id}`)}
             />
@@ -98,7 +98,7 @@ const Bidding = () => {
           {record.trangThaiDeXuat === 'processing' && (
             <Popover content="Xóa hoạt động" trigger="hover">
               <Button
-                type="text"
+                type="link"
                 danger
                 icon={<DeleteOutlined />}
                 onClick={() => {
