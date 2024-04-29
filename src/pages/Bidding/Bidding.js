@@ -118,7 +118,7 @@ const Bidding = () => {
       setCreating(true);
       const res = await axios({
         method: 'POST',
-        url: '${process.env.REACT_APP_BASE_API_URL}/bidding',
+        url: `${process.env.REACT_APP_BASE_API_URL}/bidding`,
         data: createFormData,
       });
       if (res.data.success) {

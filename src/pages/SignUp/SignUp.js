@@ -28,7 +28,7 @@ const SignUp = () => {
       setSaving(true);
       const res = await axios({
         method: 'POST',
-        url: '${process.env.REACT_APP_BASE_API_URL}/auth/register',
+        url: `${process.env.REACT_APP_BASE_API_URL}/auth/register`,
         data: values,
       });
       if (!res.data.success) {

@@ -37,7 +37,7 @@ const Edit = ({
       setUpdating(true);
       const res = await axios({
         method: 'POST',
-        url: '${process.env.REACT_APP_BASE_API_URL}/user',
+        url: `${process.env.REACT_APP_BASE_API_URL}/user`,
         data: formValue,
       });
       if (!res.data.success) {

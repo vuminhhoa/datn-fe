@@ -31,7 +31,7 @@ const CreateForm = ({ fetchApi, setIsShowCreateForm }) => {
       console.log(createFormData);
       const res = await axios({
         method: 'POST',
-        url: '${process.env.REACT_APP_BASE_API_URL}/equipment',
+        url: `${process.env.REACT_APP_BASE_API_URL}/equipment`,
         data: createFormData,
       });
       console.log(res);
