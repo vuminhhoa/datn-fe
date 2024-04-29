@@ -4,7 +4,7 @@ import { DatePicker } from 'antd';
 import BiddingContext from '../../../contexts/biddingContext';
 
 const DatePickerFormat = ({ field, maxDate = null }) => {
-  const { data, setData } = useContext(BiddingContext);
+  const { data, setData, saving } = useContext(BiddingContext);
   const dateStr = data[field];
   const isValidDate = dayjs(dateStr, 'DD/MM/YYYY', true).isValid();
   const dateValue = isValidDate ? dayjs(dateStr, 'DD/MM/YYYY') : undefined;
@@ -13,6 +13,7 @@ const DatePickerFormat = ({ field, maxDate = null }) => {
     <DatePicker
       maxDate={maxDate}
       value={dateValue}
+      disabled={saving}
       format={'DD/MM/YYYY'}
       onChange={(_, val) => {
         setData({

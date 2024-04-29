@@ -12,7 +12,7 @@ const BiddingItem = ({
   dateField = null,
   documentField = null,
 }) => {
-  const { data, setData } = useContext(BiddingContext);
+  const { data, setData, saving } = useContext(BiddingContext);
   const { setToast } = useAuth();
   const [isEditItem, setIsEditItem] = useState(false);
   const [documentPreview, setDocumentPreview] = useState(null);
@@ -28,7 +28,10 @@ const BiddingItem = ({
       setDocumentPreview(fileUrl);
       setData({
         ...data,
-        [field]: fileBase64,
+        [field]: JSON.stringify({
+          fileBase64: fileBase64,
+          fileName: file.name,
+        }),
       });
     } catch (error) {
       console.log(error);
@@ -44,9 +47,11 @@ const BiddingItem = ({
           </Typography.Text>
           {data[documentField] && !!documentField && (
             <Button
+              disabled={saving}
               style={{ padding: '0px' }}
               type="link"
               href={documentPreview || data[documentField]}
+              target="_blank"
             >
               Xem tài liệu
             </Button>
@@ -54,6 +59,7 @@ const BiddingItem = ({
         </Flex>
 
         <Button
+          disabled={saving}
           type="link"
           onClick={() => setIsEditItem(!isEditItem)}
           style={{ margin: '0px' }}
@@ -70,11 +76,14 @@ const BiddingItem = ({
             <>
               <Typography.Text>Tài liệu: </Typography.Text>
               <Upload
-                onChange={(e) =>
-                  handleChangeFile(e.file.originFileObj, documentField)
-                }
+                onChange={(e) => {
+                  console.log(e);
+                  handleChangeFile(e.file.originFileObj, documentField);
+                }}
               >
-                <Button icon={<UploadOutlined />}>Tải lên</Button>
+                <Button disabled={saving} icon={<UploadOutlined />}>
+                  Tải lên
+                </Button>
               </Upload>
             </>
           )}

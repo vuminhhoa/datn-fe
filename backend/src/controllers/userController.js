@@ -1,46 +1,6 @@
 import { User, Role, Permission } from '../models/index.js';
 import cloudinary from '../services/cloudinaryService.js';
-
-export async function updateProfile(req, res) {
-  try {
-    const data = req.body;
-    const userInDb = await User.findOne({
-      where: {
-        id: data.id,
-      },
-    });
-    if (!userInDb) {
-      return res.send({
-        success: false,
-        message: 'Người dùng không tồn tại trên hệ thống!',
-      });
-    }
-    if (!!userInDb.image && userInDb.image !== data.image) {
-      const oldImageId = getCloudinaryFileIdFromUrl(userInDb.image);
-      await cloudinary.uploader.destroy(oldImageId);
-    }
-    const result = await cloudinary.uploader.upload(data.image, {
-      folder: 'user_images',
-    });
-
-    data.image = result?.secure_url;
-
-    await User.update(data, {
-      where: {
-        email: data.email,
-      },
-    });
-    return res.send({ data: req.body, success: true });
-    // const accessToken = req.body;
-  } catch (error) {
-    console.log(error);
-    return res.send({
-      success: false,
-      message: 'Lấy dữ liệu user thất bại',
-      error: error,
-    });
-  }
-}
+import { getCloudinaryFileIdFromUrl } from '../helpers/cloudinaryHelper.js';
 
 export async function deleteUser(req, res) {
   try {
@@ -114,7 +74,7 @@ export async function updateUser(req, res) {
       });
     }
     if (!!userInDb.image && userInDb.image !== data.image) {
-      const oldImageId = getCloudinaryFileIdFromUrl(userInDb.image);
+      const oldImageId = getCloudinaryFileIdFromUrl({ url: userInDb.image });
       await cloudinary.uploader.destroy(oldImageId);
     }
     const result = await cloudinary.uploader.upload(data.image, {
@@ -137,9 +97,4 @@ export async function updateUser(req, res) {
       error: error,
     });
   }
-}
-
-function getCloudinaryFileIdFromUrl(url) {
-  const parts = url.split('/');
-  return `${parts[parts.length - 2]}/${parts[parts.length - 1].slice(0, parts[parts.length - 1].lastIndexOf('.'))}`;
 }

@@ -1,5 +1,5 @@
 const getStatus = (data, dateField, documentField = null) => {
-  if (documentField !== null) {
+  if (!!documentField) {
     if (!data[dateField] && !data[documentField]) {
       return {
         dotColor: 'grey',
@@ -7,7 +7,7 @@ const getStatus = (data, dateField, documentField = null) => {
         text: 'Chưa cập nhật',
       };
     }
-    if (data[dateField] === '') {
+    if (data[dateField] === '' || !data[dateField]) {
       return {
         dotColor: 'orange',
         tagColor: 'warning',
@@ -15,7 +15,7 @@ const getStatus = (data, dateField, documentField = null) => {
       };
     }
 
-    if (!data[documentField]) {
+    if (data[documentField] === null) {
       return {
         dotColor: 'orange',
         tagColor: 'warning',
@@ -24,7 +24,7 @@ const getStatus = (data, dateField, documentField = null) => {
     }
   }
 
-  if (documentField) {
+  if (!documentField) {
     if (!data[dateField]) {
       return {
         dotColor: 'grey',

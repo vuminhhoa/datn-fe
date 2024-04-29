@@ -12,6 +12,7 @@ import {
   Select,
   Form,
   Popover,
+  Typography,
 } from 'antd';
 import { HomeOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
@@ -24,6 +25,8 @@ const Bidding = () => {
   const navigate = useNavigate();
   const { setToast } = useAuth();
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteId, setDeleteId] = useState();
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [form] = Form.useForm();
@@ -98,7 +101,10 @@ const Bidding = () => {
                 type="text"
                 danger
                 icon={<DeleteOutlined />}
-                onClick={() => handleDeleteBidding(record.id)}
+                onClick={() => {
+                  setDeleteId(record.id);
+                  setShowDeleteConfirm(true);
+                }}
               />
             </Popover>
           )}
@@ -110,18 +116,18 @@ const Bidding = () => {
   const handleCreateBidding = async () => {
     try {
       setCreating(true);
-      console.log(createFormData);
       const res = await axios({
         method: 'POST',
         url: 'http://localhost:5000/api/bidding',
         data: createFormData,
       });
-      console.log(res);
+      if (res.data.success) {
+        setToast('Tạo mới thành công');
+      }
     } catch (error) {
       console.log(error);
       setToast('Tạo mới thất bại', 'error');
     } finally {
-      setToast('Tạo mới thành công');
       setCreating(false);
       setIsShowCreateForm(false);
       fetchApi();
@@ -137,12 +143,13 @@ const Bidding = () => {
       });
       if (res.data.success) {
         setData(data.filter((item) => item.id !== id));
+        setToast('Xóa thành công');
+        setShowDeleteConfirm(false);
       }
     } catch (error) {
       console.log(error);
       setToast('Xóa thất bại', 'error');
     } finally {
-      setToast('Xóa thành công');
       setDeleting(false);
     }
   };
@@ -203,6 +210,32 @@ const Bidding = () => {
         }
       >
         <Flex gap={16} vertical>
+          <Modal
+            title="Xác nhận xóa hoạt động"
+            open={showDeleteConfirm}
+            onCancel={() => setShowDeleteConfirm(false)}
+            footer={null}
+          >
+            <Flex gap={8} vertical>
+              <Typography.Text>
+                Hành động này sẽ xóa toàn bộ dữ liệu của hoạt động trong cơ sở
+                dữ liệu và không thể khôi phục. Bạn có chắc chắn muốn xóa?
+              </Typography.Text>
+              <Flex gap={8} justify="flex-end">
+                <Button key="back" onClick={() => setIsShowCreateForm(false)}>
+                  Hủy
+                </Button>
+                <Button
+                  type="primary"
+                  danger={true}
+                  loading={deleting}
+                  onClick={() => handleDeleteBidding(deleteId)}
+                >
+                  Xóa
+                </Button>
+              </Flex>
+            </Flex>
+          </Modal>
           <Modal
             title="Tạo mới hoạt động"
             open={isShowCreateForm}

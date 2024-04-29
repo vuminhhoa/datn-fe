@@ -97,7 +97,7 @@ const defaultData = {
 const Edit = () => {
   const { id } = useParams();
   const { setToast } = useAuth();
-  const { data, setData, loading } = useFetchApi({
+  const { data, setData, loading, fetchApi } = useFetchApi({
     url: `/bidding/${id}`,
     defaultData: defaultData,
   });
@@ -160,11 +160,7 @@ const Edit = () => {
       await axios({
         method: 'POST',
         url: `http://localhost:5000/api/bidding/${id}`,
-        data: {
-          ...data,
-          createdAt: new Date(data.createdAt),
-          updatedAt: new Date(data.updatedAt),
-        },
+        data: data,
       });
       setToast('Lưu thành công');
     } catch (error) {
@@ -172,6 +168,7 @@ const Edit = () => {
       setToast('Lưu thất bại', 'error');
     } finally {
       setSaving(false);
+      fetchApi();
     }
   };
 
@@ -220,7 +217,7 @@ const Edit = () => {
 
   console.log(data);
   return (
-    <BiddingContext.Provider value={{ data, setData }}>
+    <BiddingContext.Provider value={{ data, setData, saving }}>
       <Flex vertical gap={16}>
         <Breadcrumb
           items={[

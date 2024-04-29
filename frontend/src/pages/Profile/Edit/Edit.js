@@ -77,6 +77,7 @@ const Edit = ({
         ]);
       }
       const fileBase64 = await convertBase64(file);
+      console.log(fileBase64);
       setFormValue({
         ...formValue,
         image: fileBase64,

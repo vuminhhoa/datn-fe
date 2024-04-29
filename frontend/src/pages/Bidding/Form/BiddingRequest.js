@@ -5,7 +5,7 @@ import BiddingContext from '../../../contexts/biddingContext';
 import DatePickerFormat from '../Component/DatePickerFormat';
 
 const BiddingRequest = () => {
-  const { data } = useContext(BiddingContext);
+  const { data, saving } = useContext(BiddingContext);
   const [isEditBiddingRequest, setIsEditBiddingRequest] = useState(false);
 
   return (
@@ -46,6 +46,7 @@ const BiddingRequest = () => {
                 {!isEditBiddingRequest && (
                   <Button
                     type="link"
+                    disabled={saving}
                     onClick={() => setIsEditBiddingRequest(true)}
                   >
                     Cập nhật
@@ -53,6 +54,7 @@ const BiddingRequest = () => {
                 )}
                 {isEditBiddingRequest && (
                   <Button
+                    disabled={saving}
                     type="link"
                     onClick={() => setIsEditBiddingRequest(false)}
                   >
