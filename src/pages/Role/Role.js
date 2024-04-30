@@ -143,7 +143,7 @@ const Role = () => {
       >
         <Flex vertical gap={16}>
           <Modal
-            title="Tạo mới người dùng"
+            title="Tạo mới vai trò"
             open={isShowCreateForm}
             onCancel={() => setIsShowCreateForm(false)}
             footer={null}
