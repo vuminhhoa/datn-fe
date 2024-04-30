@@ -132,6 +132,7 @@ const Role = () => {
           hasPermission(ROLE_CREATE) && (
             <Button
               type="primary"
+              disabled={loading || creating}
               icon={<PlusOutlined />}
               onClick={() => setIsShowCreateForm(true)}
             >
