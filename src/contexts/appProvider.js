@@ -10,7 +10,7 @@ const AppContext = createContext();
 const AppProvider = ({ children }) => {
   const userLocalData = JSON.parse(localStorage.getItem('CURRENT_USER'));
   const [user, setUser] = useState(userLocalData || null);
-  const { loading, data } = useFetchApi({ url: `/user/${user.id}` });
+  const { loading, data } = useFetchApi({ url: `/user/${user?.id}` });
   const [token, setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
   const navigate = useNavigate();
 
@@ -62,9 +62,9 @@ const AppProvider = ({ children }) => {
     navigate('/login');
   };
 
-  if (data.success === false) {
-    return navigate('/login');
-  }
+  useEffect(() => {
+    if (!loading && data.success === false) return navigate('/login');
+  }, [data]);
 
   if (isMobile) {
     return (
