@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Form, Input, Select, Flex, Button } from 'antd';
 import axios from 'axios';
-import { useAuth } from '../../../contexts/authProvider';
+import { useApp } from '../../../contexts/appProvider';
 
 const CreateForm = ({ fetchApi, setIsShowCreateForm }) => {
   const [form] = Form.useForm();
-  const { setToast } = useAuth();
+  const { setToast } = useApp();
   const [creating, setCreating] = useState(false);
   const defaultCreateFormData = {
     maThietBi: '',

@@ -1,10 +1,11 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { Flex, Avatar, Button, Modal, Form, Input, Select, Upload } from 'antd';
-import axios from 'axios';
-import { useAuth } from '../../../contexts/authProvider';
+import { useApp } from '../../../contexts/appProvider';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { convertBase64 } from '../../../helpers/uploadFile';
+import useEditApi from '../../../hooks/useEditApi';
+import { ADMIN } from '../../../const/role';
 
 const EditModal = ({
   open,
@@ -16,8 +17,8 @@ const EditModal = ({
   value,
   setValue,
 }) => {
-  const { setToast, user, setUser } = useAuth();
-  const [updating, setUpdating] = useState(false);
+  const { setToast, user, setUser } = useApp();
+  const { editing, editApi } = useEditApi(`/user`);
   const [form] = Form.useForm();
   const [uploading, setUploading] = useState(false);
   const handleEditFormChange = (e) => {
@@ -29,12 +30,7 @@ const EditModal = ({
 
   const handleUpdateUser = async () => {
     try {
-      setUpdating(true);
-      const res = await axios({
-        method: 'POST',
-        url: `${process.env.REACT_APP_BASE_API_URL}/user`,
-        data: value,
-      });
+      const res = await editApi(value);
       if (!res.data.success) {
         return setToast(res.data.message, 'error');
       }
@@ -48,7 +44,6 @@ const EditModal = ({
       console.log(error);
       setToast('Cập nhật thất bại', 'error');
     } finally {
-      setUpdating(false);
       setOpen(false);
       fetchApi();
     }
@@ -200,7 +195,7 @@ const EditModal = ({
             onChange={(val) =>
               setValue({
                 ...value,
-                role: val,
+                RoleId: val,
               })
             }
             options={roles.map((role) => {
@@ -216,7 +211,7 @@ const EditModal = ({
           <Button key="back" onClick={() => setOpen(false)}>
             Hủy
           </Button>
-          <Button type="primary" htmlType="submit" loading={updating}>
+          <Button type="primary" htmlType="submit" loading={editing}>
             Lưu
           </Button>
         </Flex>

@@ -1,17 +1,26 @@
-import { useContext, createContext, useState } from 'react';
+import { useContext, createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { message } from 'antd';
+import { Spin, message } from 'antd';
+import useFetchApi from '../hooks/useFetchApi';
+import { isMobile } from 'react-device-detect'; // Import hàm kiểm tra thiết bị mobile từ thư viện react-device-detect
 
-const AuthContext = createContext();
+const AppContext = createContext();
 
-const AuthProvider = ({ children }) => {
+const AppProvider = ({ children }) => {
   const userLocalData = JSON.parse(localStorage.getItem('CURRENT_USER'));
   const [user, setUser] = useState(userLocalData || null);
+  const { loading, data } = useFetchApi({ url: `/user/${user.id}` });
   const [token, setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
   const navigate = useNavigate();
 
   const [messageApi, contextHolder] = message.useMessage();
+
+  useEffect(() => {
+    if (!loading && JSON.stringify(user) !== JSON.stringify(data.user)) {
+      setUser(data.user);
+    }
+  }, [data]);
 
   const setToast = (content, type = 'success') => {
     return messageApi.open({
@@ -53,8 +62,28 @@ const AuthProvider = ({ children }) => {
     navigate('/login');
   };
 
+  if (data.success === false) {
+    return navigate('/login');
+  }
+
+  if (isMobile) {
+    return (
+      <div>
+        <p>
+          Trang web hiện chưa hỗ trợ giao diện thiết bị mobile. Vui lòng quay
+          lại sau hoặc sử dụng trên các thiết bị khác!
+        </p>
+      </div>
+    );
+  }
+
+  if (loading)
+    return (
+      <Spin spinning={loading} size="large" fullscreen tip={<>Đang tải...</>} />
+    );
+
   return (
-    <AuthContext.Provider
+    <AppContext.Provider
       value={{
         token,
         user,
@@ -66,12 +95,12 @@ const AuthProvider = ({ children }) => {
     >
       {contextHolder}
       {children}
-    </AuthContext.Provider>
+    </AppContext.Provider>
   );
 };
 
-export default AuthProvider;
+export default AppProvider;
 
-export const useAuth = () => {
-  return useContext(AuthContext);
+export const useApp = () => {
+  return useContext(AppContext);
 };

@@ -9,13 +9,13 @@ import {
   Button,
 } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { useAuth } from '../contexts/authProvider';
+import { useApp } from '../contexts/appProvider';
 import { useNavigate } from 'react-router-dom';
 
 const { Header } = Layout;
 
 function AppHeader() {
-  const { user, logoutAction } = useAuth();
+  const { user, logoutAction } = useApp();
   const navigate = useNavigate();
   const {
     token: { colorBgContainer },
@@ -65,7 +65,7 @@ function AppHeader() {
         justify={'space-between'}
         align={'center'}
       >
-        <div style={{ width: '160px' }}></div>
+        <div style={{ width: '250px' }}></div>
         <Flex align="center" gap={16}>
           <Avatar
             size={'large'}
@@ -85,7 +85,7 @@ function AppHeader() {
           justify="flex-end"
           gap={12}
           style={{
-            width: '160px',
+            width: '250px',
           }}
         >
           <Flex vertical align="flex-end">

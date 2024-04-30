@@ -1,15 +1,37 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Flex, Breadcrumb, Button, Skeleton } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
-
+import { ADMIN, USER } from '../../../const/role.js';
+import { ROLE_DELETE, ROLE_UPDATE } from '../../../const/permission.js';
 import useFetchApi from '../../../hooks/useFetchApi.js';
+import hasPermission from '../../../helpers/hasPermission.js';
+import { useApp } from '../../../contexts/appProvider.js';
+import useDeleteApi from '../../../hooks/useDeleteApi.js';
+import NotFound from '../../NotFound/NotFound.js';
+import { useBreadcrumb } from '../../../hooks/useBreadcrumb.js';
 
 const DetailRole = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { setToast } = useApp();
+  const { deleting, deleteApi } = useDeleteApi(`/role/${id}`);
   const { data, loading } = useFetchApi({
-    url: `/settings/role/${id}`,
+    url: `/role/${id}`,
   });
+  const breadcrumbItems = useBreadcrumb([
+    {
+      href: '/',
+      title: <HomeOutlined />,
+    },
+    {
+      href: '/roles',
+      title: 'Cài đặt phân quyền',
+    },
+    {
+      title: loading ? `---------------` : data.roles?.name,
+    },
+  ]);
   const borderedItems = [
     {
       key: '1',
@@ -22,50 +44,67 @@ const DetailRole = () => {
       key: '2',
       labelStyle: { width: '300px' },
       label: `Users có vai trò ${data.roles?.name}`,
-      children: data.roles?.Users.map((user) => {
-        return (
-          <Button type="link" href={`/user/${user.id}`} size="small">
-            {user.name || user.email}
-          </Button>
-        );
-      }),
+      children:
+        data.name === ADMIN
+          ? 'Tất cả quyền hạn'
+          : data.roles?.Users.map((user, index) => {
+              return (
+                <Button
+                  type="link"
+                  href={`/user/${user.id}`}
+                  size="small"
+                  key={index}
+                >
+                  {user.name || user.email}
+                </Button>
+              );
+            }),
     },
     {
-      key: '2',
+      key: '3',
       label: `Ngày tạo`,
       children: new Date(data.roles?.createdAt).toLocaleString(),
     },
     {
-      key: '2',
+      key: '4',
       label: `Ngày sửa đổi gần nhất`,
       children: new Date(data.roles?.updatedAt).toLocaleString(),
     },
   ];
-
+  const handleDeleteRole = async () => {
+    try {
+      const res = await deleteApi();
+      if (res.data.success) {
+        setToast('Xóa thành công');
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      navigate('/roles');
+    }
+  };
+  if (data.message === 'Vai trò không tồn tại') {
+    return <NotFound />;
+  }
   if (loading) {
     return (
       <Flex vertical gap={16}>
-        <Breadcrumb
-          items={[
-            {
-              href: '/',
-              title: <HomeOutlined />,
-            },
-            {
-              href: '/roles',
-              title: 'Cài đặt phân quyền',
-            },
-            {
-              title: `Role: ------------`,
-            },
-          ]}
-        />
+        <Breadcrumb items={breadcrumbItems} />
         <Card
           title={`Thông tin vai trò: -------------`}
           extra={
-            <Button type="primary" disabled>
-              Chỉnh sửa
-            </Button>
+            <Flex gap={8}>
+              {hasPermission(ROLE_DELETE) && (
+                <Button danger disabled>
+                  Xóa
+                </Button>
+              )}
+              {hasPermission(ROLE_UPDATE) && (
+                <Button type="primary" disabled>
+                  Chỉnh sửa
+                </Button>
+              )}
+            </Flex>
           }
         >
           <Skeleton />
@@ -73,30 +112,30 @@ const DetailRole = () => {
       </Flex>
     );
   }
-
   return (
     <Flex vertical gap={16}>
-      <Breadcrumb
-        items={[
-          {
-            href: '/',
-            title: <HomeOutlined />,
-          },
-          {
-            href: '/roles',
-            title: 'Cài đặt phân quyền',
-          },
-          {
-            title: `Role: ${data.roles?.name}`,
-          },
-        ]}
-      />
+      <Breadcrumb items={breadcrumbItems} />
       <Card
         title={`Thông tin vai trò: ${data.roles?.name}`}
         extra={
-          <Button type="primary" href={`/role/edit/${data.roles.id}`}>
-            Chỉnh sửa
-          </Button>
+          <Flex gap={8}>
+            {data.roles.name !== ADMIN &&
+              data.roles.name !== USER &&
+              hasPermission(ROLE_DELETE) && (
+                <Button danger disabled={deleting} onClick={handleDeleteRole}>
+                  Xóa
+                </Button>
+              )}
+            {data.roles.name !== ADMIN && hasPermission(ROLE_UPDATE) && (
+              <Button
+                disabled={deleting}
+                type="primary"
+                onClick={() => navigate(`/role/edit/${data.roles.id}`)}
+              >
+                Chỉnh sửa
+              </Button>
+            )}
+          </Flex>
         }
       >
         <Flex vertical gap={16}>

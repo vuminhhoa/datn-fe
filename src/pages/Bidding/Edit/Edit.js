@@ -19,88 +19,26 @@ import Ehsmt from '../Form/Ehsmt';
 import useFetchApi from '../../../hooks/useFetchApi';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../../contexts/authProvider';
+import { useApp } from '../../../contexts/appProvider';
 import CollapsibleForm from '../Component/CollapsibleForm';
 import Ehsdt from '../Form/Ehsdt';
 import KyKetThucHienHopDong from '../Form/KyKetThucHienHopDong';
-
-const defaultData = {
-  id: 12,
-  tenDeXuat: 'Mua may sieu vi tinh',
-  khoaPhongDeXuat: 'Marketing Department',
-  ngayDeXuat: '2024-04-05',
-  noiDungDeXuat: '01 máy siêu âm 100 máy đẹp trai',
-  trangThaiDeXuat: 'approved',
-  ngayPheDuyetDeXuat: '2024-04-07',
-
-  ngayDangYeuCauChaoGia: null,
-  ngayHetHanYeuCauChaoGia: null,
-
-  ngayHopHoiDongMuaSam: '2024-04-15',
-  ngayPheDuyetDuToan: '2024-04-15',
-  taiLieuPheDuyetDuToan: 'ProcurementCouncilMinutes.pdf',
-  taiLieuHopHoiDongMuaSam: 'ProcurementCouncilMinutes.pdf',
-  ngayThanhLapToChuyenGia: '2024-04-18',
-  taiLieuThanhLapToChuyenGia: 'ExpertTeamEstablishment.pdf',
-  ngayThanhLapToThamDinh: '2024-04-19',
-  taiLieuThanhLapToThamDinh: 'AppraisalTeamEstablishment.pdf',
-
-  ngayLapKhlcnt: null,
-  taiLieuLapKhlcnt: 'khlcntDocument.pdf',
-  ngayBaoCaoThamDinhKhclnt: '2024-04-19',
-  taiLieuBaoCaoThamDinhKhclnt: 'taiLieuBaoCaoThamDinhKhclnt.pdf',
-  ngayPheDuyetKhclnt: '2024-04-19',
-  taiLieuPheDuyetKhclnt: 'taiLieuPheDuyetKhclnt.pdf',
-  ngayQuyetDinhPheDuyetKhlcnt: '2024-04-19',
-  taiLieuQuyetDinhPheDuyetKhlcnt: 'khlcntApprovalDecision.pdf',
-  ngayDangTaiKeHoachLenMangDauThau: '2024-04-25',
-
-  taiLieuDuThaoEhsmt: 'taiLieuDuThaoEhsmt.pdf',
-  ngayDuThaoEhsmt: '2024-04-19',
-  taiLieuBcXayDungEhsmt: 'ehsmtConstructionReport.pdf',
-  ngayTaiLieuBcXayDungEhsmt: '2024-04-19',
-  taiLieuPheDuyetEhsmtToChuyenGia: 'ehsmtExpertTeamApproval.pdf',
-  ngayPheDuyetEhsmtToChuyenGia: '2024-04-19',
-  taiLieuBcThamDinhEhsmt: 'ehsmtAppraisalReport.pdf',
-  ngayBcThamDinhEhsmt: '2024-04-19',
-  taiLieuPheDuyetEhsmtToThamDinh: 'ehsmtAppraisalApproval.pdf',
-  ngayPheDuyetEhsmtToThamDinh: '2024-04-19',
-  taiLieuQuyetDinhPheDuyetEhsmt: 'ehsmtApprovalDecision.pdf',
-  ngayPheDuyetEhsmt: '2024-04-19',
-  ngayDangThongBaoMoiThauLenMangDauThau: '2024-04-28',
-
-  taiLieuBcDanhGiaCuaToChuyenGia: 'ehsmtApprovalDecision.pdf',
-  ngayBcDanhGiaCuaToChuyenGia: '2024-04-28',
-  taiLieuBienBanThuongThaoVoiCacNhaThau: 'ehsmtApprovalDecision.pdf',
-  ngayThuongThaoVoiCacNhaThau: '2024-04-28',
-  taiLieuBcThamDinhKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
-  ngayThamDinhKetQuaLcnt: '2024-04-28',
-  taiLieuToTrinhXinPheDuyetKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
-  ngayXinPheDuyetKetQuaLcnt: '2024-04-28',
-  taiLieuQuyetDinhPheDuyetKetQuaLcnt: 'ehsmtApprovalDecision.pdf',
-  ngayPheDuyetKetQuaLcnt: '2024-04-28',
-
-  taiLieuThongBaoKqLcntDenCacNhaThau: 'ehsmtApprovalDecision.pdf',
-  ngayThongBaoKqLcntDenCacNhaThau: '2024-04-28',
-  taiLieuDangKqLcntLenMangDauThau: 'ehsmtApprovalDecision.pdf',
-  ngayDangKqLcntLenMangDauThau: '2024-04-28',
-  taiLieuBaoLanhThucHienHopDong: 'ehsmtApprovalDecision.pdf',
-  ngayNhaThauNopBaoLanhThucHienHopDong: '2024-04-28',
-  taiLieuKyKetHopDongMuaBan: 'ehsmtApprovalDecision.pdf',
-  ngayKyKetHopDongMuaBan: '2024-04-28',
-  taiLieuBanGiaoDuaVaoSuDung: 'ehsmtApprovalDecision.pdf',
-  ngayBanGiaoDuaVaoSuDung: '2024-04-28',
-  taiLieuBaoLanhBaoHanh: 'ehsmtApprovalDecision.pdf',
-  ngayNopBaoLanhBaoHanh: '2024-04-28',
-};
+import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 
 const Edit = () => {
   const { id } = useParams();
-  const { setToast } = useAuth();
+  const { setToast } = useApp();
   const { data, setData, loading, fetchApi } = useFetchApi({
     url: `/bidding/${id}`,
-    defaultData: defaultData,
   });
+  const breadcrumbItems = useBreadcrumb([
+    { href: '/', title: <HomeOutlined /> },
+    { href: '/shopping/bidding', title: 'Hoạt động mua sắm qua đấu thầu' },
+    {
+      href: `/shopping/bidding/${data.id}`,
+      title: loading ? '----------' : data.tenDeXuat,
+    },
+  ]);
   const [saving, setSaving] = useState(false);
   const [initData, setInitData] = useState(null);
   const [deletedFields, setDeletedFields] = useState([]);
@@ -182,22 +120,7 @@ const Edit = () => {
   if (loading)
     return (
       <Flex vertical gap={16}>
-        <Breadcrumb
-          items={[
-            {
-              href: '/',
-              title: <HomeOutlined />,
-            },
-            {
-              href: '/shopping/bidding',
-              title: 'Hoạt động mua sắm qua đấu thầu',
-            },
-            {
-              href: `/shopping/bidding/${data.id}`,
-              title: '-----------------',
-            },
-          ]}
-        />
+        <Breadcrumb items={breadcrumbItems} />
         <Card
           title={
             <Flex align="center" gap={8}>
@@ -228,22 +151,7 @@ const Edit = () => {
       value={{ data, setData, saving, initData, setDeletedFields }}
     >
       <Flex vertical gap={16}>
-        <Breadcrumb
-          items={[
-            {
-              href: '/',
-              title: <HomeOutlined />,
-            },
-            {
-              href: '/shopping/bidding',
-              title: 'Hoạt động mua sắm qua đấu thầu',
-            },
-            {
-              href: `/shopping/bidding/${data.id}`,
-              title: data.tenDeXuat,
-            },
-          ]}
-        />
+        <Breadcrumb items={breadcrumbItems} />
         <Card
           title={`Chi tiết hoạt động: ${data.tenDeXuat}`}
           extra={

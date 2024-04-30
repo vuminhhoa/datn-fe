@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { Flex, Avatar, Button, Modal, Form, Input, Upload } from 'antd';
 import axios from 'axios';
-import { useAuth } from '../../../contexts/authProvider';
+import { useApp } from '../../../contexts/appProvider';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { convertBase64 } from '../../../helpers/uploadFile';
 
 const Edit = ({ open, input, setInput, setOpen, formValue, setFormValue }) => {
-  const { setToast, setUser } = useAuth();
+  const { setToast, setUser } = useApp();
   const [updating, setUpdating] = useState(false);
   const [form] = Form.useForm();
   const [uploading, setUploading] = useState(false);
@@ -50,7 +50,7 @@ const Edit = ({ open, input, setInput, setOpen, formValue, setFormValue }) => {
   const handleChangeFile = async (e) => {
     try {
       setUploading(true);
-      const file = e.file.originFileObj;
+      const file = e.file;
       const imgUrl = URL.createObjectURL(file);
       console.log(imgUrl);
       form.setFields([

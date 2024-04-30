@@ -12,10 +12,10 @@ import {
   message,
 } from 'antd';
 import './Login.css';
-import { useAuth } from '../../contexts/authProvider';
+import { useApp } from '../../contexts/appProvider';
 
 const Login = () => {
-  const auth = useAuth();
+  const auth = useApp();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [messageApi, contextHolder] = message.useMessage();
