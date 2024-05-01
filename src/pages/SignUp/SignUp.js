@@ -155,7 +155,9 @@ const SignUp = () => {
             </Button>
             <Typography>
               hoặc {''}
-              <Typography.Link href="/login">đăng nhập </Typography.Link>
+              <Typography.Link onClick={() => navigate('/login')}>
+                đăng nhập{' '}
+              </Typography.Link>
               nếu đã có tài khoản!
             </Typography>
           </Space>

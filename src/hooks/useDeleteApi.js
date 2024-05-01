@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function useEditApi(url) {
-  const [editing, setEditing] = useState(false);
+export default function useDeleteApi(url) {
+  const [deleting, setDeleting] = useState(false);
 
-  async function editApi(body) {
+  async function deleteApi(id = null) {
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
     try {
-      setEditing(true);
+      setDeleting(true);
       return await axios({
-        method: 'PUT',
-        url: `${process.env.REACT_APP_BASE_API_URL}${url}`,
-        data: body,
+        method: 'DELETE',
+        url: `${process.env.REACT_APP_BASE_API_URL}${url}${id ? `/${id}` : ''}`,
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -19,12 +18,12 @@ export default function useEditApi(url) {
     } catch (e) {
       console.log(e);
     } finally {
-      setEditing(false);
+      setDeleting(false);
     }
   }
 
   return {
-    editApi,
-    editing,
+    deleteApi,
+    deleting,
   };
 }

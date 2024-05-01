@@ -7,21 +7,21 @@ import {
   TeamOutlined,
 } from '@ant-design/icons';
 import { Menu, Layout } from 'antd';
-import { permissionsConsts } from '../const/permissionConsts';
+import { ROLE_READ, BIDDING_READ } from '../const/permission';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/authProvider';
+import { useApp } from '../contexts/appProvider';
 
 const { Sider } = Layout;
 
 function AppSider() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useApp();
   const [collapsed, setCollapsed] = useState(false);
 
   function getItem({ label, key, icon, children, permission }) {
     if (permission) {
       const canSeeItem = user?.Role?.Permissions.find(
-        (userPermission) => userPermission.alias === permission
+        (userPermission) => userPermission.name === permission
       );
       if (!canSeeItem) return false;
     }
@@ -46,26 +46,31 @@ function AppSider() {
     }),
     getItem({
       label: 'Hoạt động mua sắm',
-      key: '/shopping',
+      key: '/shopping/bidding',
       icon: <AuditOutlined />,
-      children: [
-        getItem({
-          label: 'Mua sắm qua đấu thầu',
-          key: '/bidding',
-          permission: permissionsConsts.TENDER_READ,
-        }),
-        getItem({
-          label: 'Mua sắm không qua đấu thầu',
-          key: '/non-bidding',
-          permission: permissionsConsts.TENDER_CREATE,
-        }),
-      ],
     }),
+    // getItem({
+    //   label: 'Hoạt động mua sắm',
+    //   key: '/shopping',
+    //   icon: <AuditOutlined />,
+    //   children: [
+    //     getItem({
+    //       label: 'Mua sắm qua đấu thầu',
+    //       key: '/bidding',
+    //       permission: BIDDING_READ,
+    //     }),
+    //     getItem({
+    //       label: 'Mua sắm không qua đấu thầu',
+    //       key: '/non-bidding',
+    //       permission: BIDDING_READ,
+    //     }),
+    //   ],
+    // }),
     getItem({
       label: 'Cài đặt phân quyền',
       key: '/roles',
       icon: <SettingOutlined />,
-      permission: permissionsConsts.SYSTEM_SETTING,
+      permission: ROLE_READ,
     }),
   ].filter(Boolean);
 

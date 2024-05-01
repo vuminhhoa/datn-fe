@@ -1,3 +1,3 @@
-import DetailEquipment from './Detail';
+import Detail from './Detail';
 
-export default DetailEquipment;
+export default Detail;

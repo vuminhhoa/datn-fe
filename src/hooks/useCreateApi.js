@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function useEditApi(url) {
-  const [editing, setEditing] = useState(false);
+export default function useCreateApi(url) {
+  const [creating, setCreating] = useState(false);
 
-  async function editApi(body) {
+  async function createApi(body) {
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
     try {
-      setEditing(true);
+      setCreating(true);
       return await axios({
-        method: 'PUT',
+        method: 'POST',
         url: `${process.env.REACT_APP_BASE_API_URL}${url}`,
         data: body,
         headers: {
@@ -19,12 +19,12 @@ export default function useEditApi(url) {
     } catch (e) {
       console.log(e);
     } finally {
-      setEditing(false);
+      setCreating(false);
     }
   }
 
   return {
-    editApi,
-    editing,
+    createApi,
+    creating,
   };
 }

@@ -16,25 +16,43 @@ import {
 } from 'antd';
 import { HomeOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
-import { useAuth } from '../../contexts/authProvider';
-import axios from 'axios';
+import { useApp } from '../../contexts/appProvider';
 import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
+import hasPermission from '../../helpers/hasPermission';
+import {
+  BIDDING_CREATE,
+  BIDDING_DELETE,
+  BIDDING_READ,
+} from '../../const/permission';
+import useDeleteApi from '../../hooks/useDeleteApi';
+import useCreateApi from '../../hooks/useCreateApi';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 
 const Bidding = () => {
   const navigate = useNavigate();
-  const { setToast } = useAuth();
+  const { setToast } = useApp();
+  const { deleting, deleteApi } = useDeleteApi(`/bidding`);
+  const { creating, createApi } = useCreateApi(`/bidding`);
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteId, setDeleteId] = useState();
-  const [creating, setCreating] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [form] = Form.useForm();
 
   const { data, fetchApi, setData, loading } = useFetchApi({
     url: '/biddings',
     defaultData: [],
   });
+  const breadcrumbItems = useBreadcrumb([
+    {
+      href: '/',
+      title: <HomeOutlined />,
+    },
+    {
+      href: '/shopping/bidding',
+      title: 'Hoạt động mua sắm qua đấu thầu',
+    },
+  ]);
   const defaultCreateFormData = {
     trangThaiDeXuat: 'processing',
     khoaPhongDeXuat: '',
@@ -87,18 +105,19 @@ const Bidding = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="small">
-          <Popover content="Xem chi tiết" trigger="hover">
-            <Button
-              type="text"
-              icon={<EyeOutlined />}
-              onClick={() => navigate(`/shopping/bidding/${record.id}`)}
-            />
-          </Popover>
-
-          {record.trangThaiDeXuat === 'processing' && (
+          {hasPermission(BIDDING_READ) && (
+            <Popover content="Xem chi tiết" trigger="hover">
+              <Button
+                type="link"
+                icon={<EyeOutlined />}
+                onClick={() => navigate(`/shopping/bidding/${record.id}`)}
+              />
+            </Popover>
+          )}
+          {hasPermission(BIDDING_DELETE) && (
             <Popover content="Xóa hoạt động" trigger="hover">
               <Button
-                type="text"
+                type="link"
                 danger
                 icon={<DeleteOutlined />}
                 onClick={() => {
@@ -115,12 +134,7 @@ const Bidding = () => {
 
   const handleCreateBidding = async () => {
     try {
-      setCreating(true);
-      const res = await axios({
-        method: 'POST',
-        url: `${process.env.REACT_APP_BASE_API_URL}/bidding`,
-        data: createFormData,
-      });
+      const res = await createApi(createFormData);
       if (res.data.success) {
         setToast('Tạo mới thành công');
       }
@@ -128,7 +142,6 @@ const Bidding = () => {
       console.log(error);
       setToast('Tạo mới thất bại', 'error');
     } finally {
-      setCreating(false);
       setIsShowCreateForm(false);
       fetchApi();
     }
@@ -136,11 +149,7 @@ const Bidding = () => {
 
   const handleDeleteBidding = async (id) => {
     try {
-      setDeleting(true);
-      const res = await axios({
-        method: 'DELETE',
-        url: `${process.env.REACT_APP_BASE_API_URL}/bidding/${id}`,
-      });
+      const res = await deleteApi(id);
       if (res.data.success) {
         setData(data.filter((item) => item.id !== id));
         setToast('Xóa thành công');
@@ -149,32 +158,21 @@ const Bidding = () => {
     } catch (error) {
       console.log(error);
       setToast('Xóa thất bại', 'error');
-    } finally {
-      setDeleting(false);
     }
   };
 
   if (loading)
     return (
       <Flex vertical gap={16}>
-        <Breadcrumb
-          items={[
-            {
-              href: '/',
-              title: <HomeOutlined />,
-            },
-            {
-              href: '/shopping/bidding',
-              title: 'Hoạt động mua sắm qua đấu thầu',
-            },
-          ]}
-        />
+        <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Danh sách hoạt động mua sắm qua đấu thầu"
           extra={
-            <Button type="primary" icon={<PlusOutlined />} disabled>
-              Tạo mới
-            </Button>
+            hasPermission(BIDDING_CREATE) && (
+              <Button type="primary" icon={<PlusOutlined />} disabled>
+                Tạo mới
+              </Button>
+            )
           }
         >
           <Table loading columns={columns} bordered />
@@ -184,29 +182,20 @@ const Bidding = () => {
 
   return (
     <Flex vertical gap={16}>
-      <Breadcrumb
-        items={[
-          {
-            href: '/',
-            title: <HomeOutlined />,
-          },
-          {
-            href: '/shopping/bidding',
-            title: 'Hoạt động mua sắm qua đấu thầu',
-          },
-        ]}
-      />
+      <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách hoạt động mua sắm qua đấu thầu"
         extra={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setIsShowCreateForm(true)}
-            disabled={deleting}
-          >
-            Tạo mới
-          </Button>
+          hasPermission(BIDDING_CREATE) && (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setIsShowCreateForm(true)}
+              disabled={deleting}
+            >
+              Tạo mới
+            </Button>
+          )
         }
       >
         <Flex gap={16} vertical>

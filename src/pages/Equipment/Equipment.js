@@ -12,23 +12,63 @@ import {
 } from 'antd';
 import { HomeOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
-import { useAuth } from '../../contexts/authProvider';
-import axios from 'axios';
+import { useApp } from '../../contexts/appProvider';
 import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
-import CreateForm from './CreateForm/CreateForm';
+import CreateEquipmentForm from './Form/Create';
+import hasPermission from '../../helpers/hasPermission';
+import {
+  EQUIPMENT_CREATE,
+  EQUIPMENT_DELETE,
+  EQUIPMENT_READ,
+} from '../../const/permission';
+import useDeleteApi from '../../hooks/useDeleteApi';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 
 const Equipment = () => {
   const navigate = useNavigate();
-  const { setToast } = useAuth();
+  const { setToast } = useApp();
+  const { deleting, deleteApi } = useDeleteApi(`/equipment`);
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
-  const [deleting, setDeleting] = useState(false);
 
   const { data, fetchApi, setData, loading } = useFetchApi({
     url: '/equipments',
     defaultData: [],
   });
+  const breadcrumbItems = useBreadcrumb([
+    {
+      path: '/',
+      title: <HomeOutlined />,
+    },
+    {
+      path: '/equipments',
+      title: 'Quản lý thiết bị',
+    },
+  ]);
 
+  const getTagColor = (status) => {
+    let color = '';
+    switch (status) {
+      case 'Mới nhập':
+        color = 'processing';
+        break;
+      case 'Đang sử dụng':
+        color = 'success';
+        break;
+      case 'Đang sửa chữa':
+        color = 'warning';
+        break;
+      case 'Đã hỏng':
+        color = 'error';
+        break;
+      default:
+        color = 'default';
+    }
+    return {
+      color: color,
+      title: status,
+    };
+  };
   const columns = [
     {
       title: 'Mã thiết bị',
@@ -64,12 +104,8 @@ const Equipment = () => {
       key: 'trangThai',
       dataIndex: 'trangThai',
       render: (_, record) => {
-        let tagColor = '';
-        if (record.trangThai === 'Mới nhập') tagColor = 'processing';
-        if (record.trangThai === 'Đã thanh lý') tagColor = 'error';
-        if (record.trangThai === 'Đang hỏng') tagColor = 'warning';
-
-        return <Tag color={tagColor}>{record.trangThai}</Tag>;
+        const equipmentTag = getTagColor(record.trangThai);
+        return <Tag color={equipmentTag.color}>{equipmentTag.title}</Tag>;
       },
     },
 
@@ -78,22 +114,25 @@ const Equipment = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="small">
-          <Popover content="Xem chi tiết" trigger="hover">
-            <Button
-              type="text"
-              icon={<EyeOutlined />}
-              onClick={() => navigate(`/equipment/${record.id}`)}
-            />
-          </Popover>
-
-          <Popover content="Xóa thiết bị" trigger="hover">
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => handleDeleteEquipment(record.id)}
-            />
-          </Popover>
+          {hasPermission(EQUIPMENT_READ) && (
+            <Popover content="Xem chi tiết" trigger="hover">
+              <Button
+                type="text"
+                icon={<EyeOutlined />}
+                onClick={() => navigate(`/equipment/${record.id}`)}
+              />
+            </Popover>
+          )}
+          {hasPermission(EQUIPMENT_DELETE) && (
+            <Popover content="Xóa thiết bị" trigger="hover">
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => handleDeleteEquipment(record.id)}
+              />
+            </Popover>
+          )}
         </Space>
       ),
     },
@@ -101,11 +140,7 @@ const Equipment = () => {
 
   const handleDeleteEquipment = async (id) => {
     try {
-      setDeleting(true);
-      const res = await axios({
-        method: 'DELETE',
-        url: `${process.env.REACT_APP_BASE_API_URL}/equipment/${id}`,
-      });
+      const res = await deleteApi(id);
       if (res.data.success) {
         setData(data.filter((item) => item.id !== id));
       }
@@ -114,31 +149,21 @@ const Equipment = () => {
       setToast('Xóa thất bại', 'error');
     } finally {
       setToast('Xóa thành công');
-      setDeleting(false);
     }
   };
 
   if (loading)
     return (
       <Flex vertical gap={16}>
-        <Breadcrumb
-          items={[
-            {
-              href: '/',
-              title: <HomeOutlined />,
-            },
-            {
-              href: '/equipments',
-              title: 'Quản lý thiết bị',
-            },
-          ]}
-        />
+        <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Danh sách thiết bị"
           extra={
-            <Button type="primary" icon={<PlusOutlined />} disabled>
-              Tạo mới
-            </Button>
+            hasPermission(EQUIPMENT_CREATE) && (
+              <Button type="primary" icon={<PlusOutlined />} disabled>
+                Tạo mới
+              </Button>
+            )
           }
         >
           <Table loading columns={columns} bordered />
@@ -148,29 +173,20 @@ const Equipment = () => {
 
   return (
     <Flex vertical gap={16}>
-      <Breadcrumb
-        items={[
-          {
-            href: '/',
-            title: <HomeOutlined />,
-          },
-          {
-            href: '/equipments',
-            title: 'Quản lý thiết bị',
-          },
-        ]}
-      />
+      <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách thiết bị"
         extra={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setIsShowCreateForm(true)}
-            disabled={deleting}
-          >
-            Tạo mới
-          </Button>
+          hasPermission(EQUIPMENT_CREATE) && (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setIsShowCreateForm(true)}
+              disabled={deleting}
+            >
+              Tạo mới
+            </Button>
+          )
         }
       >
         <Flex gap={16} vertical>
@@ -180,7 +196,7 @@ const Equipment = () => {
             onCancel={() => setIsShowCreateForm(false)}
             footer={null}
           >
-            <CreateForm
+            <CreateEquipmentForm
               fetchApi={fetchApi}
               setIsShowCreateForm={setIsShowCreateForm}
             />

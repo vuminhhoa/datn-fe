@@ -10,6 +10,7 @@ import {
   List,
   Form,
   Avatar,
+  Popover,
 } from 'antd';
 import {
   HomeOutlined,
@@ -18,25 +19,37 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
-import { useAuth } from '../../contexts/authProvider';
-import axios from 'axios';
+import { useApp } from '../../contexts/appProvider';
 import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
+import { ADMIN } from '../../const/role';
+import useCreateApi from '../../hooks/useCreateApi';
+import useDeleteApi from '../../hooks/useDeleteApi';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 
 const User = () => {
   const navigate = useNavigate();
-  const { setToast } = useAuth();
+  const { setToast } = useApp();
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [form] = Form.useForm();
-
+  const { creating, createApi } = useCreateApi('/auth/register');
+  const { deleting, deleteApi } = useDeleteApi(`/user`);
   const { data, fetchApi, setData, loading } = useFetchApi({
     url: '/users',
     defaultData: [],
   });
+  const breadcrumbItems = useBreadcrumb([
+    {
+      href: '/',
+      title: <HomeOutlined />,
+    },
+    {
+      href: '/users',
+      title: 'Quản lý thành viên',
+    },
+  ]);
   const { data: rolesData, loading: loadingRoles } = useFetchApi({
-    url: '/settings/roles',
+    url: '/roles',
     defaultData: [],
   });
   const roles = rolesData.roles;
@@ -51,12 +64,7 @@ const User = () => {
 
   const handleCreateUser = async () => {
     try {
-      setCreating(true);
-      const res = await axios({
-        method: 'POST',
-        url: `${process.env.REACT_APP_BASE_API_URL}/auth/register`,
-        data: createFormData,
-      });
+      const res = await createApi(createFormData);
       if (!res.data.success) {
         return setToast(res.data.message, 'error');
       }
@@ -66,7 +74,6 @@ const User = () => {
       console.log(error);
       setToast('Tạo mới thất bại', 'error');
     } finally {
-      setCreating(false);
       setIsShowCreateForm(false);
       fetchApi();
     }
@@ -74,11 +81,7 @@ const User = () => {
 
   const handleDeleteUser = async (id) => {
     try {
-      setDeleting(true);
-      const res = await axios({
-        method: 'DELETE',
-        url: `${process.env.REACT_APP_BASE_API_URL}/user/${id}`,
-      });
+      const res = await deleteApi(id);
       if (!res.data.success) {
         setToast(res.data.message, 'error');
       }
@@ -87,26 +90,13 @@ const User = () => {
     } catch (error) {
       console.log(error);
       setToast('Xóa thất bại', 'error');
-    } finally {
-      setDeleting(false);
     }
   };
 
   if (loading || loadingRoles)
     return (
       <Flex vertical gap={16}>
-        <Breadcrumb
-          items={[
-            {
-              href: '/',
-              title: <HomeOutlined />,
-            },
-            {
-              href: '/users',
-              title: 'Quản lý thành viên',
-            },
-          ]}
-        />
+        <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Danh sách thành viên"
           extra={
@@ -121,18 +111,7 @@ const User = () => {
     );
   return (
     <Flex vertical gap={16}>
-      <Breadcrumb
-        items={[
-          {
-            href: '/',
-            title: <HomeOutlined />,
-          },
-          {
-            href: '/users',
-            title: 'Quản lý thành viên',
-          },
-        ]}
-      />
+      <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách thành viên"
         extra={
@@ -296,22 +275,23 @@ const User = () => {
             renderItem={(item) => (
               <List.Item
                 extra={[
-                  <Button
-                    type="link"
-                    icon={<EyeOutlined />}
-                    onClick={() => navigate(`/user/${item.id}`)}
-                  >
-                    Xem chi tiết
-                  </Button>,
-                  item.Role.alias !== 'admin' ? (
+                  <Popover content="Xem chi tiết" trigger="hover">
                     <Button
                       type="link"
-                      danger
-                      icon={<DeleteOutlined />}
-                      onClick={() => handleDeleteUser(item.id)}
-                    >
-                      Xóa
-                    </Button>
+                      icon={<EyeOutlined />}
+                      onClick={() => navigate(`/user/${item.id}`)}
+                    />
+                  </Popover>,
+
+                  item.Role.name !== ADMIN ? (
+                    <Popover content="Xóa thành viên" trigger="hover">
+                      <Button
+                        type="link"
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleDeleteUser(item.id)}
+                      />
+                    </Popover>
                   ) : null,
                 ]}
               >

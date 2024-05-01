@@ -4,7 +4,15 @@ import './index.css';
 import { Routes, Route } from 'react-router-dom';
 import PrivateRoute from './routes/PrivateRoute';
 import Home from './pages/Home';
-import { permissionsConsts } from './const/permissionConsts';
+import {
+  DASHBOARD_READ,
+  USER_READ,
+  ROLE_READ,
+  ROLE_UPDATE,
+  BIDDING_READ,
+  EQUIPMENT_READ,
+  BIDDING_UPDATE,
+} from './const/permission';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
@@ -25,7 +33,7 @@ function App() {
       <Route
         path="/"
         element={
-          <PrivateRoute permission={permissionsConsts.DASHBOARD_READ}>
+          <PrivateRoute permission={DASHBOARD_READ}>
             <Home />
           </PrivateRoute>
         }
@@ -33,7 +41,7 @@ function App() {
       <Route
         path="/profile"
         element={
-          <PrivateRoute permission={permissionsConsts.PROFILE_SETTING}>
+          <PrivateRoute>
             <Profile />
           </PrivateRoute>
         }
@@ -42,7 +50,7 @@ function App() {
       <Route
         path="/users"
         element={
-          <PrivateRoute permission={permissionsConsts.USER_READ}>
+          <PrivateRoute permission={USER_READ}>
             <User />
           </PrivateRoute>
         }
@@ -50,7 +58,7 @@ function App() {
       <Route
         path="/user/:id"
         element={
-          <PrivateRoute permission={permissionsConsts.USER_UPDATE}>
+          <PrivateRoute permission={USER_READ}>
             <DetailUser />
           </PrivateRoute>
         }
@@ -58,7 +66,7 @@ function App() {
       <Route
         path="/roles"
         element={
-          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+          <PrivateRoute permission={ROLE_READ}>
             <ListRole />
           </PrivateRoute>
         }
@@ -67,7 +75,7 @@ function App() {
       <Route
         path="/role/:id"
         element={
-          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+          <PrivateRoute permission={ROLE_READ}>
             <DetailRole />
           </PrivateRoute>
         }
@@ -75,7 +83,7 @@ function App() {
       <Route
         path="/role/edit/:id"
         element={
-          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+          <PrivateRoute permission={ROLE_UPDATE}>
             <EditRole />
           </PrivateRoute>
         }
@@ -83,7 +91,7 @@ function App() {
       <Route
         path="/shopping/bidding"
         element={
-          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+          <PrivateRoute permission={BIDDING_READ}>
             <Bidding />
           </PrivateRoute>
         }
@@ -91,7 +99,7 @@ function App() {
       <Route
         path="/equipments"
         element={
-          <PrivateRoute permission={permissionsConsts.EQUIPMENT_READ}>
+          <PrivateRoute permission={EQUIPMENT_READ}>
             <Equipment />
           </PrivateRoute>
         }
@@ -99,7 +107,7 @@ function App() {
       <Route
         path="/equipment/:id"
         element={
-          <PrivateRoute permission={permissionsConsts.EQUIPMENT_READ}>
+          <PrivateRoute permission={EQUIPMENT_READ}>
             <DetailEquipment />
           </PrivateRoute>
         }
@@ -107,7 +115,7 @@ function App() {
       <Route
         path="/shopping/non-bidding"
         element={
-          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+          <PrivateRoute permission={BIDDING_READ}>
             <Bidding />
           </PrivateRoute>
         }
@@ -115,7 +123,7 @@ function App() {
       <Route
         path="/shopping/bidding/:id"
         element={
-          <PrivateRoute permission={permissionsConsts.SYSTEM_SETTING}>
+          <PrivateRoute permission={BIDDING_UPDATE}>
             <EditBidding />
           </PrivateRoute>
         }

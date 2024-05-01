@@ -9,22 +9,30 @@ import {
   Button,
   Skeleton,
 } from 'antd';
-import { HomeOutlined } from '@ant-design/icons';
-import { EditOutlined } from '@ant-design/icons';
+import { HomeOutlined, UserOutlined, EditOutlined } from '@ant-design/icons';
 import useFetchApi from '../../hooks/useFetchApi';
-import isHasPermission from '../../helpers/isHasPermission';
-import { permissionsConsts } from '../../const/permissionConsts';
-import { useAuth } from '../../contexts/authProvider';
-import EditModal from './Edit';
+import { useApp } from '../../contexts/appProvider';
+import EditProfileForm from './Form/Edit';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 
 const Profile = () => {
-  const { user, setUser } = useAuth();
+  const { user, setUser } = useApp();
   const [isShowEditForm, setIsShowEditForm] = useState(false);
 
   const { data: rolesData, loading: loadingRoles } = useFetchApi({
-    url: '/settings/roles',
+    url: '/roles',
     defaultData: [],
   });
+  const breadcrumbItems = useBreadcrumb([
+    {
+      href: '/',
+      title: <HomeOutlined />,
+    },
+    {
+      href: '/users',
+      title: 'Thông tin cá nhân',
+    },
+  ]);
   const roles = rolesData.roles;
 
   const [editFormData, setEditFormData] = useState(user);
@@ -72,26 +80,13 @@ const Profile = () => {
   if (loadingRoles) {
     return (
       <Flex vertical gap={16}>
-        <Breadcrumb
-          items={[
-            {
-              href: '/',
-              title: <HomeOutlined />,
-            },
-            {
-              href: '/users',
-              title: 'Thông tin cá nhân',
-            },
-          ]}
-        />
+        <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Thông tin cá nhân"
           extra={
-            isHasPermission(permissionsConsts.USER_UPDATE) && (
-              <Button type="primary" icon={<EditOutlined />} disabled>
-                Cập nhật
-              </Button>
-            )
+            <Button type="primary" icon={<EditOutlined />} disabled>
+              Cập nhật
+            </Button>
           }
         >
           <Flex vertical align="center" gap={24}>
@@ -113,19 +108,8 @@ const Profile = () => {
   }
   return (
     <Flex vertical gap={16}>
-      <Breadcrumb
-        items={[
-          {
-            href: '/',
-            title: <HomeOutlined />,
-          },
-          {
-            href: '/profile',
-            title: 'Thông tin cá nhân',
-          },
-        ]}
-      />
-      <EditModal
+      <Breadcrumb items={breadcrumbItems} />
+      <EditProfileForm
         open={isShowEditForm}
         setOpen={() => setIsShowEditForm()}
         formValue={editFormData}
@@ -138,25 +122,21 @@ const Profile = () => {
       <Card
         title="Thông tin cá nhân"
         extra={
-          isHasPermission(permissionsConsts.USER_UPDATE) && (
-            <Button
-              type="primary"
-              icon={<EditOutlined />}
-              onClick={() => setIsShowEditForm(true)}
-            >
-              Cập nhật
-            </Button>
-          )
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => setIsShowEditForm(true)}
+          >
+            Cập nhật
+          </Button>
         }
       >
         <Flex vertical align="center" gap={24}>
           <Flex vertical align="center" gap={8}>
             <Avatar
               size={128}
-              src={
-                user.image ||
-                'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-              }
+              src={user.image}
+              icon={<UserOutlined />}
               shape="circle"
             />
             <Flex vertical align="center" gap={4}>

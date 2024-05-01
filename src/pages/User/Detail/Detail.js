@@ -14,23 +14,42 @@ import {
 import { HomeOutlined } from '@ant-design/icons';
 import { EditOutlined, UserOutlined } from '@ant-design/icons';
 import useFetchApi from '../../../hooks/useFetchApi';
-import isHasPermission from '../../../helpers/isHasPermission';
-import { permissionsConsts } from '../../../const/permissionConsts';
+import hasPermission from '../../../helpers/hasPermission';
+import { USER_UPDATE } from '../../../const/permission';
 import EditModal from '../EditModal';
-import { useAuth } from '../../../contexts/authProvider';
+import { useApp } from '../../../contexts/appProvider';
+import { ADMIN } from '../../../const/role';
+import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 
 const Detail = () => {
   const { id } = useParams();
-  const { user, setUser } = useAuth();
+  const { user, setUser } = useApp();
   const { data, loading, fetchApi, setData } = useFetchApi({
     url: `/user/${id}`,
   });
   const [isShowEditForm, setIsShowEditForm] = useState(false);
 
   const { data: rolesData, loading: loadingRoles } = useFetchApi({
-    url: '/settings/roles',
-    defaultData: [],
+    url: '/roles',
   });
+  const breadcrumbItems = useBreadcrumb([
+    {
+      href: '/',
+      title: <HomeOutlined />,
+    },
+    {
+      href: '/users',
+      title: 'Quản lý thành viên',
+    },
+    {
+      href: `/user/${id}`,
+      title: loading
+        ? '----------'
+        : data.user?.name
+        ? data.user?.name
+        : data.user?.email,
+    },
+  ]);
   const roles = rolesData.roles;
 
   const [editFormData, setEditFormData] = useState();
@@ -90,26 +109,11 @@ const Detail = () => {
   if (loading || loadingRoles) {
     return (
       <Flex vertical gap={16}>
-        <Breadcrumb
-          items={[
-            {
-              href: '/',
-              title: <HomeOutlined />,
-            },
-            {
-              href: '/users',
-              title: 'Quản lý thành viên',
-            },
-            {
-              href: `/user/${id}`,
-              title: '----------',
-            },
-          ]}
-        />
+        <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Thông tin người dùng"
           extra={
-            isHasPermission(permissionsConsts.USER_UPDATE) && (
+            hasPermission(USER_UPDATE) && (
               <Button type="primary" icon={<EditOutlined />} disabled>
                 Cập nhật
               </Button>
@@ -135,22 +139,7 @@ const Detail = () => {
   }
   return (
     <Flex vertical gap={16}>
-      <Breadcrumb
-        items={[
-          {
-            href: '/',
-            title: <HomeOutlined />,
-          },
-          {
-            href: '/users',
-            title: 'Quản lý thành viên',
-          },
-          {
-            href: '/',
-            title: data.user?.name ? data.user?.name : data.user?.email,
-          },
-        ]}
-      />
+      <Breadcrumb items={breadcrumbItems} />
       <EditModal
         open={isShowEditForm}
         value={editFormData}
@@ -165,7 +154,8 @@ const Detail = () => {
       <Card
         title="Thông tin người dùng"
         extra={
-          isHasPermission(permissionsConsts.USER_UPDATE) && (
+          hasPermission(USER_UPDATE) &&
+          data.user?.Role.name !== ADMIN && (
             <Button
               type="primary"
               icon={<EditOutlined />}
