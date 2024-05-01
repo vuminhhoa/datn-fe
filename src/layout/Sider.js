@@ -7,22 +7,24 @@ import {
   TeamOutlined,
 } from '@ant-design/icons';
 import { Menu, Layout } from 'antd';
-import { ROLE_READ, BIDDING_READ } from '../const/permission';
+import {
+  ROLE_READ,
+  BIDDING_READ,
+  USER_READ,
+  EQUIPMENT_READ,
+} from '../const/permission';
 import { useNavigate } from 'react-router-dom';
-import { useApp } from '../contexts/appProvider';
+import hasPermission from '../helpers/hasPermission';
 
 const { Sider } = Layout;
 
 function AppSider() {
   const navigate = useNavigate();
-  const { user } = useApp();
   const [collapsed, setCollapsed] = useState(false);
 
   function getItem({ label, key, icon, children, permission }) {
     if (permission) {
-      const canSeeItem = user?.Role?.Permissions.find(
-        (userPermission) => userPermission.name === permission
-      );
+      const canSeeItem = hasPermission(permission);
       if (!canSeeItem) return false;
     }
     return {
@@ -38,16 +40,19 @@ function AppSider() {
       label: 'Quản lý thành viên',
       key: '/users',
       icon: <TeamOutlined />,
+      permission: USER_READ,
     }),
     getItem({
       label: 'Quản lý thiết bị',
       key: '/equipments',
       icon: <DesktopOutlined />,
+      permission: EQUIPMENT_READ,
     }),
     getItem({
       label: 'Hoạt động mua sắm',
       key: '/shopping/bidding',
       icon: <AuditOutlined />,
+      permission: BIDDING_READ,
     }),
     // getItem({
     //   label: 'Hoạt động mua sắm',
