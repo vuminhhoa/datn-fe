@@ -41,39 +41,39 @@ const Profile = () => {
     {
       key: '1',
       label: 'Tên',
-      children: user?.name,
+      children: user.name,
     },
     {
       key: '2',
       label: 'Số điện thoại',
-      children: user?.phone,
+      children: user.phone,
     },
     {
       key: '3',
       label: 'Địa chỉ',
-      children: user?.address,
+      children: user.address,
     },
     {
       key: '4',
       label: 'Khoa phòng',
-      children: user?.department,
+      children: user.department,
     },
     {
       key: '5',
       label: 'Vai trò',
-      children: user?.Role.name,
+      children: user.Role.name,
     },
     {
       key: '6',
       label: 'Email',
-      children: user?.email,
+      children: user.email,
     },
     {
       key: '6',
       label: 'Quyền hạn',
-      children: user?.Role.Permissions.map(
-        (permission) => permission.name
-      ).join(', '),
+      children: user.Role.Permissions.map((permission) => permission.name).join(
+        ', '
+      ),
     },
   ];
 
