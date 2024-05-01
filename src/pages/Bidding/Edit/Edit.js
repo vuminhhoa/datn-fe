@@ -18,16 +18,17 @@ import KeHoachLuaChonNhaThau from '../Form/KeHoachLuaChonNhaThau';
 import Ehsmt from '../Form/Ehsmt';
 import useFetchApi from '../../../hooks/useFetchApi';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import { useApp } from '../../../contexts/appProvider';
 import CollapsibleForm from '../Component/CollapsibleForm';
 import Ehsdt from '../Form/Ehsdt';
 import KyKetThucHienHopDong from '../Form/KyKetThucHienHopDong';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
+import useEditApi from '../../../hooks/useEditApi';
 
 const Edit = () => {
   const { id } = useParams();
   const { setToast } = useApp();
+  const { editing, editApi } = useEditApi(`/bidding/${id}`);
   const { data, setData, loading, fetchApi } = useFetchApi({
     url: `/bidding/${id}`,
   });
@@ -39,7 +40,6 @@ const Edit = () => {
       title: loading ? '----------' : data.tenDeXuat,
     },
   ]);
-  const [saving, setSaving] = useState(false);
   const [initData, setInitData] = useState(null);
   const [deletedFields, setDeletedFields] = useState([]);
 
@@ -101,18 +101,14 @@ const Edit = () => {
 
   const handleSaveBidding = async () => {
     try {
-      setSaving(true);
-      await axios({
-        method: 'POST',
-        url: `${process.env.REACT_APP_BASE_API_URL}/bidding/${id}`,
-        data: { ...data, deletedFields: deletedFields },
-      });
-      setToast('Lưu thành công');
+      const res = await editApi({ ...data, deletedFields: deletedFields });
+      if (res.data.success) {
+        setToast('Lưu thành công');
+      }
     } catch (error) {
       console.log(error);
       setToast('Lưu thất bại', 'error');
     } finally {
-      setSaving(false);
       fetchApi();
     }
   };
@@ -148,14 +144,18 @@ const Edit = () => {
   console.log(deletedFields);
   return (
     <BiddingContext.Provider
-      value={{ data, setData, saving, initData, setDeletedFields }}
+      value={{ data, setData, editing, initData, setDeletedFields }}
     >
       <Flex vertical gap={16}>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title={`Chi tiết hoạt động: ${data.tenDeXuat}`}
           extra={
-            <Button type="primary" onClick={handleSaveBidding} loading={saving}>
+            <Button
+              type="primary"
+              onClick={handleSaveBidding}
+              loading={editing}
+            >
               Lưu
             </Button>
           }

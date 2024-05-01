@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Form, Input, Select, Flex, Button } from 'antd';
-import axios from 'axios';
 import { useApp } from '../../../contexts/appProvider';
+import useCreateApi from '../../../hooks/useCreateApi';
 
 const CreateForm = ({ fetchApi, setIsShowCreateForm }) => {
   const [form] = Form.useForm();
   const { setToast } = useApp();
-  const [creating, setCreating] = useState(false);
+  const { creating, createApi } = useCreateApi('/equipment');
   const defaultCreateFormData = {
     maThietBi: '',
     tenThietBi: '',
@@ -27,20 +27,14 @@ const CreateForm = ({ fetchApi, setIsShowCreateForm }) => {
 
   const handleCreateEquipment = async () => {
     try {
-      setCreating(true);
-      console.log(createFormData);
-      const res = await axios({
-        method: 'POST',
-        url: `${process.env.REACT_APP_BASE_API_URL}/equipment`,
-        data: createFormData,
-      });
-      console.log(res);
+      const res = await createApi(createFormData);
+      if (res.data.success) {
+        return setToast('Tạo mới thành công!');
+      }
     } catch (error) {
       console.log(error);
       setToast('Tạo mới thất bại', 'error');
     } finally {
-      setToast('Tạo mới thành công');
-      setCreating(false);
       setIsShowCreateForm(false);
       fetchApi();
     }

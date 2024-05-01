@@ -8,8 +8,9 @@ import { isMobile } from 'react-device-detect'; // Import hàm kiểm tra thiế
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
-  const userLocalData = JSON.parse(localStorage.getItem('CURRENT_USER'));
-  const [user, setUser] = useState(userLocalData || null);
+  const userInLs = localStorage.getItem('CURRENT_USER');
+  const userLocalData = userInLs ? JSON.parse(userInLs) : null;
+  const [user, setUser] = useState(userLocalData);
   const {
     loading,
     data,
@@ -22,7 +23,11 @@ const AppProvider = ({ children }) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
-    if (!loading && JSON.stringify(user) !== JSON.stringify(data.user)) {
+    if (
+      !loading &&
+      JSON.stringify(user) !== JSON.stringify(data.user) &&
+      userInLs
+    ) {
       setUser(data.user);
       localStorage.setItem('CURRENT_USER', JSON.stringify(data.user));
     }

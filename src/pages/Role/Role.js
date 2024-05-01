@@ -20,10 +20,10 @@ import {
   PERMISSION_GROUP,
   ROLE_CREATE,
 } from '../../const/permission.js';
-import axios from 'axios';
 import { useApp } from '../../contexts/appProvider.js';
 import hasPermission from '../../helpers/hasPermission.js';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb.js';
+import useCreateApi from '../../hooks/useCreateApi.js';
 
 const columns = [
   {
@@ -43,6 +43,7 @@ const columns = [
 
 const Role = () => {
   const { setToast } = useApp();
+  const { creating, createApi } = useCreateApi('/role');
   const { data, setData, loading, fetchApi } = useFetchApi({
     url: '/roles',
   });
@@ -58,7 +59,6 @@ const Role = () => {
     },
   ]);
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
-  const [creating, setCreating] = useState(false);
   const [selectedPermission, setSelectedPermission] = useState([]);
 
   const [form] = Form.useForm();
@@ -102,11 +102,9 @@ const Role = () => {
 
   const handleCreateRole = async () => {
     try {
-      setCreating(true);
-      const res = await axios({
-        method: 'POST',
-        url: `${process.env.REACT_APP_BASE_API_URL}/role`,
-        data: { ...createFormData, permissions: selectedPermission },
+      const res = await createApi({
+        ...createFormData,
+        permissions: selectedPermission,
       });
       if (!res.data.success) {
         return setToast(res.data.message, 'error');
@@ -117,7 +115,6 @@ const Role = () => {
       console.log(error);
       setToast('Tạo mới thất bại', 'error');
     } finally {
-      setCreating(false);
       setIsShowCreateForm(false);
       fetchApi();
     }

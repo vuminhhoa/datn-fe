@@ -10,11 +10,18 @@ import { useApp } from '../../../contexts/appProvider.js';
 import useDeleteApi from '../../../hooks/useDeleteApi.js';
 import NotFound from '../../NotFound/NotFound.js';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb.js';
-
+function checkUserInArray(arr, email) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].email === email) {
+      return true;
+    }
+  }
+  return false;
+}
 const DetailRole = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { setToast } = useApp();
+  const { setToast, fetchAppUser, user } = useApp();
   const { deleting, deleteApi } = useDeleteApi(`/role/${id}`);
   const { data, loading } = useFetchApi({
     url: `/role/${id}`,
@@ -51,7 +58,7 @@ const DetailRole = () => {
               return (
                 <Button
                   type="link"
-                  href={`/user/${user.id}`}
+                  onClick={() => navigate(`/user/${user.id}`)}
                   size="small"
                   key={index}
                 >
@@ -76,6 +83,10 @@ const DetailRole = () => {
       const res = await deleteApi();
       if (res.data.success) {
         setToast('Xóa thành công');
+        const isUserHasRole = checkUserInArray(data.roles.Users, user.email);
+        if (isUserHasRole) {
+          fetchAppUser();
+        }
       }
     } catch (error) {
       console.log(error);

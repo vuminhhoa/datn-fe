@@ -1,14 +1,14 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { Flex, Avatar, Button, Modal, Form, Input, Upload } from 'antd';
-import axios from 'axios';
 import { useApp } from '../../../contexts/appProvider';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { convertBase64 } from '../../../helpers/uploadFile';
+import useEditApi from '../../../hooks/useEditApi';
 
 const Edit = ({ open, input, setInput, setOpen, formValue, setFormValue }) => {
   const { setToast, setUser } = useApp();
-  const [updating, setUpdating] = useState(false);
+  const { editing, editApi } = useEditApi(`/user`);
   const [form] = Form.useForm();
   const [uploading, setUploading] = useState(false);
   const [initData, setInitdata] = useState();
@@ -26,12 +26,7 @@ const Edit = ({ open, input, setInput, setOpen, formValue, setFormValue }) => {
 
   const handleUpdateUser = async () => {
     try {
-      setUpdating(true);
-      const res = await axios({
-        method: 'POST',
-        url: `${process.env.REACT_APP_BASE_API_URL}/user`,
-        data: formValue,
-      });
+      const res = await editApi(formValue);
       if (!res.data.success) {
         return setToast(res.data.message, 'error');
       }
@@ -42,7 +37,6 @@ const Edit = ({ open, input, setInput, setOpen, formValue, setFormValue }) => {
       console.log(error);
       setToast('Cập nhật thất bại', 'error');
     } finally {
-      setUpdating(false);
       setOpen(false);
     }
   };
@@ -160,7 +154,7 @@ const Edit = ({ open, input, setInput, setOpen, formValue, setFormValue }) => {
           >
             Hủy
           </Button>
-          <Button type="primary" htmlType="submit" loading={updating}>
+          <Button type="primary" htmlType="submit" loading={editing}>
             Lưu
           </Button>
         </Flex>
