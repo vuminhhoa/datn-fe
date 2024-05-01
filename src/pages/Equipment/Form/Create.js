@@ -3,7 +3,7 @@ import { Form, Input, Select, Flex, Button } from 'antd';
 import { useApp } from '../../../contexts/appProvider';
 import useCreateApi from '../../../hooks/useCreateApi';
 
-const CreateForm = ({ fetchApi, setIsShowCreateForm }) => {
+const CreateEquipmentForm = ({ fetchApi, setIsShowCreateForm }) => {
   const [form] = Form.useForm();
   const { setToast } = useApp();
   const { creating, createApi } = useCreateApi('/equipment');
@@ -165,4 +165,4 @@ const CreateForm = ({ fetchApi, setIsShowCreateForm }) => {
     </Form>
   );
 };
-export default CreateForm;
+export default CreateEquipmentForm;

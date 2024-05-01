@@ -6,7 +6,14 @@ import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { convertBase64 } from '../../../helpers/uploadFile';
 import useEditApi from '../../../hooks/useEditApi';
 
-const Edit = ({ open, input, setInput, setOpen, formValue, setFormValue }) => {
+const EditProfileForm = ({
+  open,
+  input,
+  setInput,
+  setOpen,
+  formValue,
+  setFormValue,
+}) => {
   const { setToast, setUser } = useApp();
   const { editing, editApi } = useEditApi(`/user`);
   const [form] = Form.useForm();
@@ -163,4 +170,4 @@ const Edit = ({ open, input, setInput, setOpen, formValue, setFormValue }) => {
   );
 };
 
-export default Edit;
+export default EditProfileForm;

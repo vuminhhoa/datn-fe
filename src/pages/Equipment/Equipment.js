@@ -15,7 +15,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useApp } from '../../contexts/appProvider';
 import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
-import CreateForm from './CreateForm/CreateForm';
+import CreateEquipmentForm from './Form/Create';
 import hasPermission from '../../helpers/hasPermission';
 import {
   EQUIPMENT_CREATE,
@@ -45,6 +45,30 @@ const Equipment = () => {
       title: 'Quản lý thiết bị',
     },
   ]);
+
+  const getTagColor = (status) => {
+    let color = '';
+    switch (status) {
+      case 'Mới nhập':
+        color = 'processing';
+        break;
+      case 'Đang sử dụng':
+        color = 'success';
+        break;
+      case 'Đang sửa chữa':
+        color = 'warning';
+        break;
+      case 'Đã hỏng':
+        color = 'error';
+        break;
+      default:
+        color = 'default';
+    }
+    return {
+      color: color,
+      title: status,
+    };
+  };
   const columns = [
     {
       title: 'Mã thiết bị',
@@ -80,12 +104,8 @@ const Equipment = () => {
       key: 'trangThai',
       dataIndex: 'trangThai',
       render: (_, record) => {
-        let tagColor = '';
-        if (record.trangThai === 'Mới nhập') tagColor = 'processing';
-        if (record.trangThai === 'Đã thanh lý') tagColor = 'error';
-        if (record.trangThai === 'Đang hỏng') tagColor = 'warning';
-
-        return <Tag color={tagColor}>{record.trangThai}</Tag>;
+        const equipmentTag = getTagColor(record.trangThai);
+        return <Tag color={equipmentTag.color}>{equipmentTag.title}</Tag>;
       },
     },
 
@@ -176,7 +196,7 @@ const Equipment = () => {
             onCancel={() => setIsShowCreateForm(false)}
             footer={null}
           >
-            <CreateForm
+            <CreateEquipmentForm
               fetchApi={fetchApi}
               setIsShowCreateForm={setIsShowCreateForm}
             />

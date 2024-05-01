@@ -50,17 +50,14 @@ const Edit = () => {
 
   const items = [
     {
-      key: 'decs1',
       label: 'Tên khoa phòng',
       children: data.khoaPhongDeXuat,
     },
     data.ngayDeXuat !== null && {
-      key: 'decs2',
       label: 'Ngày đề xuất',
       children: data.ngayDeXuat,
     },
     {
-      key: 'decs3',
       label: 'Trạng thái',
       children: (
         <>
@@ -78,22 +75,18 @@ const Edit = () => {
     },
     (data.trangThaiDeXuat === 'approved' ||
       data.trangThaiDeXuat === 'reject') && {
-      key: 'decs4',
       label: 'Ngày phê duyệt',
       children: data.ngayPheDuyetDeXuat,
     },
     {
-      key: 'decs5',
       label: 'Ngày tạo hoạt động',
       children: data.createdAt,
     },
     {
-      key: 'decs6',
       label: 'Lần cập nhật cuối',
       children: data.updatedAt,
     },
     {
-      key: 'decs7',
       label: 'Nội dung',
       children: data.noiDungDeXuat,
     },
@@ -141,7 +134,6 @@ const Edit = () => {
       </Flex>
     );
 
-  console.log(deletedFields);
   return (
     <BiddingContext.Provider
       value={{ data, setData, editing, initData, setDeletedFields }}

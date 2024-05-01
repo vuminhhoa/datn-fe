@@ -9,7 +9,7 @@ export default function useEditApi(url) {
     try {
       setEditing(true);
       return await axios({
-        method: 'POST',
+        method: 'PUT',
         url: `${process.env.REACT_APP_BASE_API_URL}${url}`,
         data: body,
         headers: {

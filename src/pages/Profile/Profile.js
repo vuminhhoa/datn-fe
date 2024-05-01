@@ -12,7 +12,7 @@ import {
 import { HomeOutlined, UserOutlined, EditOutlined } from '@ant-design/icons';
 import useFetchApi from '../../hooks/useFetchApi';
 import { useApp } from '../../contexts/appProvider';
-import EditModal from './Edit';
+import EditProfileForm from './Form/Edit';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 
 const Profile = () => {
@@ -109,7 +109,7 @@ const Profile = () => {
   return (
     <Flex vertical gap={16}>
       <Breadcrumb items={breadcrumbItems} />
-      <EditModal
+      <EditProfileForm
         open={isShowEditForm}
         setOpen={() => setIsShowEditForm()}
         formValue={editFormData}
