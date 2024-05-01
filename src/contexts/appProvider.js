@@ -7,13 +7,14 @@ import { isMobile } from 'react-device-detect'; // Import hàm kiểm tra thiế
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
-  const userLocalData = localStorage.getItem('CURRENT_USER');
-  const [user, setUser] = useState(userLocalData);
-  const [data, setData] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
   const navigate = useNavigate();
   const location = useLocation();
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem('CURRENT_USER'))
+  );
+  const [token, setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
   const [loading, setLoading] = useState(true);
+
   const [messageApi, contextHolder] = message.useMessage();
 
   const setToast = (content, type = 'success') => {
@@ -22,27 +23,22 @@ const AppProvider = ({ children }) => {
       content: content,
     });
   };
-
   const fetchAppUser = async () => {
     try {
-      if (!token || !userLocalData) {
-        setLoading(false);
-        return navigate('/login');
-      }
-
       const resp = await axios({
         method: 'GET',
-        url: `${process.env.REACT_APP_BASE_API_URL}/user/${user?.id}`,
+        url: `${process.env.REACT_APP_BASE_API_URL}/user/${user.id}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       if (resp.data.success) {
         setUser(resp.data.user);
-        setData(resp.data);
         localStorage.setItem('CURRENT_USER', JSON.stringify(resp.data.user));
         setLoading(false);
+        return navigate(location.pathname);
       }
+      return navigate('/login');
     } catch (error) {
       console.log(error);
     } finally {
@@ -51,20 +47,15 @@ const AppProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (data) return;
-    fetchAppUser();
-  }, [userLocalData]);
-
-  useEffect(() => {
-    if (
-      !loading &&
-      JSON.stringify(user) !== JSON.stringify(data.user) &&
-      userLocalData
-    ) {
-      setUser(data.user);
-      localStorage.setItem('CURRENT_USER', JSON.stringify(data.user));
+    if (['/sign-up', '/login'].includes(location.pathname)) {
+      return setLoading(false);
     }
-  }, [data]);
+    if (!token || !user) {
+      setLoading(false);
+      return navigate('/login');
+    }
+    fetchAppUser();
+  }, []);
 
   const loginAction = async (data) => {
     try {
@@ -96,15 +87,6 @@ const AppProvider = ({ children }) => {
     localStorage.removeItem('CURRENT_USER');
     navigate('/login');
   };
-
-  useEffect(() => {
-    if (
-      !loading &&
-      data.success === false &&
-      !['/sign-up', '/login'].includes(location.pathname)
-    )
-      return navigate('/login');
-  }, [data]);
 
   if (isMobile) {
     return (
