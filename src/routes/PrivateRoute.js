@@ -5,7 +5,7 @@ import NotFound from '../pages/NotFound';
 import { useApp } from '../contexts/appProvider';
 
 const PrivateRoute = ({ children, permission = null }) => {
-  const { user } = useApp();
+  const { user, logoutAction } = useApp();
 
   const isLoggedIn = Boolean(localStorage.getItem('ACCESS_TOKEN'));
 
@@ -13,7 +13,10 @@ const PrivateRoute = ({ children, permission = null }) => {
     return <Navigate to="/sign-up" />;
   }
   if (permission) {
-    const userPermissons = user.Role.Permissions;
+    const userPermissons = user.Role?.Permissions;
+    if (!userPermissons) {
+      logoutAction();
+    }
     const hasPermission = userPermissons.find(
       (userPermisson) => userPermisson.name === permission
     );
