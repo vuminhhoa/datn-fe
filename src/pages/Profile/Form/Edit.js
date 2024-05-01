@@ -34,12 +34,12 @@ const EditProfileForm = ({
   const handleUpdateUser = async () => {
     try {
       const res = await editApi(formValue);
-      if (!res.data.success) {
-        return setToast(res.data.message, 'error');
+      if (res.data.success) {
+        setUser(formValue);
+        localStorage.setItem('CURRENT_USER', JSON.stringify(formValue));
+        return setToast('Cập nhật thành công!');
       }
-      setUser(formValue);
-      localStorage.setItem('CURRENT_USER', JSON.stringify(formValue));
-      return setToast('Cập nhật thành công!');
+      setToast(res.data.message, 'error');
     } catch (error) {
       console.log(error);
       setToast('Cập nhật thất bại', 'error');
