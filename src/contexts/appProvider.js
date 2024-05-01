@@ -1,5 +1,5 @@
 import { useContext, createContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Spin, message } from 'antd';
 import useFetchApi from '../hooks/useFetchApi';
@@ -10,15 +10,21 @@ const AppContext = createContext();
 const AppProvider = ({ children }) => {
   const userLocalData = JSON.parse(localStorage.getItem('CURRENT_USER'));
   const [user, setUser] = useState(userLocalData || null);
-  const { loading, data } = useFetchApi({ url: `/user/${user?.id}` });
+  const {
+    loading,
+    data,
+    fetchApi: fetchAppUser,
+  } = useFetchApi({ url: `/user/${user?.id}` });
   const [token, setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     if (!loading && JSON.stringify(user) !== JSON.stringify(data.user)) {
       setUser(data.user);
+      localStorage.setItem('CURRENT_USER', JSON.stringify(data.user));
     }
   }, [data]);
 
@@ -63,7 +69,12 @@ const AppProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!loading && data.success === false) return navigate('/login');
+    if (
+      !loading &&
+      data.success === false &&
+      !['/sign-up', '/login'].includes(location.pathname)
+    )
+      return navigate('/login');
   }, [data]);
 
   if (isMobile) {
@@ -90,6 +101,7 @@ const AppProvider = ({ children }) => {
         setUser,
         loginAction,
         logoutAction,
+        fetchAppUser,
         setToast,
       }}
     >

@@ -10,7 +10,7 @@ import { EQUIPMENT_UPDATE } from '../../../const/permission.js';
 const DetailEquipment = () => {
   const { id } = useParams();
   const { data, loading } = useFetchApi({
-    url: `/settings/role/${id}`,
+    url: `/role/${id}`,
   });
   const breadcrumbItems = useBreadcrumb([
     {

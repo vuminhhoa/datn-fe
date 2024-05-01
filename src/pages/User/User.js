@@ -49,7 +49,7 @@ const User = () => {
     },
   ]);
   const { data: rolesData, loading: loadingRoles } = useFetchApi({
-    url: '/settings/roles',
+    url: '/roles',
     defaultData: [],
   });
   const roles = rolesData.roles;

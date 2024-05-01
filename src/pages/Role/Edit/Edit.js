@@ -20,9 +20,19 @@ import useEditApi from '../../../hooks/useEditApi.js';
 import { useApp } from '../../../contexts/appProvider.js';
 import NotFound from '../../NotFound/NotFound.js';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb.js';
+
+function checkUserInArray(arr, email) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].email === email) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const EditRole = () => {
   const { id } = useParams();
-  const { setToast } = useApp();
+  const { setToast, user, fetchAppUser } = useApp();
   const { data, loading, fetched, fetchApi } = useFetchApi({
     url: `/role/${id}`,
   });
@@ -41,14 +51,16 @@ const EditRole = () => {
   ]);
   const [selected, setSelected] = useState([]);
   const { editing, editApi } = useEditApi(`/role/${id}`);
-
   const handleSave = async () => {
     try {
       const perpareData = { roleId: data.roles.id, permissions: selected };
       const res = await editApi(perpareData);
-      console.log(res);
       if (res.data.success) {
         setToast('Cập nhật thành công');
+        const isUserHasRole = checkUserInArray(data.roles.Users, user.email);
+        if (isUserHasRole) {
+          fetchAppUser();
+        }
       }
     } catch (error) {
       console.log(error);

@@ -44,7 +44,7 @@ const columns = [
 const Role = () => {
   const { setToast } = useApp();
   const { data, setData, loading, fetchApi } = useFetchApi({
-    url: '/settings?type=getRoles',
+    url: '/roles',
   });
 
   const breadcrumbItems = useBreadcrumb([

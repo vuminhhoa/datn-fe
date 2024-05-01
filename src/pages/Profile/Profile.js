@@ -20,7 +20,7 @@ const Profile = () => {
   const [isShowEditForm, setIsShowEditForm] = useState(false);
 
   const { data: rolesData, loading: loadingRoles } = useFetchApi({
-    url: '/settings/roles',
+    url: '/roles',
     defaultData: [],
   });
   const breadcrumbItems = useBreadcrumb([

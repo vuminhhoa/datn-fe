@@ -13,12 +13,14 @@ import {
 } from 'antd';
 import './Login.css';
 import { useApp } from '../../contexts/appProvider';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const auth = useApp();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [messageApi, contextHolder] = message.useMessage();
+  const navigate = useNavigate();
 
   const onFinish = async (values) => {
     try {
@@ -105,7 +107,9 @@ const Login = () => {
             </Button>
             <Typography>
               hoặc{' '}
-              <Typography.Link href="/sign-up">đăng ký ngay!</Typography.Link>
+              <Typography.Link onClick={() => navigate('/sign-up')}>
+                đăng ký ngay!
+              </Typography.Link>
             </Typography>
           </Space>
         </Form>
