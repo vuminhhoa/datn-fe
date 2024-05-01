@@ -16,7 +16,7 @@ import { useApp } from '../../contexts/appProvider';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const auth = useApp();
+  const { loginAction } = useApp();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [messageApi, contextHolder] = message.useMessage();
@@ -25,7 +25,7 @@ const Login = () => {
   const onFinish = async (values) => {
     try {
       setLoading(true);
-      auth.loginAction(values);
+      await loginAction(values);
     } catch (error) {
       console.log(error);
       return messageApi.open({
