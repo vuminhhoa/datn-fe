@@ -114,45 +114,6 @@ const CreateEquipmentForm = ({ fetchApi, setIsShowCreateForm }) => {
           autoComplete="off"
         />
       </Form.Item>
-      <Form.Item
-        name="khoaPhong"
-        label="Khoa phòng"
-        rules={[
-          {
-            required: true,
-            message: 'Vui lòng chọn khoa phòng!',
-          },
-        ]}
-      >
-        <Select
-          allowClear
-          placeholder="Chọn khoa phòng"
-          onChange={(value) =>
-            setCreateFormData({
-              ...createFormData,
-              khoaPhong: value,
-            })
-          }
-          options={[
-            {
-              value: 'Khoa vi sinh',
-              label: 'Khoa vi sinh',
-            },
-            {
-              value: 'Khoa y te',
-              label: 'Khoa y te',
-            },
-            {
-              value: 'Khoa dep trai',
-              label: 'Khoa dep trai',
-            },
-            {
-              value: 'Khoa xinh gai',
-              label: 'Khoa xinh gai',
-            },
-          ]}
-        />
-      </Form.Item>
 
       <Flex gap={8} justify="flex-end">
         <Button key="back" onClick={() => setIsShowCreateForm(false)}>

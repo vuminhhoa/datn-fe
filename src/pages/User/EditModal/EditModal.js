@@ -148,41 +148,7 @@ const EditModal = ({
             placeholder="Số điện thoại"
           />
         </Form.Item>
-        <Form.Item
-          name="department"
-          label="Khoa phòng"
-          rules={[{ required: true, message: 'Vui lòng chọn khoa phòng!' }]}
-          initialValue={input.user.department}
-        >
-          <Select
-            allowClear
-            placeholder="Chọn khoa phòng"
-            onChange={(val) =>
-              setValue({
-                ...value,
-                department: val,
-              })
-            }
-            options={[
-              {
-                value: 'Khoa vi sinh',
-                label: 'Khoa vi sinh',
-              },
-              {
-                value: 'Khoa y te',
-                label: 'Khoa y te',
-              },
-              {
-                value: 'Khoa dep trai',
-                label: 'Khoa dep trai',
-              },
-              {
-                value: 'Khoa xinh gai',
-                label: 'Khoa xinh gai',
-              },
-            ]}
-          />
-        </Form.Item>
+
         <Form.Item
           name="role"
           label="Vai trò"

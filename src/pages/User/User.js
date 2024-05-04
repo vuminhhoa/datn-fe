@@ -196,42 +196,7 @@ const User = () => {
                   placeholder="Số điện thoại"
                 />
               </Form.Item>
-              <Form.Item
-                name="department"
-                label="Khoa phòng"
-                rules={[
-                  { required: true, message: 'Vui lòng chọn khoa phòng!' },
-                ]}
-              >
-                <Select
-                  allowClear
-                  placeholder="Chọn khoa phòng"
-                  onChange={(value) =>
-                    setCreateFormData({
-                      ...createFormData,
-                      department: value,
-                    })
-                  }
-                  options={[
-                    {
-                      value: 'Khoa vi sinh',
-                      label: 'Khoa vi sinh',
-                    },
-                    {
-                      value: 'Khoa y te',
-                      label: 'Khoa y te',
-                    },
-                    {
-                      value: 'Khoa dep trai',
-                      label: 'Khoa dep trai',
-                    },
-                    {
-                      value: 'Khoa xinh gai',
-                      label: 'Khoa xinh gai',
-                    },
-                  ]}
-                />
-              </Form.Item>
+
               <Form.Item
                 name="role"
                 label="Vai trò"
