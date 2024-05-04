@@ -246,12 +246,14 @@ const User = () => {
                       role: value,
                     })
                   }
-                  options={roles.map((role) => {
-                    return {
-                      value: role.id,
-                      label: role.name,
-                    };
-                  })}
+                  options={roles
+                    .filter((role) => role.name !== 'Quản trị viên')
+                    .map((role) => {
+                      return {
+                        value: role.id,
+                        label: role.name,
+                      };
+                    })}
                 />
               </Form.Item>
 
