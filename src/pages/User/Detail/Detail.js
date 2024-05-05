@@ -20,6 +20,7 @@ import EditModal from '../EditModal';
 import { useApp } from '../../../contexts/appProvider';
 import { ADMIN } from '../../../const/role';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
+import NotFound from '../../NotFound';
 
 const Detail = () => {
   const { id } = useParams();
@@ -56,12 +57,11 @@ const Detail = () => {
 
   useEffect(() => {
     if (loading || !!editFormData) return;
-
     if (
-      user.id === data.user.id &&
-      JSON.stringify(user.image) !== JSON.stringify(data.user.image)
+      user.id === data.user?.id &&
+      JSON.stringify(user.image) !== JSON.stringify(data.user?.image)
     ) {
-      setUser({ ...user, image: data.user.image });
+      setUser({ ...user, image: data.user?.image });
     }
     setEditFormData({ ...data.user });
   }, [loading, data]);
@@ -137,6 +137,7 @@ const Detail = () => {
       </Flex>
     );
   }
+  if (!data.user) return <NotFound />;
   return (
     <Flex vertical gap={16}>
       <Breadcrumb items={breadcrumbItems} />
@@ -177,10 +178,10 @@ const Detail = () => {
 
             <Flex vertical align="center" gap={4}>
               <Typography.Title level={3} style={{ margin: '0px' }}>
-                {data.user?.name || data.user?.email}
+                {data.user.name || data.user.email}
               </Typography.Title>
               <Typography.Paragraph style={{ margin: '0px' }}>
-                {data.user?.Role.name}
+                {data.user.Role.name}
               </Typography.Paragraph>
             </Flex>
           </Flex>

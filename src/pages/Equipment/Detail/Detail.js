@@ -20,7 +20,7 @@ import hasPermission from '../../../helpers/hasPermission.js';
 import { EQUIPMENT_UPDATE } from '../../../const/permission.js';
 import { PictureOutlined } from '@ant-design/icons';
 import UpdateEquipmentForm from '../Form/Update.js';
-
+import NotFound from '../../NotFound/NotFound.js';
 const Detail = () => {
   const { id } = useParams();
   const [openEditForm, setOpenEditForm] = useState(false);
@@ -119,6 +119,7 @@ const Detail = () => {
       </Flex>
     );
   }
+  if (!data.equipment) return <NotFound />;
   return (
     <Flex vertical gap={16}>
       <Breadcrumb items={breadcrumbItems} />

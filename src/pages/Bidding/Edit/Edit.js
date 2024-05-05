@@ -24,7 +24,7 @@ import Ehsdt from '../Form/Ehsdt';
 import KyKetThucHienHopDong from '../Form/KyKetThucHienHopDong';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import useEditApi from '../../../hooks/useEditApi';
-
+import NotFound from '../../NotFound/NotFound';
 const Edit = () => {
   const { id } = useParams();
   const { setToast } = useApp();
@@ -133,6 +133,8 @@ const Edit = () => {
         </Card>
       </Flex>
     );
+
+  if (!data.id) return <NotFound />;
 
   return (
     <BiddingContext.Provider
