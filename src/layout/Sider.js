@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import {
   AuditOutlined,
   DesktopOutlined,
+  HomeOutlined,
   SettingOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
@@ -12,6 +13,7 @@ import {
   BIDDING_READ,
   USER_READ,
   EQUIPMENT_READ,
+  DASHBOARD_READ,
 } from '../const/permission';
 import { useNavigate } from 'react-router-dom';
 import hasPermission from '../helpers/hasPermission';
@@ -36,6 +38,12 @@ function AppSider() {
   }
 
   const items = [
+    getItem({
+      label: 'Trang chủ',
+      key: '/',
+      icon: <HomeOutlined />,
+      permission: DASHBOARD_READ,
+    }),
     getItem({
       label: 'Quản lý thành viên',
       key: '/users',
