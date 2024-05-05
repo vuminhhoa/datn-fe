@@ -29,7 +29,7 @@ import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 
 const User = () => {
   const navigate = useNavigate();
-  const { setToast } = useApp();
+  const { setToast, user } = useApp();
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [form] = Form.useForm();
   const { creating, createApi } = useCreateApi('/auth/register');
@@ -64,7 +64,11 @@ const User = () => {
 
   const handleCreateUser = async () => {
     try {
-      const res = await createApi(createFormData);
+      const res = await createApi({
+        ...createFormData,
+        isCreateUser: true,
+        actorId: user.id,
+      });
       if (!res.data.success) {
         return setToast(res.data.message, 'error');
       }

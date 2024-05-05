@@ -45,7 +45,19 @@ const AppProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
+  const fetchDashboard = async () => {
+    try {
+      const resp = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_BASE_API_URL}/dashboard`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     if (['/sign-up', '/login'].includes(location.pathname)) {
       return setLoading(false);

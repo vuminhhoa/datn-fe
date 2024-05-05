@@ -33,7 +33,7 @@ const EditProfileForm = ({
 
   const handleUpdateUser = async () => {
     try {
-      const res = await editApi(formValue);
+      const res = await editApi({ ...formValue, isEditProfile: true });
       if (res.data.success) {
         setUser(formValue);
         localStorage.setItem('CURRENT_USER', JSON.stringify(formValue));
