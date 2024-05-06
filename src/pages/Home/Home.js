@@ -79,7 +79,7 @@ function Home() {
           >
             <Statistic
               title="Số lượng hoạt động mua sắm đấu thầu"
-              value={loading ? '--' : data.countBidding}
+              value={loading ? '--' : data.countBiddings}
               valueStyle={{
                 color: '#3f8600',
               }}
@@ -102,7 +102,7 @@ function Home() {
           >
             <Statistic
               title="Số lượng hoạt động mua sắm không đấu thầu"
-              value={loading ? '--' : data.countNonBidding}
+              value={loading ? '--' : data.countNonBiddings}
               valueStyle={{
                 color: '#3f8600',
               }}
@@ -141,7 +141,7 @@ function Home() {
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<Avatar src={item?.image} icon={UserOutlined} />}
+                  avatar={<Avatar src={item?.image} icon={<UserOutlined />} />}
                   description={
                     <Flex justify="space-between" align="baseline">
                       <Typography.Text type="primary">
