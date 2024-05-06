@@ -19,83 +19,13 @@ import {
 import { useNavigate } from 'react-router-dom';
 import useFetchApi from '../../hooks/useFetchApi.js';
 
-const defaultData = {
-  countEquipments: 0,
-  countUsers: 0,
-  countBidding: 0,
-  countNonBidding: 0,
-  activities: [
-    {
-      ActorId: 1,
-      Actor: {
-        name: 'Vũ Minh Hòa',
-        image: 'https://i.pravatar.cc/300',
-      },
-      action: 'đã cập nhật vai trò',
-      actionModel: 'Role',
-      RoleId: 1,
-      Role: {
-        id: 1,
-        name: 'Quản trị viên',
-      },
-      createdAt: '59 phút trước',
-    },
-    {
-      ActorId: 1,
-      Actor: {
-        name: 'Vũ Minh Hòa',
-        image: 'https://i.pravatar.cc/300',
-      },
-      action: 'đã cập nhật thiết bị',
-      actionModel: 'Equipment',
-      EquipmentId: 1,
-      Equipment: {
-        id: 1,
-        name: 'máy tính',
-      },
-      createdAt: '12 phút trước',
-    },
-    {
-      ActorId: 1,
-      Actor: {
-        name: 'Vũ Minh Hòa',
-        image: 'https://i.pravatar.cc/300',
-      },
-      action: 'đã xóa vai trò',
-    },
-    {
-      ActorId: 1,
-      Actor: {
-        name: 'Vũ Minh Hòa',
-        image: 'https://i.pravatar.cc/300',
-      },
-      action: 'đã xóa vai trò',
-    },
-    {
-      ActorId: 1,
-      Actor: {
-        name: 'Vũ Minh Hòa',
-        image: 'https://i.pravatar.cc/300',
-      },
-      action: 'đã xóa vai trò',
-    },
-    {
-      ActorId: 1,
-      Actor: {
-        name: 'Vũ Minh Hòa',
-        image: 'https://i.pravatar.cc/300',
-      },
-      action: 'đã xóa vai trò',
-    },
-  ],
-};
-
 function Home() {
   const navigate = useNavigate();
-  const { data, loading } = useFetchApi({
+  const { data: input, loading } = useFetchApi({
     url: `/dashboard`,
-    defaultData: defaultData,
+    defaultData: {},
   });
+  const data = input.activities;
   return (
     <Flex gap={16} vertical>
       <Row gutter={16}>
@@ -107,8 +37,14 @@ function Home() {
               valueStyle={{
                 color: '#3f8600',
               }}
-              prefix={<UserOutlined />}
-              suffix="thành viên"
+              prefix={
+                <div style={{ paddingInlineEnd: '8px' }}>
+                  <UserOutlined />
+                </div>
+              }
+              suffix={
+                <div style={{ paddingInlineStart: '8px' }}>thành viên</div>
+              }
             />
           </Card>
         </Col>
@@ -124,8 +60,12 @@ function Home() {
               valueStyle={{
                 color: '#3f8600',
               }}
-              prefix={<DesktopOutlined />}
-              suffix="thiết bị"
+              prefix={
+                <div style={{ paddingInlineEnd: '8px' }}>
+                  <DesktopOutlined />
+                </div>
+              }
+              suffix={<div style={{ paddingInlineStart: '8px' }}>thiết bị</div>}
             />
           </Card>
         </Col>
@@ -143,8 +83,14 @@ function Home() {
               valueStyle={{
                 color: '#3f8600',
               }}
-              prefix={<AuditOutlined />}
-              suffix="hoạt động"
+              prefix={
+                <div style={{ paddingInlineEnd: '8px' }}>
+                  <AuditOutlined />
+                </div>
+              }
+              suffix={
+                <div style={{ paddingInlineStart: '8px' }}>hoạt động</div>
+              }
             />
           </Card>
         </Col>
@@ -160,8 +106,14 @@ function Home() {
               valueStyle={{
                 color: '#3f8600',
               }}
-              prefix={<ProfileOutlined />}
-              suffix="hoạt động"
+              prefix={
+                <div style={{ paddingInlineEnd: '8px' }}>
+                  <ProfileOutlined />
+                </div>
+              }
+              suffix={
+                <div style={{ paddingInlineStart: '8px' }}>hoạt động</div>
+              }
             />
           </Card>
         </Col>
@@ -173,41 +125,32 @@ function Home() {
           </Typography.Title>
           <List
             loading={loading}
-            dataSource={data.activities}
+            footer={
+              <Flex justify="center">
+                <Button
+                  type="link"
+                  size="small"
+                  style={{ padding: '0px', margin: '0px' }}
+                  onClick={() => navigate(`/activities`)}
+                >
+                  Xem tất cả
+                </Button>
+              </Flex>
+            }
+            dataSource={data?.activities}
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<Avatar src={item.Actor.image} icon={UserOutlined} />}
+                  avatar={<Avatar src={item?.image} icon={UserOutlined} />}
                   description={
                     <Flex justify="space-between" align="baseline">
-                      <Flex align="center" gap={4}>
-                        <Button
-                          type="link"
-                          size="small"
-                          style={{ padding: '0px', margin: '0px' }}
-                          onClick={() => navigate(`/user/${item.ActorId}`)}
-                        >
-                          {item.Actor.name}
-                        </Button>
+                      <Typography.Text type="primary">
                         {item.action}
-                        {item[item.actionModel] && (
-                          <Button
-                            type="link"
-                            size="small"
-                            style={{ padding: '0px', margin: '0px' }}
-                            onClick={() =>
-                              navigate(
-                                `/${item.actionModel.toLowerCase()}/${
-                                  item[item.actionModel].id
-                                }`
-                              )
-                            }
-                          >
-                            {item[item.actionModel].name}
-                          </Button>
-                        )}
-                      </Flex>
-                      {item.createdAt}
+                      </Typography.Text>
+
+                      <Typography.Text type="secondary">
+                        {item.createdAt}
+                      </Typography.Text>
                     </Flex>
                   }
                 />
