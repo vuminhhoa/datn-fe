@@ -26,6 +26,7 @@ import EditBidding from './pages/Bidding/Edit';
 import User from './pages/User';
 import Equipment from './pages/Equipment';
 import DetailEquipment from './pages/Equipment/Detail';
+import Activity from './pages/Activity';
 
 function App() {
   return (
@@ -35,6 +36,14 @@ function App() {
         element={
           <PrivateRoute permission={DASHBOARD_READ}>
             <Home />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/activities"
+        element={
+          <PrivateRoute permission={DASHBOARD_READ}>
+            <Activity />
           </PrivateRoute>
         }
       />
