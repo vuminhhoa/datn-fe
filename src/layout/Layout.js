@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Layout, Typography } from 'antd';
+import { Flex, Layout, Typography, Button } from 'antd';
 import AppHeader from './Header';
 import AppSider from './Sider';
 const { Content, Footer } = Layout;
@@ -31,9 +31,16 @@ function AppLayout({ children }) {
               textAlign: 'center',
             }}
           >
-            ĐATN HUST ©{new Date().getFullYear()} SVTH:
-            <Typography.Text strong> Vũ Minh Hòa</Typography.Text> - GVHD:
-            <Typography.Text strong> ThS. Hoàng Quang Huy</Typography.Text>
+            ©{new Date().getFullYear()} Developed by{' '}
+            <Button
+              style={{ padding: '0px' }}
+              type="link"
+              href={'https://lab.ibme.edu.vn/'}
+              target="_blank"
+            >
+              iBME lab
+            </Button>{' '}
+            - HUST
           </Footer>
         </Flex>
       </Layout>
