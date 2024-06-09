@@ -76,7 +76,7 @@ const Activity = () => {
             dataSource={data.activities}
             pagination
             renderItem={(item) => {
-              const url = getFetchUrl(item.target.type);
+              const url = item.target ? getFetchUrl(item.target.type) : '';
               return (
                 <List.Item>
                   <List.Item.Meta
@@ -97,16 +97,18 @@ const Activity = () => {
                           <Typography.Text type="primary">
                             {item.action}
                           </Typography.Text>
-                          <Button
-                            type="link"
-                            size="small"
-                            style={{ padding: '0px', margin: '0px' }}
-                            onClick={() =>
-                              navigate(`/${url}/${item.target.id}`)
-                            }
-                          >
-                            {item.target.name}
-                          </Button>
+                          {item.target && (
+                            <Button
+                              type="link"
+                              size="small"
+                              style={{ padding: '0px', margin: '0px' }}
+                              onClick={() =>
+                                navigate(`/${url}/${item.target.id}`)
+                              }
+                            >
+                              {item.target.name}
+                            </Button>
+                          )}
                         </Flex>
 
                         <Typography.Text type="secondary">
