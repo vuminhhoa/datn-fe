@@ -14,6 +14,7 @@ import useFetchApi from '../../hooks/useFetchApi';
 import { useApp } from '../../contexts/appProvider';
 import EditProfileForm from './Form/Edit';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
+import Page from '../../components/Page';
 
 const Profile = () => {
   const { user, setUser } = useApp();
@@ -79,7 +80,7 @@ const Profile = () => {
 
   if (loadingRoles) {
     return (
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Thông tin cá nhân"
@@ -103,11 +104,11 @@ const Profile = () => {
             />
           </Flex>
         </Card>
-      </Flex>
+      </Page>
     );
   }
   return (
-    <Flex vertical gap={16}>
+    <Page>
       <Breadcrumb items={breadcrumbItems} />
       <EditProfileForm
         open={isShowEditForm}
@@ -151,7 +152,7 @@ const Profile = () => {
           <Descriptions items={items} column={3} />
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 };
 

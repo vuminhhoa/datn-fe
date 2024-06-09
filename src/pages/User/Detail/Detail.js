@@ -21,6 +21,7 @@ import { useApp } from '../../../contexts/appProvider';
 import { ADMIN } from '../../../const/role';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import NotFound from '../../NotFound';
+import Page from '../../../components/Page';
 
 const Detail = () => {
   const { id } = useParams();
@@ -108,7 +109,7 @@ const Detail = () => {
 
   if (loading || loadingRoles) {
     return (
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Thông tin người dùng"
@@ -134,12 +135,12 @@ const Detail = () => {
             />
           </Flex>
         </Card>
-      </Flex>
+      </Page>
     );
   }
   if (!data.user) return <NotFound />;
   return (
-    <Flex vertical gap={16}>
+    <Page>
       <Breadcrumb items={breadcrumbItems} />
       <EditModal
         open={isShowEditForm}
@@ -188,7 +189,7 @@ const Detail = () => {
           <Descriptions items={items} column={3} />
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 };
 

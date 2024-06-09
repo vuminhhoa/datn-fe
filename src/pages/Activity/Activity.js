@@ -7,6 +7,7 @@ import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { UserOutlined } from '@ant-design/icons';
 import { List, Avatar } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import Page from '../../components/Page';
 
 const getFetchUrl = (type) => {
   switch (type) {
@@ -35,7 +36,7 @@ const Activity = () => {
 
   if (loading)
     return (
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card bordered={false}>
           <Flex gap={4} vertical>
@@ -45,11 +46,11 @@ const Activity = () => {
             <List loading pagination />
           </Flex>
         </Card>
-      </Flex>
+      </Page>
     );
 
   return (
-    <Flex vertical gap={16}>
+    <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card bordered={false}>
         <Flex gap={4} vertical>
@@ -120,7 +121,7 @@ const Activity = () => {
           />
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 };
 

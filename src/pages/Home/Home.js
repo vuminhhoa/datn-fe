@@ -18,6 +18,7 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import useFetchApi from '../../hooks/useFetchApi.js';
+import Page from '../../components/Page/Page.js';
 
 const getFetchUrl = (type) => {
   switch (type) {
@@ -152,7 +153,7 @@ function Home() {
   console.log(data.activities);
 
   return (
-    <Flex gap={16} vertical>
+    <Page>
       <Row gutter={16}>
         <Col span={12}>
           <Card hoverable bordered={false} onClick={() => navigate('/users')}>
@@ -310,7 +311,7 @@ function Home() {
           />
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 }
 

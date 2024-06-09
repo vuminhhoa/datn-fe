@@ -27,6 +27,7 @@ import User from './pages/User';
 import Equipment from './pages/Equipment';
 import DetailEquipment from './pages/Equipment/Detail';
 import Activity from './pages/Activity';
+import DevZone from './pages/DevZone';
 
 function App() {
   return (
@@ -134,6 +135,14 @@ function App() {
         element={
           <PrivateRoute permission={BIDDING_UPDATE}>
             <EditBidding />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dev_zone"
+        element={
+          <PrivateRoute>
+            <DevZone />
           </PrivateRoute>
         }
       />

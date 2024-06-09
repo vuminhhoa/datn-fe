@@ -21,6 +21,8 @@ import { EQUIPMENT_UPDATE } from '../../../const/permission.js';
 import { PictureOutlined } from '@ant-design/icons';
 import UpdateEquipmentForm from '../Form/Update.js';
 import NotFound from '../../NotFound/NotFound.js';
+import Page from '../../../components/Page/Page.js';
+
 const Detail = () => {
   const { id } = useParams();
   const [openEditForm, setOpenEditForm] = useState(false);
@@ -102,7 +104,7 @@ const Detail = () => {
 
   if (loading) {
     return (
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title={`Thông tin thiết bị: -------------`}
@@ -116,12 +118,12 @@ const Detail = () => {
         >
           <Skeleton />
         </Card>
-      </Flex>
+      </Page>
     );
   }
   if (!data.equipment) return <NotFound />;
   return (
-    <Flex vertical gap={16}>
+    <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title={`Thông tin thiết bị: ${data.equipment.tenThietBi}`}
@@ -163,7 +165,7 @@ const Detail = () => {
           </Row>
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 };
 

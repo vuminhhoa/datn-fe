@@ -14,17 +14,17 @@ function AppLayout({ children }) {
       <AppSider />
       <Layout>
         <AppHeader />
-        <Flex vertical style={{ width: '100%' }}>
-          <Flex justify="center">
-            <Content
-              style={{
-                paddingTop: '24px',
-                maxWidth: '800px',
-              }}
-            >
-              {children}
-            </Content>
-          </Flex>
+        <Flex vertical>
+          <Content
+            style={{
+              justifyContent: 'center',
+              padding: '24px',
+              display: 'flex',
+              width: '100%',
+            }}
+          >
+            {children}
+          </Content>
 
           <Footer
             style={{

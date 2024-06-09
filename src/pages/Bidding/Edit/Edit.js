@@ -25,6 +25,8 @@ import KyKetThucHienHopDong from '../Form/KyKetThucHienHopDong';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import useEditApi from '../../../hooks/useEditApi';
 import NotFound from '../../NotFound/NotFound';
+import Page from '../../../components/Page';
+
 const Edit = () => {
   const { id } = useParams();
   const { setToast } = useApp();
@@ -108,7 +110,7 @@ const Edit = () => {
 
   if (loading)
     return (
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title={
@@ -131,7 +133,7 @@ const Edit = () => {
           <Skeleton />
           <Skeleton />
         </Card>
-      </Flex>
+      </Page>
     );
 
   if (!data.id) return <NotFound />;
@@ -140,7 +142,7 @@ const Edit = () => {
     <BiddingContext.Provider
       value={{ data, setData, editing, initData, setDeletedFields }}
     >
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title={`Chi tiết hoạt động: ${data.tenDeXuat}`}
@@ -188,7 +190,7 @@ const Edit = () => {
             />
           </Flex>
         </Card>
-      </Flex>
+      </Page>
     </BiddingContext.Provider>
   );
 };

@@ -20,6 +20,7 @@ import useEditApi from '../../../hooks/useEditApi.js';
 import { useApp } from '../../../contexts/appProvider.js';
 import NotFound from '../../NotFound/NotFound.js';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb.js';
+import Page from '../../../components/Page/Page.js';
 
 function checkUserInArray(arr, email) {
   for (let i = 0; i < arr.length; i++) {
@@ -90,7 +91,7 @@ const EditRole = () => {
 
   if (loading || !fetched) {
     return (
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title={`Cập nhật vai trò: -------------`}
@@ -102,11 +103,11 @@ const EditRole = () => {
         >
           <Skeleton />
         </Card>
-      </Flex>
+      </Page>
     );
   }
   return (
-    <Flex vertical gap={16}>
+    <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title={`Cập nhật vai trò: ${data.roles?.name}`}
@@ -150,7 +151,7 @@ const EditRole = () => {
           </Flex>
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 };
 

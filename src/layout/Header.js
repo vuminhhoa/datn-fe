@@ -8,7 +8,7 @@ import {
   Dropdown,
   Button,
 } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { BugOutlined, UserOutlined } from '@ant-design/icons';
 import { useApp } from '../contexts/appProvider';
 import { useNavigate } from 'react-router-dom';
 
@@ -65,7 +65,15 @@ function AppHeader() {
         justify={'space-between'}
         align={'center'}
       >
-        <div style={{ width: '250px' }}></div>
+        <div style={{ width: '250px' }}>
+          {user.RoleId === 1 && (
+            <Button
+              icon={<BugOutlined />}
+              type="link"
+              onClick={() => navigate('/dev_zone')}
+            />
+          )}
+        </div>
         <Flex align="center" gap={16}>
           <Avatar
             size={'large'}

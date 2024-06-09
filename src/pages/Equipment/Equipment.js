@@ -24,6 +24,7 @@ import {
 } from '../../const/permission';
 import useDeleteApi from '../../hooks/useDeleteApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
+import Page from '../../components/Page';
 
 const Equipment = () => {
   const navigate = useNavigate();
@@ -154,7 +155,7 @@ const Equipment = () => {
 
   if (loading)
     return (
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Danh sách thiết bị"
@@ -168,11 +169,11 @@ const Equipment = () => {
         >
           <Table loading columns={columns} bordered />
         </Card>
-      </Flex>
+      </Page>
     );
 
   return (
-    <Flex vertical gap={16}>
+    <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách thiết bị"
@@ -209,7 +210,7 @@ const Equipment = () => {
           />
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 };
 

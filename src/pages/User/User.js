@@ -26,6 +26,7 @@ import { ADMIN } from '../../const/role';
 import useCreateApi from '../../hooks/useCreateApi';
 import useDeleteApi from '../../hooks/useDeleteApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
+import Page from '../../components/Page';
 
 const User = () => {
   const navigate = useNavigate();
@@ -99,7 +100,7 @@ const User = () => {
 
   if (loading || loadingRoles)
     return (
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Danh sách thành viên"
@@ -111,10 +112,10 @@ const User = () => {
         >
           <List bordered pagination loading itemLayout="horizontal" />
         </Card>
-      </Flex>
+      </Page>
     );
   return (
-    <Flex vertical gap={16}>
+    <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách thành viên"
@@ -280,7 +281,7 @@ const User = () => {
           />
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 };
 

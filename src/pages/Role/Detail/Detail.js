@@ -10,6 +10,8 @@ import { useApp } from '../../../contexts/appProvider.js';
 import useDeleteApi from '../../../hooks/useDeleteApi.js';
 import NotFound from '../../NotFound/NotFound.js';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb.js';
+import Page from '../../../components/Page/Page.js';
+
 function checkUserInArray(arr, email) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].email === email) {
@@ -99,7 +101,7 @@ const DetailRole = () => {
   }
   if (loading) {
     return (
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title={`Thông tin vai trò: -------------`}
@@ -120,11 +122,11 @@ const DetailRole = () => {
         >
           <Skeleton />
         </Card>
-      </Flex>
+      </Page>
     );
   }
   return (
-    <Flex vertical gap={16}>
+    <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title={`Thông tin vai trò: ${data.roles?.name}`}
@@ -153,7 +155,7 @@ const DetailRole = () => {
           <Descriptions bordered items={borderedItems} column={1} />
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 };
 

@@ -24,6 +24,7 @@ import { useApp } from '../../contexts/appProvider.js';
 import hasPermission from '../../helpers/hasPermission.js';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb.js';
 import useCreateApi from '../../hooks/useCreateApi.js';
+import Page from '../../components/Page/Page.js';
 
 const columns = [
   {
@@ -121,7 +122,7 @@ const Role = () => {
   };
 
   return (
-    <Flex vertical gap={16}>
+    <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách vai trò trong hệ thống"
@@ -228,7 +229,7 @@ const Role = () => {
           />
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 };
 

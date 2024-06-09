@@ -28,6 +28,7 @@ import {
 import useDeleteApi from '../../hooks/useDeleteApi';
 import useCreateApi from '../../hooks/useCreateApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
+import Page from '../../components/Page';
 
 const Bidding = () => {
   const navigate = useNavigate();
@@ -163,7 +164,7 @@ const Bidding = () => {
 
   if (loading)
     return (
-      <Flex vertical gap={16}>
+      <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Danh sách hoạt động mua sắm qua đấu thầu"
@@ -177,11 +178,11 @@ const Bidding = () => {
         >
           <Table loading columns={columns} bordered />
         </Card>
-      </Flex>
+      </Page>
     );
 
   return (
-    <Flex vertical gap={16}>
+    <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách hoạt động mua sắm qua đấu thầu"
@@ -320,7 +321,7 @@ const Bidding = () => {
           />
         </Flex>
       </Card>
-    </Flex>
+    </Page>
   );
 };
 
