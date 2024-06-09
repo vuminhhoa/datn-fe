@@ -150,8 +150,6 @@ function Home() {
     );
   }
 
-  console.log(data.activities);
-
   return (
     <Page>
       <Row gutter={16}>

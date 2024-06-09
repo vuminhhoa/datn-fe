@@ -1,12 +1,19 @@
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, Breadcrumb } from 'antd';
 import React from 'react';
+import { HomeOutlined } from '@ant-design/icons';
 
-export const useBreadcrumb = (items) => {
+export const useBreadcrumb = (items, useComponent = false) => {
   const navigate = useNavigate();
-  return items.map((item) => {
+
+  const homeItem = { title: <HomeOutlined />, path: '/' };
+  const hasHome = items.some((item) => item.path === '/');
+
+  const updatedItems = hasHome ? items : [homeItem, ...items];
+
+  const newItems = updatedItems.map((item) => {
     return {
-      onClick: () => navigate(item.href),
+      onClick: () => navigate(item.path),
       title: (
         <Button
           type="text"
@@ -23,4 +30,10 @@ export const useBreadcrumb = (items) => {
       ),
     };
   });
+
+  if (useComponent) {
+    return <Breadcrumb items={newItems} />;
+  }
+
+  return newItems;
 };

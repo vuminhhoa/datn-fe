@@ -58,6 +58,11 @@ function AppSider() {
       permission: EQUIPMENT_READ,
       children: [
         getItem({
+          label: 'Danh sách thiết bị',
+          key: '',
+          permission: EQUIPMENT_READ,
+        }),
+        getItem({
           label: 'Nhập thiết bị bằng file excel',
           key: '/import_by_excel',
           permission: EQUIPMENT_CREATE,

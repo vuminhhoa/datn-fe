@@ -23,8 +23,18 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Page from '../../components/Page/Page.js';
 import { formatVNCurrency } from '../../helpers/formatVNCurrency.js';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 
 const ImportEquipmentsByExcel = () => {
+  const breadcrumb = useBreadcrumb(
+    [
+      {
+        path: '/equipments/import_by_excel',
+        title: 'Nhập thiết bị bằng file Excel',
+      },
+    ],
+    true
+  );
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [error, setError] = useState(null);
@@ -404,6 +414,7 @@ const ImportEquipmentsByExcel = () => {
 
   return (
     <Page fullWidth={true}>
+      {breadcrumb}
       <Modal
         title="Xác nhận xóa"
         open={showDeleteConfirm}

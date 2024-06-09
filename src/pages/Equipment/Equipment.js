@@ -43,7 +43,7 @@ const Equipment = () => {
     },
     {
       path: '/equipments',
-      title: 'Quản lý thiết bị',
+      title: 'Danh sách thiết bị',
     },
   ]);
 
