@@ -81,3 +81,38 @@ export const defaultDonViTinh = [
     label: 'Chiếc',
   },
 ];
+
+export const defaultExcelColumns = [
+  {
+    label: 'Tên thiết bị',
+    value: 'tenThietBi',
+  },
+  {
+    label: 'Đơn vị',
+    value: 'donVi',
+  },
+  {
+    label: 'Số lượng',
+    value: 'soLuong',
+  },
+  {
+    label: 'Ký mã hiệu',
+    value: 'kyMaHieu',
+  },
+  {
+    label: 'Hãng sản xuất',
+    value: 'hangSanXuat',
+  },
+  {
+    label: 'Xuất xứ',
+    value: 'xuatXu',
+  },
+  {
+    label: 'Đơn giá',
+    value: 'donGia',
+  },
+  {
+    label: 'Phân khoa',
+    value: 'phanKhoa',
+  },
+];

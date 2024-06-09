@@ -25,6 +25,8 @@ import Page from '../../components/Page/Page.js';
 import { formatVNCurrency } from '../../helpers/formatVNCurrency.js';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import useCreateApi from '../../hooks/useCreateApi.js';
+import { readExcelFile, findDuplicateRow } from '../../helpers/importExcel.js';
+import { defaultExcelColumns } from '../../const/default.js';
 
 const ImportEquipmentsByExcel = () => {
   const breadcrumb = useBreadcrumb(
@@ -48,20 +50,7 @@ const ImportEquipmentsByExcel = () => {
   const { creating, createApi } = useCreateApi(`/equipments/importByExcel`);
 
   const checkDuplicateData = (data) => {
-    const duplicateEquipmentsMap = new Map();
-    data.forEach((row) => {
-      if (!duplicateEquipmentsMap.has(row.kyMaHieu)) {
-        duplicateEquipmentsMap.set(row.kyMaHieu, [row]);
-      } else {
-        duplicateEquipmentsMap.get(row.kyMaHieu).push(row);
-      }
-    });
-    const duplicateEquipments = [];
-    duplicateEquipmentsMap.forEach((value) => {
-      if (value.length > 1) {
-        duplicateEquipments.push(...value);
-      }
-    });
+    const duplicateEquipments = findDuplicateRow(data, 'kyMaHieu');
     setDuplicateRows(duplicateEquipments);
   };
 
@@ -78,40 +67,18 @@ const ImportEquipmentsByExcel = () => {
     }
     createApi(data);
   };
-  const handleFileUpload = (file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const binaryStr = e.target.result;
-        const workbook = XLSX.read(binaryStr, { type: 'binary' });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(sheet);
-        const formattedData = jsonData.map((item, index) => ({
-          key: index,
-          tenThietBi: item['Tên thiết bị'],
-          donVi: item['Đơn vị'],
-          soLuong: item['Số lượng'],
-          kyMaHieu: item['Ký mã hiệu'],
-          hangSanXuat: item['Hãng sản xuất'],
-          xuatXu: item['Xuất xứ'],
-          donGia: item['Đơn giá'],
-          phanKhoa: item['Phân khoa'],
-        }));
-        setData(formattedData);
-        setError(null);
-        message.success('Tải file thành công!');
-      } catch (err) {
-        setError('Đã có lỗi xảy ra khi đọc file.');
-        message.error('Đã có lỗi xảy ra khi đọc file.');
-      }
-    };
-    reader.onerror = () => {
-      setError('Đã có lỗi xảy ra khi đọc file.');
-      message.error('Đã có lỗi xảy ra khi đọc file.');
-    };
-    reader.readAsBinaryString(file);
-    return false;
+
+  const handleFileUpload = async (file) => {
+    const result = await readExcelFile(file, defaultExcelColumns);
+    console.log(result, 'ádsadas');
+    if (result.success) {
+      setData(result.data);
+      setError(null);
+      return message.success(result.message);
+    }
+
+    setError(result.message);
+    message.error(result.message);
   };
 
   const isEditing = (record) => record.key === editingKey;
