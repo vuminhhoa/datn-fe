@@ -1,277 +1,148 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Upload,
-  Button,
-  Table,
-  Popconfirm,
-  message,
-  Modal,
-  Typography,
-  Input,
-  Form,
-  Space,
   Card,
+  Flex,
+  Tag,
+  Space,
+  Table,
+  Select,
+  Breadcrumb,
+  Modal,
+  Input,
+  Spin,
+  Button,
+  Radio,
+  Popover,
+  Divider,
 } from 'antd';
 import {
-  UploadOutlined,
-  EditOutlined,
+  HomeOutlined,
   DeleteOutlined,
-  SearchOutlined,
-  FileExcelOutlined,
+  EyeOutlined,
+  PlusOutlined,
+  FilterOutlined,
+  SortAscendingOutlined,
+  SortDescendingOutlined,
 } from '@ant-design/icons';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-import Page from '../../components/Page/Page.js';
-import { formatVNCurrency } from '../../helpers/formatVNCurrency.js';
+import {} from '@ant-design/icons';
+import { useApp } from '../../contexts/appProvider';
+import useFetchApi from '../../hooks/useFetchApi';
+import { Link, useNavigate } from 'react-router-dom';
+import CreateEquipmentForm from '../Equipment/Form/Create';
+import hasPermission from '../../helpers/hasPermission';
+import { EQUIPMENT_CREATE, EQUIPMENT_DELETE } from '../../const/permission';
+import useDeleteApi from '../../hooks/useDeleteApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
-import useCreateApi from '../../hooks/useCreateApi.js';
+import Page from '../../components/Page';
+import { formatVNCurrency } from '../../helpers/formatVNCurrency';
+import queryString from 'query-string';
+import {
+  defaultDonViTinh,
+  defaultKhoaPhong,
+  defaultPhanLoaiNhap,
+  defaultXuatXu,
+} from '../../const/default';
 
-const ImportEquipmentsByExcel = () => {
-  const breadcrumb = useBreadcrumb(
-    [
-      {
-        path: '/equipments/import_by_excel',
-        title: 'Nhập thiết bị bằng file Excel',
-      },
-    ],
-    true
-  );
-  const [data, setData] = useState([]);
-  const [editingKey, setEditingKey] = useState('');
-  const [error, setError] = useState(null);
-  const [form] = Form.useForm();
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
-  const [duplicateRows, setDuplicateRows] = useState([]);
-
-  const { creating, createApi } = useCreateApi(`/equipments/importByExcel`);
-
-  const checkDuplicateData = (data) => {
-    const duplicateEquipmentsMap = new Map();
-    data.forEach((row) => {
-      if (!duplicateEquipmentsMap.has(row.kyMaHieu)) {
-        duplicateEquipmentsMap.set(row.kyMaHieu, [row]);
-      } else {
-        duplicateEquipmentsMap.get(row.kyMaHieu).push(row);
-      }
-    });
-    const duplicateEquipments = [];
-    duplicateEquipmentsMap.forEach((value) => {
-      if (value.length > 1) {
-        duplicateEquipments.push(...value);
-      }
-    });
-    setDuplicateRows(duplicateEquipments);
-  };
-
-  useEffect(() => {
-    checkDuplicateData(data);
-  }, [data]);
-
-  const handleImportData = () => {
-    if (duplicateRows.length > 0) {
-      message.error(
-        'Dữ liệu chứa thiết bị trùng ký mã hiệu. Vui lòng xử lý các thiết bị bị trùng lặp.'
-      );
-      return;
-    }
-    createApi(data);
-  };
-  const handleFileUpload = (file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const binaryStr = e.target.result;
-        const workbook = XLSX.read(binaryStr, { type: 'binary' });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(sheet);
-        const formattedData = jsonData.map((item, index) => ({
-          key: index,
-          tenThietBi: item['Tên thiết bị'],
-          donVi: item['Đơn vị'],
-          soLuong: item['Số lượng'],
-          kyMaHieu: item['Ký mã hiệu'],
-          hangSanXuat: item['Hãng sản xuất'],
-          xuatXu: item['Xuất xứ'],
-          donGia: item['Đơn giá'],
-          phanKhoa: item['Phân khoa'],
-        }));
-        setData(formattedData);
-        setError(null);
-        message.success('Tải file thành công!');
-      } catch (err) {
-        setError('Đã có lỗi xảy ra khi đọc file.');
-        message.error('Đã có lỗi xảy ra khi đọc file.');
-      }
-    };
-    reader.onerror = () => {
-      setError('Đã có lỗi xảy ra khi đọc file.');
-      message.error('Đã có lỗi xảy ra khi đọc file.');
-    };
-    reader.readAsBinaryString(file);
-    return false;
-  };
-
-  const isEditing = (record) => record.key === editingKey;
-
-  const edit = (record) => {
-    form.setFieldsValue({
-      ...record,
-    });
-    setEditingKey(record.key);
-  };
-
-  const cancel = () => {
-    setEditingKey('');
-  };
-
-  const save = async (key) => {
-    try {
-      const row = await form.validateFields();
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
-      const kyMaHieuExists = newData.some(
-        (item) => item.kyMaHieu === row.kyMaHieu && item.key !== key
-      );
-      if (kyMaHieuExists) {
-        message.error(
-          'Ký mã hiệu đã tồn tại. Vui lòng chọn một ký mã hiệu khác.'
-        );
-        return;
-      }
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setData(newData);
-        setEditingKey('');
-      } else {
-        newData.push(row);
-        setData(newData);
-        setEditingKey('');
-      }
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
-    }
-  };
-
-  const handleDelete = (key) => {
-    const newData = data.filter((item) => item.key !== key);
-    setData(newData);
-  };
-
-  const EditableCell = ({
-    editing,
-    dataIndex,
-    title,
-    inputType,
-    record,
-    index,
-    children,
-    ...restProps
-  }) => {
-    const inputNode = <Input />;
-    return (
-      <td {...restProps}>
-        {editing ? (
-          <Form.Item
-            name={dataIndex}
-            style={{ margin: 0 }}
-            rules={[
-              {
-                required: true,
-                message: `Vui lòng nhập ${title.toLowerCase()}!`,
-              },
-            ]}
-            initialValue={record[dataIndex]} // Ensure initialValue is used here
-          >
-            {inputNode}
-          </Form.Item>
-        ) : (
-          children
-        )}
-      </td>
-    );
-  };
-
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-
-  const handleReset = (clearFilters, confirm) => {
-    clearFilters();
-    setSearchText('');
-    confirm();
-  };
-
-  const getColumnSearchProps = (dataIndex, placeholder) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
-      <div style={{ padding: 8 }}>
-        <Input
-          placeholder={placeholder}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-          >
-            Tìm kiếm
-          </Button>
-          <Button
-            onClick={() => handleReset(clearFilters, confirm)}
-            size="small"
-          >
-            Đặt lại
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ? record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
-        : '',
+const DevZone = () => {
+  const navigate = useNavigate();
+  const { setToast } = useApp();
+  const { deleting, deleteApi } = useDeleteApi(`/equipment`);
+  const [isShowCreateForm, setIsShowCreateForm] = useState(false);
+  const [showFilter, setShowFilter] = useState('');
+  const [query, setQuery] = useState({
+    page: 1,
+    limit: 10,
+    search: '',
+    sortKey: 'updatedAt',
+    direction: 'DESC',
+    phanKhoa: [],
+    phanLoaiNhap: [],
+    xuatXu: [],
+    donVi: [],
   });
 
-  const downloadExcelTemplate = () => {
-    const ws = XLSX.utils.aoa_to_sheet([
-      [
-        'Tên thiết bị',
-        'Đơn vị',
-        'Số lượng',
-        'Ký mã hiệu',
-        'Hãng sản xuất',
-        'Xuất xứ',
-        'Đơn giá',
-        'Phân khoa',
-      ],
-    ]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Template');
-    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(blob, '[iBME Lab] Mẫu file excel nhập thiết bị.xlsx');
+  const {
+    page,
+    limit,
+    search,
+    sortKey,
+    direction,
+    phanKhoa,
+    donVi,
+    xuatXu,
+    phanLoaiNhap,
+  } = query;
+  const searchParams = {
+    page,
+    limit,
+    search,
+    sortKey,
+    direction,
+    phanKhoa: phanKhoa.join(','),
+    donVi: donVi.join(','),
+    xuatXu: xuatXu.join(','),
+    phanLoaiNhap: phanLoaiNhap.join(','),
+  };
+
+  const reFetchUrl = '/equipments?' + queryString.stringify(searchParams);
+  const [inputTimeout, setInputTimeout] = useState();
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const { data, fetchApi, setData, loading, pageInfo } = useFetchApi({
+    url: reFetchUrl,
+    defaultData: [],
+    withPagination: true,
+  });
+  useEffect(() => {
+    if (!isFirstLoad || loading) return;
+    setIsFirstLoad(false);
+  }, [data, isFirstLoad, loading]);
+
+  useEffect(() => {
+    if (loading) return;
+    clearTimeout(inputTimeout);
+    const newTimeout = setTimeout(() => {
+      fetchApi();
+    }, 700);
+    setInputTimeout(newTimeout);
+    return () => clearTimeout(newTimeout);
+  }, [phanKhoa, donVi, xuatXu, phanLoaiNhap, search]);
+
+  useEffect(() => {
+    if (loading) return;
+    fetchApi();
+  }, [page, limit, sortKey, direction]);
+
+  const breadcrumbItems = useBreadcrumb([
+    {
+      path: '/',
+      title: <HomeOutlined />,
+    },
+    {
+      path: '/equipments',
+      title: 'Danh sách thiết bị',
+    },
+  ]);
+
+  const getTagColor = (phanLoaiNhap) => {
+    let color = '';
+    switch (phanLoaiNhap) {
+      case 'Nhập đơn lẻ':
+        color = 'processing';
+        break;
+      case 'Từ hoạt động mua sắm':
+        color = 'success';
+        break;
+      case 'Nhập Excel':
+        color = 'warning';
+        break;
+      default:
+        color = 'default';
+    }
+    return {
+      color: color,
+      title: phanLoaiNhap,
+    };
   };
 
   const columns = [
@@ -279,9 +150,10 @@ const ImportEquipmentsByExcel = () => {
       title: 'Tên thiết bị',
       dataIndex: 'tenThietBi',
       key: 'tenThietBi',
-      sorter: (a, b) => a.tenThietBi.localeCompare(b.tenThietBi),
+      render: (text, record) => (
+        <Link to={`/equipment/${record.id}`}>{text}</Link>
+      ),
       editable: true,
-      ...getColumnSearchProps('tenThietBi', 'Tìm kiếm tên thiết bị'),
     },
     {
       title: 'Đơn vị',
@@ -295,18 +167,15 @@ const ImportEquipmentsByExcel = () => {
       dataIndex: 'soLuong',
       key: 'soLuong',
       align: 'right',
-      sorter: (a, b) => a.soLuong - b.soLuong,
-      width: '7%',
+      width: '6%',
       editable: true,
     },
     {
       title: 'Ký mã hiệu',
       dataIndex: 'kyMaHieu',
       key: 'kyMaHieu',
-      width: '13%',
-      sorter: (a, b) => a.kyMaHieu.localeCompare(b.kyMaHieu),
+      width: '10%',
       editable: true,
-      ...getColumnSearchProps('kyMaHieu', 'Tìm kiếm ký mã hiệu'),
     },
     {
       title: 'Hãng sản xuất',
@@ -319,7 +188,7 @@ const ImportEquipmentsByExcel = () => {
       title: 'Xuất xứ',
       dataIndex: 'xuatXu',
       key: 'xuatXu',
-      width: '10%',
+      width: '8%',
       editable: true,
     },
     {
@@ -329,7 +198,6 @@ const ImportEquipmentsByExcel = () => {
       width: '8%',
       align: 'right',
       editable: true,
-      sorter: (a, b) => a.donGia - b.donGia,
       render: (_, record) => {
         return formatVNCurrency(record.donGia);
       },
@@ -355,198 +223,254 @@ const ImportEquipmentsByExcel = () => {
       editable: true,
     },
     {
-      title: 'Hành động',
-      width: '8%',
-      dataIndex: 'action',
-      align: 'center',
+      title: 'Phân loại nhập',
+      key: 'phanLoaiNhap',
+      width: '9%',
+      dataIndex: 'phanLoaiNhap',
       render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <Space size={'small'}>
-            <Button
-              style={{ padding: '0px' }}
-              type="link"
-              onClick={() => save(record.key)}
-            >
-              Lưu
-            </Button>
-            <Popconfirm
-              title="Xác nhận hủy thay đổi?"
-              onConfirm={cancel}
-              okText="Xác nhận"
-              cancelText="Hủy"
-            >
-              <Button style={{ padding: '0px' }} type="link">
-                Hủy
-              </Button>
-            </Popconfirm>
-          </Space>
-        ) : (
-          <Space size={'small'}>
-            <Button
-              style={{ padding: '0px' }}
-              type="link"
-              disabled={editingKey !== ''}
-              onClick={() => edit(record)}
-              icon={<EditOutlined />}
-            />
-            <Popconfirm
-              title="Xác nhận xóa thiết bị?"
-              okText="Xác nhận"
-              cancelText="Hủy"
-              onConfirm={() => handleDelete(record.key)}
-            >
-              <Button
-                style={{ padding: '0px' }}
-                type="link"
-                icon={<DeleteOutlined />}
-              />
-            </Popconfirm>
-          </Space>
-        );
+        const equipmentTag = getTagColor(record.phanLoaiNhap);
+        return <Tag color={equipmentTag.color}>{equipmentTag.title}</Tag>;
       },
+    },
+    {
+      title: 'Hành động',
+      key: 'action',
+      align: 'center',
+      render: (_, record) => (
+        <Space size="small">
+          <Popover content="Xem chi tiết" trigger="hover">
+            <Button
+              type="link"
+              icon={<EyeOutlined />}
+              onClick={() => navigate(`/equipment/${record.id}`)}
+            />
+          </Popover>
+          {hasPermission(EQUIPMENT_DELETE) && (
+            <Popover content="Xóa thiết bị" trigger="hover">
+              <Button
+                type="link"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => handleDeleteEquipment(record.id)}
+              />
+            </Popover>
+          )}
+        </Space>
+      ),
     },
   ];
 
-  const mergedColumns = columns.map((col) => {
-    if (!col.editable) {
-      return col;
+  const handleDeleteEquipment = async (id) => {
+    try {
+      const res = await deleteApi(id);
+      if (res.data.success) {
+        setData(data.filter((item) => item.id !== id));
+      }
+    } catch (error) {
+      console.log(error);
+      setToast('Xóa thất bại', 'error');
+    } finally {
+      setToast('Xóa thành công');
     }
-    return {
-      ...col,
-      onCell: (record) => ({
-        record,
-        inputType: col.dataIndex === 'soLuong' ? 'number' : 'text',
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    };
-  });
+  };
+
+  const handlePaginationChange = (page, pageSize) => {
+    setQuery((prevQuery) => ({
+      ...prevQuery,
+      page,
+      limit: pageSize,
+    }));
+  };
+
+  if (loading && isFirstLoad)
+    return (
+      <Page fullWidth={true}>
+        <Breadcrumb items={breadcrumbItems} />
+        <Card
+          title="Danh sách thiết bị"
+          extra={
+            hasPermission(EQUIPMENT_CREATE) && (
+              <Button type="primary" icon={<PlusOutlined />} disabled>
+                Tạo mới
+              </Button>
+            )
+          }
+        >
+          <Table loading columns={columns} bordered />
+        </Card>
+      </Page>
+    );
 
   return (
     <Page fullWidth={true}>
-      {breadcrumb}
-      <Modal
-        title="Xác nhận xóa"
-        open={showDeleteConfirm}
-        onCancel={() => setShowDeleteConfirm(false)}
-        footer={null}
-      >
-        <Space direction="vertical" align="end">
-          <Typography.Text>
-            Hành động này sẽ xóa toàn bộ dữ liệu đã tải lên và những thay đổi đã
-            thực hiện. Dữ liệu đã xóa không thể khôi phục, bạn có chắc chắn muốn
-            xóa?
-          </Typography.Text>
-          <Space justify="end">
-            <Button key="back" onClick={() => setShowDeleteConfirm(false)}>
-              Hủy
-            </Button>
+      <Breadcrumb items={breadcrumbItems} />
+      <Card
+        title="Danh sách thiết bị"
+        extra={
+          hasPermission(EQUIPMENT_CREATE) && (
             <Button
               type="primary"
-              danger
-              onClick={() => {
-                setData([]);
-                setShowDeleteConfirm(false);
-              }}
+              icon={<PlusOutlined />}
+              onClick={() => setIsShowCreateForm(true)}
+              disabled={deleting}
             >
-              Xóa
+              Tạo mới
             </Button>
-          </Space>
-        </Space>
-      </Modal>
-      <Card
-        title="Nhập thiết bị bằng file Excel"
-        extra={
-          <Space>
-            {data.length !== 0 && (
-              <Button danger onClick={() => setShowDeleteConfirm(true)}>
-                Xóa dữ liệu
-              </Button>
-            )}
-            {data.length > 0 ? (
-              <Button
-                type="primary"
-                onClick={() => handleImportData()}
-                loading={creating}
-              >
-                Nhập
-              </Button>
-            ) : (
-              <>
-                <Button
-                  onClick={downloadExcelTemplate}
-                  icon={<FileExcelOutlined />}
-                >
-                  Mẫu file Excel
-                </Button>
-                <Upload
-                  beforeUpload={handleFileUpload}
-                  accept=".xlsx, .xls"
-                  showUploadList={false}
-                >
-                  <Button icon={<UploadOutlined />} type="primary">
-                    Tải lên
-                  </Button>
-                </Upload>
-              </>
-            )}
-          </Space>
+          )
         }
       >
-        {duplicateRows.length > 0 && (
-          <>
-            <Typography.Title
-              level={5}
-              style={{ margin: '0px', paddingBottom: '8px' }}
+        <Flex gap={16} vertical>
+          <Modal
+            title="Tạo mới thiết bị"
+            open={isShowCreateForm}
+            onCancel={() => setIsShowCreateForm(false)}
+            footer={null}
+          >
+            <CreateEquipmentForm
+              fetchApi={fetchApi}
+              setIsShowCreateForm={setIsShowCreateForm}
+            />
+          </Modal>
+          <Flex gap={16} align="center">
+            <Input
+              placeholder="Nhập từ khóa để tìm kiếm"
+              value={search}
+              onChange={(e) => setQuery({ ...query, search: e.target.value })}
+              allowClear
+            />
+            {loading && <Spin />}
+            {!showFilter ? (
+              <Button
+                icon={<FilterOutlined />}
+                onClick={() => setShowFilter(!showFilter)}
+              >
+                Lọc
+              </Button>
+            ) : (
+              <Button onClick={() => setShowFilter(!showFilter)} type="text">
+                Hủy
+              </Button>
+            )}
+            <Popover
+              content={
+                <>
+                  <Radio.Group
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setQuery({ ...query, sortKey: val });
+                    }}
+                    value={sortKey}
+                  >
+                    <Space direction="vertical">
+                      <Radio value={'updatedAt'}>Ngày cập nhật</Radio>
+                      <Radio value={'createdAt'}>Ngày tạo</Radio>
+                      <Radio value={'tenThietBi'}>Tên thiết bị</Radio>
+                      <Radio value={'soLuong'}>Số lượng</Radio>
+                      <Radio value={'donGia'}>Đơn giá</Radio>
+                      <Radio value={'kyMaHieu'}>Ký mã hiệu</Radio>
+                    </Space>
+                  </Radio.Group>
+                  <Divider style={{ margin: '8px 0px 8px 0px' }} />
+                  <Radio.Group
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setQuery({ ...query, direction: val });
+                    }}
+                    value={direction}
+                  >
+                    <Space direction="vertical">
+                      <Radio value={'ASC'}>
+                        <Flex gap={'8px'}>
+                          Tăng dần
+                          <SortDescendingOutlined />
+                        </Flex>
+                      </Radio>
+                      <Radio value={'DESC'}>
+                        <Flex gap={'8px'}>
+                          Giảm dầm
+                          <SortAscendingOutlined />
+                        </Flex>
+                      </Radio>
+                    </Space>
+                  </Radio.Group>
+                </>
+              }
+              title="Sắp xếp theo"
+              trigger="click"
+              placement="bottom"
             >
-              Danh sách thiết bị trùng ký mã hiệu:
-            </Typography.Title>
-            <Form form={form} component={false}>
-              <Table
-                dataSource={duplicateRows}
-                components={{
-                  body: {
-                    cell: EditableCell,
-                  },
+              <Button icon={<SortAscendingOutlined />}>Sắp xếp</Button>
+            </Popover>
+          </Flex>
+          {showFilter && (
+            <Flex gap={16}>
+              <Select
+                mode="multiple"
+                placeholder="Lọc theo phân khoa"
+                defaultValue={phanKhoa}
+                allowClear
+                onChange={(val) => setQuery({ ...query, phanKhoa: val })}
+                style={{
+                  width: '100%',
                 }}
-                bordered
-                columns={mergedColumns}
-                rowClassName="editable-row"
-                pagination={{
-                  onChange: cancel,
-                }}
+                options={defaultKhoaPhong}
               />
-            </Form>
-          </>
-        )}
-        {error && <div style={{ color: 'red' }}>{error}</div>}
-        <Typography.Title
-          level={5}
-          style={{ margin: '0px', paddingBottom: '8px' }}
-        >
-          Danh sách xem trước:
-        </Typography.Title>
-        <Form form={form} component={false}>
+              <Select
+                mode="multiple"
+                placeholder="Lọc theo xuất xứ"
+                defaultValue={xuatXu}
+                onChange={(val) => setQuery({ ...query, xuatXu: val })}
+                style={{
+                  width: '100%',
+                }}
+                allowClear
+                options={defaultXuatXu}
+              />
+              <Select
+                mode="multiple"
+                placeholder="Lọc theo phân loại nhập"
+                defaultValue={phanLoaiNhap}
+                onChange={(val) => setQuery({ ...query, phanLoaiNhap: val })}
+                style={{
+                  width: '100%',
+                }}
+                allowClear
+                options={defaultPhanLoaiNhap}
+              />
+              <Select
+                mode="multiple"
+                placeholder="Lọc theo đơn vị tính"
+                defaultValue={donVi}
+                onChange={(val) => setQuery({ ...query, donVi: val })}
+                style={{
+                  width: '100%',
+                }}
+                allowClear
+                options={defaultDonViTinh}
+              />
+            </Flex>
+          )}
           <Table
-            components={{
-              body: {
-                cell: EditableCell,
+            columns={columns}
+            dataSource={data}
+            bordered
+            pagination={{
+              current: page,
+              pageSize: limit,
+              total: pageInfo.total,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} trên tổng ${total} thiết bị`,
+              onChange: handlePaginationChange,
+              locale: {
+                items_per_page: 'thiết bị / trang',
               },
             }}
-            bordered
-            dataSource={data}
-            columns={mergedColumns}
-            rowClassName="editable-row"
-            pagination={{
-              onChange: cancel,
-            }}
+            disabled={deleting}
           />
-        </Form>
+        </Flex>
       </Card>
     </Page>
   );
 };
 
-export default ImportEquipmentsByExcel;
+export default DevZone;

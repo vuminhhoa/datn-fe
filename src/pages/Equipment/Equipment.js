@@ -1,59 +1,118 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   Flex,
   Tag,
   Space,
   Table,
+  Select,
   Breadcrumb,
   Modal,
   Input,
+  Spin,
   Button,
+  Radio,
   Popover,
+  Divider,
 } from 'antd';
 import {
   HomeOutlined,
   DeleteOutlined,
   EyeOutlined,
   PlusOutlined,
-  SearchOutlined,
+  FilterOutlined,
+  SortAscendingOutlined,
+  SortDescendingOutlined,
 } from '@ant-design/icons';
 import {} from '@ant-design/icons';
 import { useApp } from '../../contexts/appProvider';
 import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
-import CreateEquipmentForm from './Form/Create';
+import CreateEquipmentForm from '../Equipment/Form/Create';
 import hasPermission from '../../helpers/hasPermission';
-import {
-  EQUIPMENT_CREATE,
-  EQUIPMENT_DELETE,
-  EQUIPMENT_READ,
-} from '../../const/permission';
+import { EQUIPMENT_CREATE, EQUIPMENT_DELETE } from '../../const/permission';
 import useDeleteApi from '../../hooks/useDeleteApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import Page from '../../components/Page';
 import { formatVNCurrency } from '../../helpers/formatVNCurrency';
+import queryString from 'query-string';
+import {
+  defaultDonViTinh,
+  defaultKhoaPhong,
+  defaultPhanLoaiNhap,
+  defaultXuatXu,
+} from '../../const/default';
 
 const Equipment = () => {
   const navigate = useNavigate();
   const { setToast } = useApp();
   const { deleting, deleteApi } = useDeleteApi(`/equipment`);
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
-const [query, setQuery] = useState({
-  page: 1,
-  limit: 10,
-  search:'',
-  order: 'updatedAt:desc'
-  
-});
-
-
-  const { data, fetchApi, setData, loading } = useFetchApi({
-    url: '/equipments',
-    defaultData: [],
+  const [showFilter, setShowFilter] = useState('');
+  const [query, setQuery] = useState({
+    page: 1,
+    limit: 10,
+    search: '',
+    sortKey: 'updatedAt',
+    direction: 'DESC',
+    phanKhoa: [],
+    phanLoaiNhap: [],
+    xuatXu: [],
+    donVi: [],
   });
+
+  const {
+    page,
+    limit,
+    search,
+    sortKey,
+    direction,
+    phanKhoa,
+    donVi,
+    xuatXu,
+    phanLoaiNhap,
+  } = query;
+  const searchParams = {
+    page,
+    limit,
+    search,
+    sortKey,
+    direction,
+    phanKhoa: phanKhoa.join(','),
+    donVi: donVi.join(','),
+    xuatXu: xuatXu.join(','),
+    phanLoaiNhap: phanLoaiNhap.join(','),
+  };
+
+  const reFetchUrl = '/equipments?' + queryString.stringify(searchParams);
+  const [inputTimeout, setInputTimeout] = useState();
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const { data, fetchApi, setData, loading, pageInfo } = useFetchApi({
+    url: reFetchUrl,
+    defaultData: [],
+    withPagination: true,
+  });
+  useEffect(() => {
+    if (!isFirstLoad || loading) return;
+    setIsFirstLoad(false);
+  }, [data, isFirstLoad, loading]);
+
+  useEffect(() => {
+    if (loading) return;
+    clearTimeout(inputTimeout);
+    const newTimeout = setTimeout(() => {
+      fetchApi();
+    }, 700);
+    setInputTimeout(newTimeout);
+    return () => clearTimeout(newTimeout);
+  }, [phanKhoa, donVi, xuatXu, phanLoaiNhap, search]);
+
+  useEffect(() => {
+    if (loading) return;
+    fetchApi();
+  }, [page, limit, sortKey, direction]);
+
   const breadcrumbItems = useBreadcrumb([
     {
       path: '/',
@@ -64,18 +123,6 @@ const [query, setQuery] = useState({
       title: 'Danh sách thiết bị',
     },
   ]);
-
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-
-  const handleReset = (clearFilters, confirm) => {
-    clearFilters();
-    setSearchText('');
-    confirm();
-  };
 
   const getTagColor = (phanLoaiNhap) => {
     let color = '';
@@ -98,53 +145,6 @@ const [query, setQuery] = useState({
     };
   };
 
-  const getColumnSearchProps = (dataIndex, placeholder) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
-      <div style={{ padding: 8 }}>
-        <Input
-          placeholder={placeholder}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-          >
-            Tìm kiếm
-          </Button>
-          <Button
-            onClick={() => handleReset(clearFilters, confirm)}
-            size="small"
-          >
-            Đặt lại
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ? record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
-        : '',
-  });
-
   const columns = [
     {
       title: 'Tên thiết bị',
@@ -153,9 +153,7 @@ const [query, setQuery] = useState({
       render: (text, record) => (
         <Link to={`/equipment/${record.id}`}>{text}</Link>
       ),
-      sorter: (a, b) => a.tenThietBi.localeCompare(b.tenThietBi),
       editable: true,
-      ...getColumnSearchProps('tenThietBi', 'Tìm kiếm tên thiết bị'),
     },
     {
       title: 'Đơn vị',
@@ -169,8 +167,7 @@ const [query, setQuery] = useState({
       dataIndex: 'soLuong',
       key: 'soLuong',
       align: 'right',
-      sorter: (a, b) => a.soLuong - b.soLuong,
-      width: '4%',
+      width: '6%',
       editable: true,
     },
     {
@@ -178,9 +175,7 @@ const [query, setQuery] = useState({
       dataIndex: 'kyMaHieu',
       key: 'kyMaHieu',
       width: '10%',
-      sorter: (a, b) => a.kyMaHieu.localeCompare(b.kyMaHieu),
       editable: true,
-      ...getColumnSearchProps('kyMaHieu', 'Tìm kiếm ký mã hiệu'),
     },
     {
       title: 'Hãng sản xuất',
@@ -193,7 +188,7 @@ const [query, setQuery] = useState({
       title: 'Xuất xứ',
       dataIndex: 'xuatXu',
       key: 'xuatXu',
-      width: '10%',
+      width: '8%',
       editable: true,
     },
     {
@@ -203,7 +198,6 @@ const [query, setQuery] = useState({
       width: '8%',
       align: 'right',
       editable: true,
-      sorter: (a, b) => a.donGia - b.donGia,
       render: (_, record) => {
         return formatVNCurrency(record.donGia);
       },
@@ -280,7 +274,15 @@ const [query, setQuery] = useState({
     }
   };
 
-  if (loading)
+  const handlePaginationChange = (page, pageSize) => {
+    setQuery((prevQuery) => ({
+      ...prevQuery,
+      page,
+      limit: pageSize,
+    }));
+  };
+
+  if (loading && isFirstLoad)
     return (
       <Page fullWidth={true}>
         <Breadcrumb items={breadcrumbItems} />
@@ -329,10 +331,140 @@ const [query, setQuery] = useState({
               setIsShowCreateForm={setIsShowCreateForm}
             />
           </Modal>
+          <Flex gap={16} align="center">
+            <Input
+              placeholder="Nhập từ khóa để tìm kiếm"
+              value={search}
+              onChange={(e) => setQuery({ ...query, search: e.target.value })}
+              allowClear
+            />
+            {loading && <Spin />}
+            {!showFilter ? (
+              <Button
+                icon={<FilterOutlined />}
+                onClick={() => setShowFilter(!showFilter)}
+              >
+                Lọc
+              </Button>
+            ) : (
+              <Button onClick={() => setShowFilter(!showFilter)} type="text">
+                Hủy
+              </Button>
+            )}
+            <Popover
+              content={
+                <>
+                  <Radio.Group
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setQuery({ ...query, sortKey: val });
+                    }}
+                    value={sortKey}
+                  >
+                    <Space direction="vertical">
+                      <Radio value={'updatedAt'}>Ngày cập nhật</Radio>
+                      <Radio value={'createdAt'}>Ngày tạo</Radio>
+                      <Radio value={'tenThietBi'}>Tên thiết bị</Radio>
+                      <Radio value={'soLuong'}>Số lượng</Radio>
+                      <Radio value={'donGia'}>Đơn giá</Radio>
+                      <Radio value={'kyMaHieu'}>Ký mã hiệu</Radio>
+                    </Space>
+                  </Radio.Group>
+                  <Divider style={{ margin: '8px 0px 8px 0px' }} />
+                  <Radio.Group
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setQuery({ ...query, direction: val });
+                    }}
+                    value={direction}
+                  >
+                    <Space direction="vertical">
+                      <Radio value={'ASC'}>
+                        <Flex gap={'8px'}>
+                          Tăng dần
+                          <SortDescendingOutlined />
+                        </Flex>
+                      </Radio>
+                      <Radio value={'DESC'}>
+                        <Flex gap={'8px'}>
+                          Giảm dầm
+                          <SortAscendingOutlined />
+                        </Flex>
+                      </Radio>
+                    </Space>
+                  </Radio.Group>
+                </>
+              }
+              title="Sắp xếp theo"
+              trigger="click"
+              placement="bottom"
+            >
+              <Button icon={<SortAscendingOutlined />}>Sắp xếp</Button>
+            </Popover>
+          </Flex>
+          {showFilter && (
+            <Flex gap={16}>
+              <Select
+                mode="multiple"
+                placeholder="Lọc theo phân khoa"
+                defaultValue={phanKhoa}
+                allowClear
+                onChange={(val) => setQuery({ ...query, phanKhoa: val })}
+                style={{
+                  width: '100%',
+                }}
+                options={defaultKhoaPhong}
+              />
+              <Select
+                mode="multiple"
+                placeholder="Lọc theo xuất xứ"
+                defaultValue={xuatXu}
+                onChange={(val) => setQuery({ ...query, xuatXu: val })}
+                style={{
+                  width: '100%',
+                }}
+                allowClear
+                options={defaultXuatXu}
+              />
+              <Select
+                mode="multiple"
+                placeholder="Lọc theo phân loại nhập"
+                defaultValue={phanLoaiNhap}
+                onChange={(val) => setQuery({ ...query, phanLoaiNhap: val })}
+                style={{
+                  width: '100%',
+                }}
+                allowClear
+                options={defaultPhanLoaiNhap}
+              />
+              <Select
+                mode="multiple"
+                placeholder="Lọc theo đơn vị tính"
+                defaultValue={donVi}
+                onChange={(val) => setQuery({ ...query, donVi: val })}
+                style={{
+                  width: '100%',
+                }}
+                allowClear
+                options={defaultDonViTinh}
+              />
+            </Flex>
+          )}
           <Table
             columns={columns}
             dataSource={data}
             bordered
+            pagination={{
+              current: page,
+              pageSize: limit,
+              total: pageInfo.total,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} trên tổng ${total} thiết bị`,
+              onChange: handlePaginationChange,
+              locale: {
+                items_per_page: 'thiết bị / trang',
+              },
+            }}
             disabled={deleting}
           />
         </Flex>

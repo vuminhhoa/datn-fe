@@ -15,6 +15,7 @@ export default function useFetchApi({
   initLoad = true,
   fullResp = false,
   initLoading = true,
+  withPagination = false,
 }) {
   const [fetched, setFetched] = useState(false);
   const [loading, setLoading] = useState(initLoading);
@@ -37,10 +38,18 @@ export default function useFetchApi({
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      setData(
-        Array.isArray(resp.data) ? resp.data : { ...defaultData, ...resp.data }
-      );
-      setPageInfo(resp.pageInfo);
+
+      if (withPagination) {
+        setData(resp.data.data);
+        setPageInfo(resp.data.pageInfo);
+      } else {
+        setData(
+          Array.isArray(resp.data)
+            ? resp.data
+            : { ...defaultData, ...resp.data }
+        );
+        setPageInfo(resp.pageInfo);
+      }
 
       if (resp.errors && resp.errors.length) {
         console.log(resp.errors);
