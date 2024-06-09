@@ -12,6 +12,7 @@ import {
   BIDDING_READ,
   EQUIPMENT_READ,
   BIDDING_UPDATE,
+  EQUIPMENT_CREATE,
 } from './const/permission';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
@@ -28,6 +29,7 @@ import Equipment from './pages/Equipment';
 import DetailEquipment from './pages/Equipment/Detail';
 import Activity from './pages/Activity';
 import DevZone from './pages/DevZone';
+import ImportEquipmentsByExcel from './pages/ImportEquipmentsByExcel';
 
 function App() {
   return (
@@ -119,6 +121,14 @@ function App() {
         element={
           <PrivateRoute permission={EQUIPMENT_READ}>
             <DetailEquipment />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/equipments/import_by_excel"
+        element={
+          <PrivateRoute permission={EQUIPMENT_CREATE}>
+            <ImportEquipmentsByExcel />
           </PrivateRoute>
         }
       />

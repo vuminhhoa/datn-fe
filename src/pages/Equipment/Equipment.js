@@ -47,65 +47,67 @@ const Equipment = () => {
     },
   ]);
 
-  const getTagColor = (status) => {
+  const getTagColor = (phanLoaiNhap) => {
     let color = '';
-    switch (status) {
-      case 'Mới nhập':
+    switch (phanLoaiNhap) {
+      case 'Nhập đơn lẻ':
         color = 'processing';
         break;
-      case 'Đang sử dụng':
+      case 'Từ hoạt động mua sắm':
         color = 'success';
         break;
-      case 'Đang sửa chữa':
+      case 'Nhập excel':
         color = 'warning';
-        break;
-      case 'Đã hỏng':
-        color = 'error';
         break;
       default:
         color = 'default';
     }
     return {
       color: color,
-      title: status,
+      title: phanLoaiNhap,
     };
   };
   const columns = [
     {
-      title: 'Mã thiết bị',
-      dataIndex: 'maThietBi',
-      key: 'maThietBi',
+      title: 'Tên thiết bị',
+      dataIndex: 'tenThietBi',
+      key: 'tenThietBi',
       render: (text, record) => (
         <Link to={`/equipment/${record.id}`}>{text}</Link>
       ),
     },
     {
-      title: 'Tên thiết bị',
-      dataIndex: 'tenThietBi',
-      key: 'tenThietBi',
+      title: 'Đơn vị',
+      dataIndex: 'donVi',
+      key: 'donVi',
     },
     {
-      title: 'Khoa phòng',
-      dataIndex: 'khoaPhong',
-      key: 'khoaPhong',
+      title: 'Số lượng',
+      dataIndex: 'soLuong',
+      key: 'soLuong',
     },
     {
-      title: 'Model',
-      dataIndex: 'model',
-      key: 'model',
+      title: 'Ký mã hiệu',
+      dataIndex: 'kyMaHieu',
+      key: 'kyMaHieu',
     },
     {
-      title: 'Serial',
-      dataIndex: 'serial',
-      key: 'serial',
+      title: 'Hãng sản xuất',
+      dataIndex: 'hangSanXuat',
+      key: 'hangSanXuat',
+    },
+    {
+      title: 'Xuất xứ',
+      dataIndex: 'xuatXu',
+      key: 'xuatXu',
     },
 
     {
-      title: 'Trạng thái',
-      key: 'trangThai',
-      dataIndex: 'trangThai',
+      title: 'Phân loại nhập',
+      key: 'phanLoaiNhap',
+      dataIndex: 'phanLoaiNhap',
       render: (_, record) => {
-        const equipmentTag = getTagColor(record.trangThai);
+        const equipmentTag = getTagColor(record.phanLoaiNhap);
         return <Tag color={equipmentTag.color}>{equipmentTag.title}</Tag>;
       },
     },
@@ -155,7 +157,7 @@ const Equipment = () => {
 
   if (loading)
     return (
-      <Page>
+      <Page fullWidth={true}>
         <Breadcrumb items={breadcrumbItems} />
         <Card
           title="Danh sách thiết bị"
@@ -173,7 +175,7 @@ const Equipment = () => {
     );
 
   return (
-    <Page>
+    <Page fullWidth={true}>
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách thiết bị"

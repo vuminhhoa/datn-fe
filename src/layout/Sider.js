@@ -14,6 +14,7 @@ import {
   USER_READ,
   EQUIPMENT_READ,
   DASHBOARD_READ,
+  EQUIPMENT_CREATE,
 } from '../const/permission';
 import { useNavigate } from 'react-router-dom';
 import hasPermission from '../helpers/hasPermission';
@@ -55,6 +56,13 @@ function AppSider() {
       key: '/equipments',
       icon: <DesktopOutlined />,
       permission: EQUIPMENT_READ,
+      children: [
+        getItem({
+          label: 'Nhập thiết bị bằng file excel',
+          key: '/import_by_excel',
+          permission: EQUIPMENT_CREATE,
+        }),
+      ],
     }),
     getItem({
       label: 'Hoạt động mua sắm',

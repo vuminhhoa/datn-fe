@@ -24,7 +24,7 @@ import { saveAs } from 'file-saver';
 import Page from '../../components/Page/Page.js';
 import { formatVNCurrency } from '../../helpers/formatVNCurrency.js';
 
-const DevZone = () => {
+const ImportEquipmentsByExcel = () => {
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [error, setError] = useState(null);
@@ -522,4 +522,4 @@ const DevZone = () => {
   );
 };
 
-export default DevZone;
+export default ImportEquipmentsByExcel;
