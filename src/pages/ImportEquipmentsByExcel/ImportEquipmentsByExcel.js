@@ -541,6 +541,12 @@ const ImportEquipmentsByExcel = () => {
             rowClassName="editable-row"
             pagination={{
               onChange: cancel,
+              total: data.length,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} trên tổng ${total} thiết bị`,
+              locale: {
+                items_per_page: 'thiết bị / trang',
+              },
             }}
           />
         </Form>
