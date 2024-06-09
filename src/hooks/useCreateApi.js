@@ -7,6 +7,7 @@ export default function useCreateApi(url) {
   async function createApi(body) {
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
     try {
+      console.log(body, 'body');
       setCreating(true);
       return await axios({
         method: 'POST',

@@ -7,13 +7,13 @@ export const useBreadcrumb = (items, useComponent = false) => {
   const navigate = useNavigate();
 
   const homeItem = { title: <HomeOutlined />, path: '/' };
-  const hasHome = items.some((item) => item.path === '/');
+  const hasHome = items.some((item) => item.path === '/' || item.href === '/');
 
   const updatedItems = hasHome ? items : [homeItem, ...items];
 
   const newItems = updatedItems.map((item) => {
     return {
-      onClick: () => navigate(item.path),
+      onClick: () => navigate(item.path ? item.path : item.href),
       title: (
         <Button
           type="text"

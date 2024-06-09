@@ -24,6 +24,7 @@ import { saveAs } from 'file-saver';
 import Page from '../../components/Page/Page.js';
 import { formatVNCurrency } from '../../helpers/formatVNCurrency.js';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
+import useCreateApi from '../../hooks/useCreateApi.js';
 
 const ImportEquipmentsByExcel = () => {
   const breadcrumb = useBreadcrumb(
@@ -43,6 +44,8 @@ const ImportEquipmentsByExcel = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [duplicateRows, setDuplicateRows] = useState([]);
+
+  const { creating, createApi } = useCreateApi(`/equipments/importByExcel`);
 
   const checkDuplicateData = (data) => {
     const duplicateEquipmentsMap = new Map();
@@ -66,6 +69,15 @@ const ImportEquipmentsByExcel = () => {
     checkDuplicateData(data);
   }, [data]);
 
+  const handleImportData = () => {
+    if (duplicateRows.length > 0) {
+      message.error(
+        'Dữ liệu chứa thiết bị trùng ký mã hiệu. Vui lòng xử lý các thiết bị bị trùng lặp.'
+      );
+      return;
+    }
+    createApi(data);
+  };
   const handleFileUpload = (file) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -454,7 +466,11 @@ const ImportEquipmentsByExcel = () => {
               </Button>
             )}
             {data.length > 0 ? (
-              <Button type="primary" onClick={() => setShowDeleteConfirm(true)}>
+              <Button
+                type="primary"
+                onClick={() => handleImportData()}
+                loading={creating}
+              >
                 Nhập
               </Button>
             ) : (

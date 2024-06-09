@@ -56,7 +56,7 @@ const Equipment = () => {
       case 'Từ hoạt động mua sắm':
         color = 'success';
         break;
-      case 'Nhập excel':
+      case 'Nhập Excel':
         color = 'warning';
         break;
       default:
