@@ -235,6 +235,7 @@ const Equipment = () => {
     {
       title: 'Hành động',
       key: 'action',
+      width: '6%',
       align: 'center',
       render: (_, record) => (
         <Space size="small">
