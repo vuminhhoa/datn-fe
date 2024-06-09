@@ -282,25 +282,6 @@ const Equipment = () => {
     }));
   };
 
-  if (loading && isFirstLoad)
-    return (
-      <Page fullWidth={true}>
-        <Breadcrumb items={breadcrumbItems} />
-        <Card
-          title="Danh sách thiết bị"
-          extra={
-            hasPermission(EQUIPMENT_CREATE) && (
-              <Button type="primary" icon={<PlusOutlined />} disabled>
-                Tạo mới
-              </Button>
-            )
-          }
-        >
-          <Table loading columns={columns} bordered />
-        </Card>
-      </Page>
-    );
-
   return (
     <Page fullWidth={true}>
       <Breadcrumb items={breadcrumbItems} />
@@ -338,7 +319,6 @@ const Equipment = () => {
               onChange={(e) => setQuery({ ...query, search: e.target.value })}
               allowClear
             />
-            {loading && <Spin />}
             {!showFilter ? (
               <Button
                 icon={<FilterOutlined />}
@@ -454,6 +434,7 @@ const Equipment = () => {
             columns={columns}
             dataSource={data}
             bordered
+            loading={loading}
             pagination={{
               current: page,
               pageSize: limit,
