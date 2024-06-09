@@ -45,7 +45,7 @@ function Home() {
 
   if (loading) {
     return (
-      <Flex gap={16} vertical>
+      <Page>
         <Row gutter={16}>
           <Col span={12}>
             <Card hoverable bordered={false} onClick={() => navigate('/users')}>
@@ -146,7 +146,7 @@ function Home() {
             <List loading={true} />
           </Flex>
         </Card>
-      </Flex>
+      </Page>
     );
   }
 
