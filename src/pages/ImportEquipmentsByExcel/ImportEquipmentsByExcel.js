@@ -59,9 +59,7 @@ const ImportEquipmentsByExcel = () => {
       return;
     }
 
-    const cleanedData = data.map(
-      ({ id, key, createdAt, updatedAt, ...rest }) => rest
-    );
+    const cleanedData = data.map(({ id, key, updatedAt, ...rest }) => rest);
 
     createApi(cleanedData);
   };
