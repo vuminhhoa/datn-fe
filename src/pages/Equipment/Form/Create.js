@@ -6,7 +6,7 @@ import useCreateApi from '../../../hooks/useCreateApi';
 const CreateEquipmentForm = ({ fetchApi, setIsShowCreateForm }) => {
   const [form] = Form.useForm();
   const { setToast } = useApp();
-  const { creating, createApi } = useCreateApi('/equipment');
+  const { creating, createApi } = useCreateApi({ url: '/equipment' });
   const defaultCreateFormData = {
     maThietBi: '',
     tenThietBi: '',

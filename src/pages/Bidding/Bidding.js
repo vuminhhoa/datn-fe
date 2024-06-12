@@ -33,8 +33,8 @@ import Page from '../../components/Page';
 const Bidding = () => {
   const navigate = useNavigate();
   const { setToast } = useApp();
-  const { deleting, deleteApi } = useDeleteApi(`/bidding`);
-  const { creating, createApi } = useCreateApi(`/bidding`);
+  const { deleting, deleteApi } = useDeleteApi({ url: `/bidding` });
+  const { creating, createApi } = useCreateApi({ url: `/bidding` });
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteId, setDeleteId] = useState();

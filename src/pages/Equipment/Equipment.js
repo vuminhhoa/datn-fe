@@ -46,7 +46,7 @@ import {
 const Equipment = () => {
   const navigate = useNavigate();
   const { setToast } = useApp();
-  const { deleting, deleteApi } = useDeleteApi(`/equipment`);
+  const { deleting, deleteApi } = useDeleteApi({ url: `/equipment` });
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [showFilter, setShowFilter] = useState('');
   const [query, setQuery] = useState({

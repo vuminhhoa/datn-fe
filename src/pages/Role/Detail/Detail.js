@@ -24,7 +24,7 @@ const DetailRole = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { setToast, fetchAppUser, user } = useApp();
-  const { deleting, deleteApi } = useDeleteApi(`/role/${id}`);
+  const { deleting, deleteApi } = useDeleteApi({ url: `/role/${id}` });
   const { data, loading } = useFetchApi({
     url: `/role/${id}`,
   });

@@ -1,4 +1,5 @@
 import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 export const readExcelFile = async (file, excelColumns) => {
   return new Promise((resolve, reject) => {
@@ -49,4 +50,24 @@ export const findDuplicateRow = (data, field) => {
     }
   });
   return duplicateRows;
+};
+
+export const downloadExcelTemplate = () => {
+  const ws = XLSX.utils.aoa_to_sheet([
+    [
+      'Tên thiết bị',
+      'Đơn vị',
+      'Số lượng',
+      'Ký mã hiệu',
+      'Hãng sản xuất',
+      'Xuất xứ',
+      'Đơn giá',
+      'Phân khoa',
+    ],
+  ]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Template');
+  const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(blob, '[iBME Lab] Mẫu file excel nhập thiết bị.xlsx');
 };

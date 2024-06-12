@@ -44,7 +44,7 @@ const columns = [
 
 const Role = () => {
   const { setToast } = useApp();
-  const { creating, createApi } = useCreateApi('/role');
+  const { creating, createApi } = useCreateApi({ url: '/role' });
   const { data, setData, loading, fetchApi } = useFetchApi({
     url: '/roles',
   });

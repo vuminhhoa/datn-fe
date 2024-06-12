@@ -33,8 +33,8 @@ const User = () => {
   const { setToast, user } = useApp();
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [form] = Form.useForm();
-  const { creating, createApi } = useCreateApi('/auth/register');
-  const { deleting, deleteApi } = useDeleteApi(`/user`);
+  const { creating, createApi } = useCreateApi({ url: '/auth/register' });
+  const { deleting, deleteApi } = useDeleteApi({ url: `/user` });
   const { data, fetchApi, setData, loading } = useFetchApi({
     url: '/users',
     defaultData: [],
