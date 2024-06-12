@@ -33,7 +33,11 @@ const ImportEquipmentsByExcel = () => {
     errorMsg: 'Nhập thiết bị thất bại',
     errorCallback: (resp) => {
       if (resp.error === 'trungThietBi') {
-        return setDuplicateEquipmentsInDb(resp.data);
+        const preparedData = resp.data.map((item, index) => ({
+          ...item,
+          key: item.kyMaHieu,
+        }));
+        return setDuplicateEquipmentsInDb(preparedData);
       }
     },
     successCallback: () => {

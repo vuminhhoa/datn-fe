@@ -28,6 +28,7 @@ const DuplicateRowsTable = () => {
   const isEditing = (record) => record.key === editingKey;
 
   const edit = (record) => {
+    console.log(record);
     form.setFieldsValue({
       ...record,
     });

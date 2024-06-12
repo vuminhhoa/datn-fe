@@ -33,7 +33,6 @@ const DuplicateEquipmentsTable = () => {
   const [showDuplicateEquipmentsBanner, setShowDuplicateEquipmentsBanner] =
     useState(false);
   const [equipmentInDb, setEquipmentInDb] = useState({});
-  const isEditing = (record) => record.key === editingKey;
   const [fetchingEquipmentInDb, setFetchingEquipmentInDb] = useState(false);
 
   const [showCompareModal, setShowCompareModal] = useState(false);
@@ -42,7 +41,10 @@ const DuplicateEquipmentsTable = () => {
   const [initEquipmentInDb, setInitEquipmentInDb] = useState({});
   const [initEquipmentToCompare, setInitEquipmentToCompare] = useState({});
 
+  const isEditing = (record) => record.key === editingKey;
+
   const edit = (record) => {
+    console.log(record);
     form.setFieldsValue({
       ...record,
     });
@@ -57,9 +59,9 @@ const DuplicateEquipmentsTable = () => {
     try {
       const row = await form.validateFields();
       const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
+      const index = newData.findIndex((item) => key === item.kyMaHieu);
       const kyMaHieuExists = newData.some(
-        (item) => item.kyMaHieu === row.kyMaHieu && item.key !== key
+        (item) => item.kyMaHieu === row.kyMaHieu && item.kyMaHieu !== key
       );
 
       if (kyMaHieuExists) {
@@ -99,9 +101,9 @@ const DuplicateEquipmentsTable = () => {
   };
 
   const handleDelete = (key) => {
-    const newData = data.filter((item) => item.key !== key);
+    const newData = data.filter((item) => item.kyMaHieu !== key);
     const newDuplicateEquipmentsInDb = duplicateEquipmentsInDb.filter(
-      (item) => item.key !== key
+      (item) => item.kyMaHieu !== key
     );
     setDuplicateEquipmentsInDb(newDuplicateEquipmentsInDb);
     setData(newData);
