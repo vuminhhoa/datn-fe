@@ -14,7 +14,7 @@ import useDeleteApi from '../../hooks/useDeleteApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import Page from '../../components/Page';
 import hasPermission from '../../helpers/hasPermission';
-import { USER_DELETE } from '../../const/permission';
+import { USER_CREATE, USER_DELETE } from '../../const/permission';
 import CreateModal from './CreateModal';
 
 const User = () => {
@@ -48,9 +48,11 @@ const User = () => {
         <Card
           title="Danh sách thành viên"
           extra={
-            <Button type="primary" icon={<PlusOutlined />} disabled>
-              Tạo mới
-            </Button>
+            hasPermission(USER_CREATE) && (
+              <Button type="primary" icon={<PlusOutlined />} disabled>
+                Tạo mới
+              </Button>
+            )
           }
         >
           <List bordered pagination loading itemLayout="horizontal" />
@@ -63,14 +65,16 @@ const User = () => {
       <Card
         title="Danh sách thành viên"
         extra={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setIsShowCreateForm(true)}
-            disabled={deleting}
-          >
-            Tạo mới
-          </Button>
+          hasPermission(USER_CREATE) && (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setIsShowCreateForm(true)}
+              disabled={deleting}
+            >
+              Tạo mới
+            </Button>
+          )
         }
       >
         <Flex gap={16} vertical>

@@ -43,10 +43,18 @@ const columns = [
 ];
 
 const Role = () => {
-  const { setToast } = useAppContext();
-  const { creating, createApi } = useCreateApi({ url: '/role' });
-  const { data, setData, loading, fetchApi } = useFetchApi({
-    url: '/roles',
+  const {
+    roles: data,
+    setRoles: setData,
+    loadingRoles: loading,
+    fetchRoles: fetchApi,
+  } = useAppContext();
+  const { creating, createApi } = useCreateApi({
+    url: '/role',
+    successCallback: () => {
+      setIsShowCreateForm(false);
+      fetchApi();
+    },
   });
 
   const breadcrumbItems = useBreadcrumb([
@@ -66,18 +74,18 @@ const Role = () => {
 
   useEffect(() => {
     if (loading) return;
-    if (!loading && data.roles) {
+    if (!loading && data) {
       setData(data);
     }
   }, [loading]);
 
-  const dataSource = data?.roles?.map((role) => {
+  const dataSource = data?.map((role) => {
     return {
       key: role.id,
       id: role.id,
       role: role.name,
       permissions:
-        role.Permissions.length === ALL_PERMISSION.length
+        role.Permissions.length === ALL_PERMISSION.length || role.id === 1
           ? 'Tất cả quyền hạn'
           : role.Permissions.map((permission) => permission.name).join(', '),
     };
@@ -98,26 +106,6 @@ const Role = () => {
     }
     if (!checked) {
       setSelectedPermission((prev) => prev.filter((i) => i !== item));
-    }
-  };
-
-  const handleCreateRole = async () => {
-    try {
-      const res = await createApi({
-        ...createFormData,
-        permissions: selectedPermission,
-      });
-      if (!res.data.success) {
-        return setToast(res.data.message, 'error');
-      }
-
-      return setToast('Tạo mới thành công');
-    } catch (error) {
-      console.log(error);
-      setToast('Tạo mới thất bại', 'error');
-    } finally {
-      setIsShowCreateForm(false);
-      fetchApi();
     }
   };
 
@@ -148,7 +136,12 @@ const Role = () => {
           >
             <Form
               autoComplete="off"
-              onFinish={handleCreateRole}
+              onFinish={() =>
+                createApi({
+                  ...createFormData,
+                  permissions: selectedPermission,
+                })
+              }
               form={form}
               layout="vertical"
             >
@@ -183,7 +176,7 @@ const Role = () => {
                   },
                 ]}
               >
-                <Flex vertical gap={8} style={{ marginLeft: '24px' }}>
+                <Flex vertical gap={12} style={{ marginLeft: '24px' }}>
                   <Checkbox
                     checked={selectedPermission.includes(DASHBOARD_READ)}
                     disabled={creating}

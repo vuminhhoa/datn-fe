@@ -2,16 +2,16 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Flex, Breadcrumb, Button, Skeleton } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
-import { ADMIN, USER } from '../../../const/role.js';
-import { ROLE_DELETE, ROLE_UPDATE } from '../../../const/permission.js';
-import useFetchApi from '../../../hooks/useFetchApi.js';
-import hasPermission from '../../../helpers/hasPermission.js';
-import { useAppContext } from '../../../contexts/appContext.js';
-import useDeleteApi from '../../../hooks/useDeleteApi.js';
-import NotFound from '../../NotFound/NotFound.js';
-import { useBreadcrumb } from '../../../hooks/useBreadcrumb.js';
-import Page from '../../../components/Page/Page.js';
-import { useAuthContext } from '../../../contexts/authContext.js';
+import { ADMIN, USER } from '../../const/role.js';
+import { ROLE_DELETE, ROLE_UPDATE } from '../../const/permission.js';
+import useFetchApi from '../../hooks/useFetchApi.js';
+import hasPermission from '../../helpers/hasPermission.js';
+import { useAppContext } from '../../contexts/appContext.js';
+import useDeleteApi from '../../hooks/useDeleteApi.js';
+import NotFound from '../NotFound/NotFound.js';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb.js';
+import Page from '../../components/Page/Page.js';
+import { useAuthContext } from '../../contexts/authContext.js';
 
 function checkUserInArray(arr, email) {
   for (let i = 0; i < arr.length; i++) {
@@ -40,65 +40,11 @@ const DetailRole = () => {
       title: 'Cài đặt phân quyền',
     },
     {
-      title: loading ? `---------------` : data.roles?.name,
+      title: loading ? `---------------` : data?.name,
     },
   ]);
-  const borderedItems = [
-    {
-      key: '1',
-      label: 'Quyền hạn',
-      children: data.roles?.Permissions.map(
-        (permission) => permission?.name
-      ).join(', '),
-    },
-    {
-      key: '2',
-      labelStyle: { width: '300px' },
-      label: `Users có vai trò ${data.roles?.name}`,
-      children:
-        data.name === ADMIN
-          ? 'Tất cả quyền hạn'
-          : data.roles?.Users.map((user, index) => {
-              return (
-                <Button
-                  type="link"
-                  onClick={() => navigate(`/user/${user.id}`)}
-                  size="small"
-                  key={index}
-                >
-                  {user.name || user.email}
-                </Button>
-              );
-            }),
-    },
-    {
-      key: '3',
-      label: `Ngày tạo`,
-      children: new Date(data.roles?.createdAt).toLocaleString(),
-    },
-    {
-      key: '4',
-      label: `Ngày sửa đổi gần nhất`,
-      children: new Date(data.roles?.updatedAt).toLocaleString(),
-    },
-  ];
-  const handleDeleteRole = async () => {
-    try {
-      const res = await deleteApi();
-      if (res.data.success) {
-        setToast('Xóa thành công');
-        const isUserHasRole = checkUserInArray(data.roles.Users, user.email);
-        if (isUserHasRole) {
-          window.location.reload();
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      navigate('/roles');
-    }
-  };
-  if (data.message === 'Vai trò không tồn tại') {
+
+  if (!data) {
     return <NotFound />;
   }
   if (loading) {
@@ -127,25 +73,84 @@ const DetailRole = () => {
       </Page>
     );
   }
+
+  console.log(data, 'data');
+
+  const borderedItems = [
+    {
+      key: '1',
+      label: 'Quyền hạn',
+      children: data?.Permissions?.map((permission) => permission?.name).join(
+        ', '
+      ),
+    },
+    {
+      key: '2',
+      labelStyle: { width: '300px' },
+      label: `Thành viên có vai trò ${data?.name}`,
+      children:
+        data.name === ADMIN
+          ? 'Tất cả quyền hạn'
+          : data?.Users?.map((user, index) => {
+              return (
+                <Button
+                  type="link"
+                  onClick={() => navigate(`/user/${user.id}`)}
+                  size="small"
+                  key={index}
+                >
+                  {user.name || user.email}
+                </Button>
+              );
+            }),
+    },
+    {
+      key: '3',
+      label: `Ngày tạo`,
+      children: new Date(data?.createdAt).toLocaleString(),
+    },
+    {
+      key: '4',
+      label: `Ngày sửa đổi gần nhất`,
+      children: new Date(data?.updatedAt).toLocaleString(),
+    },
+  ];
+  const handleDeleteRole = async () => {
+    try {
+      const res = await deleteApi();
+      if (res.data.success) {
+        setToast('Xóa thành công');
+        const isUserHasRole = checkUserInArray(data.Users, user.email);
+        if (isUserHasRole) {
+          window.location.reload();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      navigate('/roles');
+    }
+  };
+
   return (
     <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card
-        title={`Thông tin vai trò: ${data.roles?.name}`}
+        title={`Thông tin vai trò: ${data?.name}`}
         extra={
           <Flex gap={8}>
-            {data.roles.name !== ADMIN &&
-              data.roles.name !== USER &&
+            {data?.name !== ADMIN &&
+              data?.name !== USER &&
               hasPermission(ROLE_DELETE) && (
                 <Button danger disabled={deleting} onClick={handleDeleteRole}>
                   Xóa
                 </Button>
               )}
-            {data.roles.name !== ADMIN && hasPermission(ROLE_UPDATE) && (
+            {data.name !== ADMIN && hasPermission(ROLE_UPDATE) && (
               <Button
                 disabled={deleting}
                 type="primary"
-                onClick={() => navigate(`/role/edit/${data.roles.id}`)}
+                onClick={() => navigate(`/role/edit/${data?.id}`)}
               >
                 Chỉnh sửa
               </Button>

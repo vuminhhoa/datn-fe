@@ -11,11 +11,13 @@ const AppProvider = ({ children }) => {
     data: roles,
     loading: loadingRoles,
     fetchApi: fetchRoles,
+    setData: setRoles,
   } = useFetchApi({ url: '/roles', defaultData: [] });
   const {
     data: departments,
     loading: loadingDepartments,
     fetchApi: fetchDepartments,
+    setData: setDepartments,
   } = useFetchApi({
     url: '/departments',
     defaultData: [],
@@ -32,12 +34,14 @@ const AppProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         setToast,
-        roles,
         departments,
-        loadingRoles,
         loadingDepartments,
-        fetchRoles,
         fetchDepartments,
+        setRoles,
+        loadingRoles,
+        roles,
+        fetchRoles,
+        setDepartments,
       }}
     >
       {contextHolder}

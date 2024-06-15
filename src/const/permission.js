@@ -52,6 +52,7 @@ const ALL_PERMISSION = [
 const PERMISSION_GROUP = [
   'thành viên',
   'thiết bị',
+  'khoa phòng',
   'hoạt động mua sắm đấu thầu',
   'vai trò',
 ];

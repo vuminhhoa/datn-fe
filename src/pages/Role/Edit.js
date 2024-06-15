@@ -14,14 +14,14 @@ import {
   DASHBOARD_READ,
   ALL_PERMISSION,
   PERMISSION_GROUP,
-} from '../../../const/permission.js';
-import useFetchApi from '../../../hooks/useFetchApi.js';
-import useEditApi from '../../../hooks/useEditApi.js';
-import { useAppContext } from '../../../contexts/appContext.js';
-import NotFound from '../../NotFound/NotFound.js';
-import { useBreadcrumb } from '../../../hooks/useBreadcrumb.js';
-import Page from '../../../components/Page/Page.js';
-import { useAuthContext } from '../../../contexts/authContext.js';
+} from '../../const/permission.js';
+import useFetchApi from '../../hooks/useFetchApi.js';
+import useEditApi from '../../hooks/useEditApi.js';
+import { useAppContext } from '../../contexts/appContext.js';
+import NotFound from '../NotFound/NotFound.js';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb.js';
+import Page from '../../components/Page/Page.js';
+import { useAuthContext } from '../../contexts/authContext.js';
 
 function checkUserInArray(arr, email) {
   for (let i = 0; i < arr.length; i++) {
@@ -49,18 +49,18 @@ const EditRole = () => {
       title: 'Cài đặt phân quyền',
     },
     {
-      title: loading ? `---------------` : data.roles?.name,
+      title: loading ? `---------------` : data?.name,
     },
   ]);
   const [selected, setSelected] = useState([]);
   const { editing, editApi } = useEditApi({ url: `/role/${id}` });
   const handleSave = async () => {
     try {
-      const perpareData = { roleId: data.roles.id, permissions: selected };
+      const perpareData = { roleId: data.id, permissions: selected };
       const res = await editApi(perpareData);
       if (res.data.success) {
         setToast('Cập nhật thành công');
-        const isUserHasRole = checkUserInArray(data.roles.Users, user.email);
+        const isUserHasRole = checkUserInArray(data.Users, user.email);
         if (isUserHasRole) {
           window.location.reload();
         }
@@ -83,8 +83,8 @@ const EditRole = () => {
   };
 
   useEffect(() => {
-    if (!fetched || !data.roles) return;
-    setSelected(data.roles.Permissions.map((permission) => permission.name));
+    if (!fetched || !data) return;
+    setSelected(data.Permissions.map((permission) => permission.name));
   }, [fetched]);
 
   if (data.message === 'Vai trò không tồn tại') {
@@ -112,7 +112,7 @@ const EditRole = () => {
     <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card
-        title={`Cập nhật vai trò: ${data.roles?.name}`}
+        title={`Cập nhật vai trò: ${data?.name}`}
         extra={
           <Button type="primary" onClick={handleSave} disabled={editing}>
             Lưu

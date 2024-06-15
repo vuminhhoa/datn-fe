@@ -73,7 +73,7 @@ const Activity = () => {
                 </Flex>
               )
             }
-            dataSource={data.activities}
+            dataSource={data}
             pagination
             renderItem={(item) => {
               const url = item.target ? getFetchUrl(item.target.type) : '';

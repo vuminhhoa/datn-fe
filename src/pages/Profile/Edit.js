@@ -1,11 +1,11 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { Flex, Avatar, Button, Modal, Form, Input, Upload } from 'antd';
-import { useAppContext } from '../../../contexts/appContext';
+import { useAppContext } from '../../contexts/appContext';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { convertBase64 } from '../../../helpers/uploadFile';
-import useEditApi from '../../../hooks/useEditApi';
-import { useAuthContext } from '../../../contexts/authContext';
+import { convertBase64 } from '../../helpers/uploadFile';
+import useEditApi from '../../hooks/useEditApi';
+import { useAuthContext } from '../../contexts/authContext';
 
 const EditProfileForm = ({
   open,

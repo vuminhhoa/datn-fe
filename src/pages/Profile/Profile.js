@@ -11,7 +11,7 @@ import {
 } from 'antd';
 import { HomeOutlined, UserOutlined, EditOutlined } from '@ant-design/icons';
 import useFetchApi from '../../hooks/useFetchApi';
-import EditProfileForm from './Form/Edit';
+import EditProfileForm from './Edit';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import Page from '../../components/Page';
 import { useAuthContext } from '../../contexts/authContext';
