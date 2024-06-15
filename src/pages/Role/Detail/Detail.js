@@ -6,11 +6,12 @@ import { ADMIN, USER } from '../../../const/role.js';
 import { ROLE_DELETE, ROLE_UPDATE } from '../../../const/permission.js';
 import useFetchApi from '../../../hooks/useFetchApi.js';
 import hasPermission from '../../../helpers/hasPermission.js';
-import { useApp } from '../../../contexts/appProvider.js';
+import { useAppContext } from '../../../contexts/appContext.js';
 import useDeleteApi from '../../../hooks/useDeleteApi.js';
 import NotFound from '../../NotFound/NotFound.js';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb.js';
 import Page from '../../../components/Page/Page.js';
+import { useAuthContext } from '../../../contexts/authContext.js';
 
 function checkUserInArray(arr, email) {
   for (let i = 0; i < arr.length; i++) {
@@ -23,7 +24,8 @@ function checkUserInArray(arr, email) {
 const DetailRole = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { setToast, fetchAppUser, user } = useApp();
+  const { setToast } = useAppContext();
+  const { user } = useAuthContext();
   const { deleting, deleteApi } = useDeleteApi({ url: `/role/${id}` });
   const { data, loading } = useFetchApi({
     url: `/role/${id}`,
@@ -87,7 +89,7 @@ const DetailRole = () => {
         setToast('Xóa thành công');
         const isUserHasRole = checkUserInArray(data.roles.Users, user.email);
         if (isUserHasRole) {
-          fetchAppUser();
+          window.location.reload();
         }
       }
     } catch (error) {

@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import { HomeOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
-import { useApp } from '../../contexts/appProvider';
+import { useAppContext } from '../../contexts/appContext';
 import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
 import hasPermission from '../../helpers/hasPermission';
@@ -32,7 +32,7 @@ import Page from '../../components/Page';
 
 const Bidding = () => {
   const navigate = useNavigate();
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const { deleting, deleteApi } = useDeleteApi({ url: `/bidding` });
   const { creating, createApi } = useCreateApi({ url: `/bidding` });
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);

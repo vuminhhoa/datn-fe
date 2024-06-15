@@ -11,13 +11,13 @@ import {
 } from 'antd';
 import { HomeOutlined, UserOutlined, EditOutlined } from '@ant-design/icons';
 import useFetchApi from '../../hooks/useFetchApi';
-import { useApp } from '../../contexts/appProvider';
 import EditProfileForm from './Form/Edit';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import Page from '../../components/Page';
+import { useAuthContext } from '../../contexts/authContext';
 
 const Profile = () => {
-  const { user, setUser } = useApp();
+  const { user, setUser } = useAuthContext();
   const [isShowEditForm, setIsShowEditForm] = useState(false);
 
   const { data: rolesData, loading: loadingRoles } = useFetchApi({

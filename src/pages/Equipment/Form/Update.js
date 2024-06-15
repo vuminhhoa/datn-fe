@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Select, Flex, Button, Avatar, Upload, Modal } from 'antd';
-import { useApp } from '../../../contexts/appProvider';
+import { useAppContext } from '../../../contexts/appContext';
 import { UploadOutlined } from '@ant-design/icons';
 import { FileImageOutlined } from '@ant-design/icons';
 import useEditApi from '../../../hooks/useEditApi';
@@ -14,7 +14,7 @@ const UpdateEquipmentForm = ({
   fetchApi,
 }) => {
   const [form] = Form.useForm();
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const { editing, editApi } = useEditApi({
     url: `/equipment/${equipment.id}`,
   });

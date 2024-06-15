@@ -25,7 +25,7 @@ import {
   SortDescendingOutlined,
 } from '@ant-design/icons';
 import {} from '@ant-design/icons';
-import { useApp } from '../../contexts/appProvider';
+import { useAppContext } from '../../contexts/appContext';
 import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
 import CreateEquipmentForm from '../Equipment/Form/Create';
@@ -45,7 +45,7 @@ import {
 
 const DevZone = () => {
   const navigate = useNavigate();
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const { deleting, deleteApi } = useDeleteApi(`/equipment`);
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [showFilter, setShowFilter] = useState('');

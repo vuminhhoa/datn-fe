@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Flex, Button, Typography, Tag, Upload } from 'antd';
 import DatePickerFormat from './DatePickerFormat';
 import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useApp } from '../../../contexts/appProvider';
+import { useAppContext } from '../../../contexts/appContext';
 import BiddingContext from '../../../contexts/biddingContext';
 import { convertBase64 } from '../../../helpers/uploadFile';
 
@@ -14,7 +14,7 @@ const BiddingItem = ({
 }) => {
   const { data, setData, saving, setDeletedFields } =
     useContext(BiddingContext);
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const [isEditItem, setIsEditItem] = useState(false);
   const [documentPreview, setDocumentPreview] = useState(null);
 

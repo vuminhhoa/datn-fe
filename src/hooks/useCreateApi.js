@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useApp } from '../contexts/appProvider';
+import { useAppContext } from '../contexts/appContext';
 
 export default function useCreateApi({
   url,
@@ -12,7 +12,7 @@ export default function useCreateApi({
   showErrors = true,
   addErrors = () => {},
 }) {
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const [creating, setCreating] = useState(false);
 
   async function createApi(body) {

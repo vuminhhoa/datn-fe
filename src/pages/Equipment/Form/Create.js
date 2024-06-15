@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Form, Input, Select, Flex, Button } from 'antd';
-import { useApp } from '../../../contexts/appProvider';
+import { useAppContext } from '../../../contexts/appContext';
 import useCreateApi from '../../../hooks/useCreateApi';
 
 const CreateEquipmentForm = ({ fetchApi, setIsShowCreateForm }) => {
   const [form] = Form.useForm();
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const { creating, createApi } = useCreateApi({ url: '/equipment' });
   const defaultCreateFormData = {
     maThietBi: '',

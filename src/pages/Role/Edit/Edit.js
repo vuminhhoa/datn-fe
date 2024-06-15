@@ -17,10 +17,11 @@ import {
 } from '../../../const/permission.js';
 import useFetchApi from '../../../hooks/useFetchApi.js';
 import useEditApi from '../../../hooks/useEditApi.js';
-import { useApp } from '../../../contexts/appProvider.js';
+import { useAppContext } from '../../../contexts/appContext.js';
 import NotFound from '../../NotFound/NotFound.js';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb.js';
 import Page from '../../../components/Page/Page.js';
+import { useAuthContext } from '../../../contexts/authContext.js';
 
 function checkUserInArray(arr, email) {
   for (let i = 0; i < arr.length; i++) {
@@ -33,7 +34,8 @@ function checkUserInArray(arr, email) {
 
 const EditRole = () => {
   const { id } = useParams();
-  const { setToast, user, fetchAppUser } = useApp();
+  const { setToast } = useAppContext();
+  const { user } = useAuthContext();
   const { data, loading, fetched, fetchApi } = useFetchApi({
     url: `/role/${id}`,
   });
@@ -60,7 +62,7 @@ const EditRole = () => {
         setToast('Cập nhật thành công');
         const isUserHasRole = checkUserInArray(data.roles.Users, user.email);
         if (isUserHasRole) {
-          fetchAppUser();
+          window.location.reload();
         }
       }
     } catch (error) {

@@ -9,13 +9,13 @@ import {
   Button,
 } from 'antd';
 import { BugOutlined, UserOutlined } from '@ant-design/icons';
-import { useApp } from '../contexts/appProvider';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../contexts/authContext';
 
 const { Header } = Layout;
 
 function AppHeader() {
-  const { user, logoutAction } = useApp();
+  const { logoutAction, user } = useAuthContext();
   const navigate = useNavigate();
   const {
     token: { colorBgContainer },

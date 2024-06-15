@@ -26,7 +26,8 @@ export default function useFetchApi({
   async function fetchApi(
     fetchUrl = url,
     isSilent = false,
-    isResetDataOnFetchError = true
+    isResetDataOnFetchError = true,
+    fullResp = true
   ) {
     !isSilent && setLoading(true);
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
@@ -39,36 +40,13 @@ export default function useFetchApi({
         },
       });
 
-      if (withPagination) {
-        setData(resp.data.data);
-        setPageInfo(resp.data.pageInfo);
-      } else {
-        setData(
-          Array.isArray(resp.data)
-            ? resp.data
-            : { ...defaultData, ...resp.data }
-        );
-        setPageInfo(resp.pageInfo);
-      }
-
-      if (resp.errors && resp.errors.length) {
-        console.log(resp.errors);
-        addErrors(resp.errors);
-        return fullResp ? resp : false;
-      }
-      if (resp.error) {
-        console.log(resp.error);
-        addErrors([resp.error]);
-        return fullResp ? resp : false;
-      }
-      clearErrors();
-      return fullResp ? resp : true;
+      setData(resp.data.data);
+      setPageInfo(resp.data.pageInfo);
     } catch (e) {
       if (isResetDataOnFetchError) {
         setData(defaultData);
         setPageInfo({});
       }
-      addErrors([e.message]);
       return fullResp ? { success: false, data: {} } : false;
     } finally {
       !isSilent && setLoading(false);

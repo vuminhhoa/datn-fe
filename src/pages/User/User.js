@@ -1,17 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Card,
-  Flex,
-  Breadcrumb,
-  Modal,
-  Input,
-  Button,
-  Select,
-  List,
-  Form,
-  Avatar,
-  Popover,
-} from 'antd';
+import { Card, Flex, Breadcrumb, Button, List, Avatar, Popover } from 'antd';
 import {
   HomeOutlined,
   DeleteOutlined,
@@ -19,26 +7,29 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
-import { useApp } from '../../contexts/appProvider';
 import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
 import { ADMIN } from '../../const/role';
-import useCreateApi from '../../hooks/useCreateApi';
 import useDeleteApi from '../../hooks/useDeleteApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import Page from '../../components/Page';
+import hasPermission from '../../helpers/hasPermission';
+import { USER_DELETE } from '../../const/permission';
+import CreateModal from './CreateModal';
 
 const User = () => {
   const navigate = useNavigate();
-  const { setToast, user } = useApp();
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
-  const [form] = Form.useForm();
-  const { creating, createApi } = useCreateApi({ url: '/auth/register' });
-  const { deleting, deleteApi } = useDeleteApi({ url: `/user` });
-  const { data, fetchApi, setData, loading } = useFetchApi({
+
+  const { deleting, deleteApi } = useDeleteApi({
+    url: `/user`,
+    successCallback: () => fetchApi(),
+  });
+  const { data, fetchApi, loading } = useFetchApi({
     url: '/users',
     defaultData: [],
   });
+
   const breadcrumbItems = useBreadcrumb([
     {
       href: '/',
@@ -49,56 +40,8 @@ const User = () => {
       title: 'Quản lý thành viên',
     },
   ]);
-  const { data: rolesData, loading: loadingRoles } = useFetchApi({
-    url: '/roles',
-    defaultData: [],
-  });
-  const roles = rolesData.roles;
 
-  const [createFormData, setCreateFormData] = useState({});
-  const handleCreateFormChange = (e) => {
-    setCreateFormData({
-      ...createFormData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleCreateUser = async () => {
-    try {
-      const res = await createApi({
-        ...createFormData,
-        isCreateUser: true,
-        actorId: user.id,
-      });
-      if (!res.data.success) {
-        return setToast(res.data.message, 'error');
-      }
-
-      return setToast('Tạo mới thành công');
-    } catch (error) {
-      console.log(error);
-      setToast('Tạo mới thất bại', 'error');
-    } finally {
-      setIsShowCreateForm(false);
-      fetchApi();
-    }
-  };
-
-  const handleDeleteUser = async (id) => {
-    try {
-      const res = await deleteApi(id);
-      if (!res.data.success) {
-        setToast(res.data.message, 'error');
-      }
-      setData(data.filter((item) => item.id !== id));
-      setToast('Xóa thành công');
-    } catch (error) {
-      console.log(error);
-      setToast('Xóa thất bại', 'error');
-    }
-  };
-
-  if (loading || loadingRoles)
+  if (loading)
     return (
       <Page>
         <Breadcrumb items={breadcrumbItems} />
@@ -131,112 +74,11 @@ const User = () => {
         }
       >
         <Flex gap={16} vertical>
-          <Modal
-            title="Tạo mới người dùng"
-            open={isShowCreateForm}
-            onCancel={() => setIsShowCreateForm(false)}
-            footer={null}
-          >
-            <Form
-              autoComplete="off"
-              onFinish={handleCreateUser}
-              form={form}
-              layout="vertical"
-            >
-              <Form.Item
-                name="email"
-                label="Tài khoản"
-                rules={[
-                  {
-                    type: 'email',
-                    message: 'Email không đúng định dạng!',
-                  },
-                  { required: true, message: 'Vui lòng nhập tên đăng nhập!' },
-                ]}
-              >
-                <Input
-                  name="email"
-                  onChange={handleCreateFormChange}
-                  placeholder="Tên đăng nhập"
-                  disabled={creating}
-                />
-              </Form.Item>
-              <Form.Item
-                name="password"
-                label="Mật khẩu"
-                rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
-              >
-                <Input
-                  name="password"
-                  onChange={handleCreateFormChange}
-                  type="password"
-                  placeholder="Mật khẩu"
-                  disabled={creating}
-                />
-              </Form.Item>
-              <Form.Item
-                name="name"
-                label="Tên người dùng"
-                rules={[
-                  { required: true, message: 'Vui lòng nhập tên người dùng!' },
-                ]}
-              >
-                <Input
-                  name="name"
-                  onChange={handleCreateFormChange}
-                  placeholder="Tên người dùng"
-                />
-              </Form.Item>
-              <Form.Item name="address" label="Địa chỉ">
-                <Input
-                  name="address"
-                  onChange={handleCreateFormChange}
-                  placeholder="Địa chỉ"
-                />
-              </Form.Item>
-              <Form.Item name="phone" label="Số điện thoại">
-                <Input
-                  name="phone"
-                  onChange={handleCreateFormChange}
-                  placeholder="Số điện thoại"
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="role"
-                label="Vai trò"
-                rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
-              >
-                <Select
-                  allowClear
-                  placeholder="Chọn vai trò"
-                  onChange={(value) =>
-                    setCreateFormData({
-                      ...createFormData,
-                      role: value,
-                    })
-                  }
-                  options={roles
-                    .filter((role) => role.name !== 'Quản trị viên')
-                    .map((role) => {
-                      return {
-                        value: role.id,
-                        label: role.name,
-                      };
-                    })}
-                />
-              </Form.Item>
-
-              <Flex gap={8} justify="flex-end">
-                <Button key="back" onClick={() => setIsShowCreateForm(false)}>
-                  Hủy
-                </Button>
-                <Button type="primary" htmlType="submit" loading={creating}>
-                  Lưu
-                </Button>
-              </Flex>
-            </Form>
-          </Modal>
+          <CreateModal
+            isShowCreateForm={isShowCreateForm}
+            setIsShowCreateForm={setIsShowCreateForm}
+            fetchApi={fetchApi}
+          />
 
           <List
             bordered
@@ -255,13 +97,13 @@ const User = () => {
                     />
                   </Popover>,
 
-                  item.Role.name !== ADMIN ? (
+                  item.Role.name !== ADMIN && hasPermission(USER_DELETE) ? (
                     <Popover content="Xóa thành viên" trigger="hover">
                       <Button
                         type="link"
                         danger
                         icon={<DeleteOutlined />}
-                        onClick={() => handleDeleteUser(item.id)}
+                        onClick={() => deleteApi(item.id)}
                       />
                     </Popover>
                   ) : null,

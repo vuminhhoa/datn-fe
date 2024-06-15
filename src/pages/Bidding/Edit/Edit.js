@@ -18,7 +18,7 @@ import KeHoachLuaChonNhaThau from '../Form/KeHoachLuaChonNhaThau';
 import Ehsmt from '../Form/Ehsmt';
 import useFetchApi from '../../../hooks/useFetchApi';
 import { useParams } from 'react-router-dom';
-import { useApp } from '../../../contexts/appProvider';
+import { useAppContext } from '../../../contexts/appContext';
 import CollapsibleForm from '../Component/CollapsibleForm';
 import Ehsdt from '../Form/Ehsdt';
 import KyKetThucHienHopDong from '../Form/KyKetThucHienHopDong';
@@ -29,7 +29,7 @@ import Page from '../../../components/Page';
 
 const Edit = () => {
   const { id } = useParams();
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const { editing, editApi } = useEditApi({ url: `/bidding/${id}` });
   const { data, setData, loading, fetchApi } = useFetchApi({
     url: `/bidding/${id}`,

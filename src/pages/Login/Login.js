@@ -12,11 +12,11 @@ import {
   message,
 } from 'antd';
 import './Login.css';
-import { useApp } from '../../contexts/appProvider';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../../contexts/authContext';
 
 const Login = () => {
-  const { loginAction } = useApp();
+  const { loginAction } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [messageApi, contextHolder] = message.useMessage();

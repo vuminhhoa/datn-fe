@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useApp } from '../contexts/appProvider';
+import { useAppContext } from '../contexts/appContext';
 export default function useDeleteApi({
   url,
   successCallback = async () => {},
   successMsg = 'Xóa thành công',
   errorMsg = 'Xóa thất bại',
 }) {
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const [deleting, setDeleting] = useState(false);
 
   async function deleteApi(id = null) {

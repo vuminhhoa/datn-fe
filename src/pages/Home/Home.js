@@ -31,11 +31,10 @@ const getFetchUrl = (type) => {
 
 function Home() {
   const navigate = useNavigate();
-  const { data: input, loading } = useFetchApi({
+  const { data, loading } = useFetchApi({
     url: `/dashboard`,
     defaultData: {},
   });
-  const data = input.activities;
 
   if (loading) {
     return (

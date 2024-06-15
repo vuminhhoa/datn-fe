@@ -2,14 +2,12 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import AppLayout from '../layout/Layout';
 import NotFound from '../pages/NotFound';
-import { useApp } from '../contexts/appProvider';
+import { useAuthContext } from '../contexts/authContext';
 
 const PrivateRoute = ({ children, permission = null }) => {
-  const { user, logoutAction } = useApp();
+  const { logoutAction, user } = useAuthContext();
 
-  const isLoggedIn = Boolean(localStorage.getItem('ACCESS_TOKEN'));
-
-  if (!isLoggedIn || !user) {
+  if (!user) {
     return <Navigate to="/sign-up" />;
   }
   if (permission && user.Role?.name !== 'Quản trị viên') {

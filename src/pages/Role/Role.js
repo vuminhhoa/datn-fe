@@ -20,7 +20,7 @@ import {
   PERMISSION_GROUP,
   ROLE_CREATE,
 } from '../../const/permission.js';
-import { useApp } from '../../contexts/appProvider.js';
+import { useAppContext } from '../../contexts/appContext.js';
 import hasPermission from '../../helpers/hasPermission.js';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb.js';
 import useCreateApi from '../../hooks/useCreateApi.js';
@@ -43,7 +43,7 @@ const columns = [
 ];
 
 const Role = () => {
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const { creating, createApi } = useCreateApi({ url: '/role' });
   const { data, setData, loading, fetchApi } = useFetchApi({
     url: '/roles',

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useApp } from '../contexts/appProvider';
+import { useAppContext } from '../contexts/appContext';
 import { convertBase64 } from '../helpers/uploadFile';
 
 export default function useUploadFile() {
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const [uploading, setUploading] = useState(false);
   const [fileBase64, setFileBase64] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);

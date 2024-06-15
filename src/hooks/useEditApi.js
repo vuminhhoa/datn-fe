@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useApp } from '../contexts/appProvider';
+import { useAppContext } from '../contexts/appContext';
 
 export default function useEditApi({
   url,
@@ -8,7 +8,7 @@ export default function useEditApi({
   successMsg = 'Cập nhật thành công',
   errorMsg = 'Cập nhật thất bại',
 }) {
-  const { setToast } = useApp();
+  const { setToast } = useAppContext();
   const [editing, setEditing] = useState(false);
 
   async function editApi(body) {

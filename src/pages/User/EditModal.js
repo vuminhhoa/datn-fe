@@ -1,25 +1,34 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { Flex, Avatar, Button, Modal, Form, Input, Select, Upload } from 'antd';
-import { useApp } from '../../../contexts/appProvider';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
-import { convertBase64 } from '../../../helpers/uploadFile';
-import useEditApi from '../../../hooks/useEditApi';
+import useEditApi from '../../hooks/useEditApi';
+import useUploadFile from '../../hooks/useUploadFile';
+import useFetchApi from '../../hooks/useFetchApi';
+import { useAuthContext } from '../../contexts/authContext';
 
-const EditModal = ({
-  open,
-  input,
-  setInput,
-  roles,
-  fetchApi,
-  setOpen,
-  value,
-  setValue,
-}) => {
-  const { setToast, user, setUser } = useApp();
-  const { editing, editApi } = useEditApi({ url: `/user` });
+const EditModal = ({ open, input, fetchApi, setOpen }) => {
+  const { user, setUser } = useAuthContext();
+  const { data: roles, loading: loadingRoles } = useFetchApi({
+    url: '/roles',
+    defaultData: [],
+  });
+  const { editing, editApi } = useEditApi({
+    url: `/user`,
+    successCallback: () => {
+      if (user.id === value.id) {
+        setUser(value);
+        localStorage.setItem('CURRENT_USER', JSON.stringify(value));
+      }
+      setOpen(false);
+      fetchApi();
+    },
+  });
+  const { uploading, uploadFile, fileBase64 } = useUploadFile();
+
+  const [value, setValue] = useState(input);
+
   const [form] = Form.useForm();
-  const [uploading, setUploading] = useState(false);
   const handleEditFormChange = (e) => {
     setValue({
       ...value,
@@ -27,86 +36,62 @@ const EditModal = ({
     });
   };
 
-  const handleUpdateUser = async () => {
-    try {
-      const res = await editApi(value);
-      if (!res.data.success) {
-        return setToast(res.data.message, 'error');
-      }
-
-      if (user.id === value.id) {
-        setUser(value);
-        localStorage.setItem('CURRENT_USER', JSON.stringify(value));
-      }
-      return setToast('Cập nhật thành công!');
-    } catch (error) {
-      console.log(error);
-      setToast('Cập nhật thất bại', 'error');
-    } finally {
-      setOpen(false);
-      fetchApi();
-    }
-  };
-
   const handleChangeFile = async (e) => {
-    try {
-      setUploading(true);
-      const file = e.file.originFileObj;
-      const imgUrl = URL.createObjectURL(file);
-      console.log(imgUrl);
-      form.setFields([
+    const file = e.file;
+    form.setFields([
+      {
+        name: 'image',
+        errors: [],
+      },
+    ]);
+    if (file.size > 2000000) {
+      form.resetFields(['image']);
+      return form.setFields([
         {
           name: 'image',
-          errors: [],
+          errors: ['Vui lòng chọn file có dung lượng nhỏ hơn 2MB!'],
         },
       ]);
-      if (file.size > 2000000) {
-        form.resetFields(['image']);
-        return form.setFields([
-          {
-            name: 'image',
-            errors: ['Vui lòng chọn file có dung lượng nhỏ hơn 2MB!'],
-          },
-        ]);
-      }
-      const fileBase64 = await convertBase64(file);
-      setValue({
-        ...value,
-        image: fileBase64,
-      });
-      setInput({
-        ...input,
-        user: { ...input.user, image: imgUrl },
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setUploading(false);
     }
+    const { fileUrl } = await uploadFile(file);
+    setValue({
+      ...value,
+      image: fileUrl,
+    });
   };
   return (
     <Modal
       title="Cập nhật thông tin người dùng"
       open={open}
-      onCancel={() => setOpen(false)}
+      onCancel={() => {
+        if (editing) return;
+        setOpen(false);
+      }}
       footer={null}
     >
       <Form
         autoComplete="off"
-        onFinish={handleUpdateUser}
+        onFinish={() => editApi({ ...value, image: fileBase64 || value.image })}
         form={form}
         layout="vertical"
       >
         <Form.Item name="image" label="Ảnh đại diện">
           <Flex align="center" gap={'16px'} vertical>
-            <Avatar size={128} src={input.user.image} icon={<UserOutlined />} />
+            <Avatar size={128} src={value.image} icon={<UserOutlined />} />
             <Upload
               name="avatar"
               showUploadList={false}
+              beforeUpload={() => {
+                return false;
+              }}
               onChange={handleChangeFile}
             >
               <Flex vertical align="center">
-                <Button icon={<UploadOutlined />} loading={uploading}>
+                <Button
+                  icon={<UploadOutlined />}
+                  loading={uploading}
+                  disabled={editing}
+                >
                   Thay đổi
                 </Button>
               </Flex>
@@ -117,21 +102,43 @@ const EditModal = ({
           name="name"
           label="Tên người dùng"
           rules={[{ required: true, message: 'Vui lòng nhập tên người dùng!' }]}
-          initialValue={input.user.name}
+          initialValue={value.name}
         >
           <Input
             name="name"
+            disabled={editing}
             onChange={handleEditFormChange}
             placeholder="Tên người dùng"
           />
         </Form.Item>
-        <Form.Item
-          name="address"
-          label="Địa chỉ"
-          initialValue={input.user.address}
+        {/* <Form.Item
+          name="DepartmentId"
+          label="Khoa phòng"
+          rules={[{ required: true, message: 'Vui lòng chọn khoa phòng' }]}
         >
+          <Select
+            allowClear
+            disabled={loadingDepartment || creating}
+            placeholder="Chọn khoa phòng"
+            onChange={(value) =>
+              setCreateFormData({
+                ...createFormData,
+                department: value,
+              })
+            }
+            options={departments.map((department) => {
+              return {
+                value: department.id,
+                label: department.tenKhoaPhong,
+              };
+            })}
+          />
+        </Form.Item> */}
+
+        <Form.Item name="address" label="Địa chỉ" initialValue={value.address}>
           <Input
             name="address"
+            disabled={editing}
             onChange={handleEditFormChange}
             placeholder="Địa chỉ"
           />
@@ -139,10 +146,11 @@ const EditModal = ({
         <Form.Item
           name="phone"
           label="Số điện thoại"
-          initialValue={input.user.phone}
+          initialValue={value.phone}
         >
           <Input
             name="phone"
+            disabled={editing}
             onChange={handleEditFormChange}
             placeholder="Số điện thoại"
           />
@@ -152,10 +160,11 @@ const EditModal = ({
           name="role"
           label="Vai trò"
           rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
-          initialValue={input.user.Role.name}
+          initialValue={value.Role.name}
         >
           <Select
             allowClear
+            disabled={loadingRoles || editing}
             placeholder="Chọn vai trò"
             onChange={(val) =>
               setValue({
@@ -175,7 +184,7 @@ const EditModal = ({
         </Form.Item>
 
         <Flex gap={8} justify="flex-end">
-          <Button key="back" onClick={() => setOpen(false)}>
+          <Button key="back" onClick={() => setOpen(false)} disabled={editing}>
             Hủy
           </Button>
           <Button type="primary" htmlType="submit" loading={editing}>

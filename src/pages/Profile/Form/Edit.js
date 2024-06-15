@@ -1,10 +1,11 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { Flex, Avatar, Button, Modal, Form, Input, Upload } from 'antd';
-import { useApp } from '../../../contexts/appProvider';
+import { useAppContext } from '../../../contexts/appContext';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { convertBase64 } from '../../../helpers/uploadFile';
 import useEditApi from '../../../hooks/useEditApi';
+import { useAuthContext } from '../../../contexts/authContext';
 
 const EditProfileForm = ({
   open,
@@ -14,7 +15,8 @@ const EditProfileForm = ({
   formValue,
   setFormValue,
 }) => {
-  const { setToast, setUser } = useApp();
+  const { setToast } = useAppContext();
+  const { setUser } = useAuthContext();
   const { editing, editApi } = useEditApi({ url: `/user` });
   const [form] = Form.useForm();
   const [uploading, setUploading] = useState(false);
