@@ -47,7 +47,7 @@ import {
 
 const Equipment = () => {
   const navigate = useNavigate();
-  const { setToast } = useAppContext();
+  const { setToast, departments } = useAppContext();
   const { deleting, deleteApi } = useDeleteApi({ url: `/equipment` });
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [showFilter, setShowFilter] = useState('');
@@ -61,6 +61,7 @@ const Equipment = () => {
     phanLoaiNhap: [],
     xuatXu: [],
     donVi: [],
+    departmentIds: [],
   });
 
   const {
@@ -73,6 +74,7 @@ const Equipment = () => {
     donVi,
     xuatXu,
     phanLoaiNhap,
+    departmentIds,
   } = query;
   const searchParams = {
     page,
@@ -84,6 +86,7 @@ const Equipment = () => {
     donVi: donVi.join(','),
     xuatXu: xuatXu.join(','),
     phanLoaiNhap: phanLoaiNhap.join(','),
+    departmentIds: departmentIds.join(','),
   };
 
   const reFetchUrl = '/equipments?' + queryString.stringify(searchParams);
@@ -108,7 +111,7 @@ const Equipment = () => {
     }, 700);
     setInputTimeout(newTimeout);
     return () => clearTimeout(newTimeout);
-  }, [phanKhoa, donVi, xuatXu, phanLoaiNhap, search]);
+  }, [phanKhoa, donVi, xuatXu, phanLoaiNhap, search, departmentIds]);
 
   useEffect(() => {
     if (loading) return;
@@ -240,8 +243,7 @@ const Equipment = () => {
       key: 'phanKhoa',
       width: '10%',
       editable: true,
-      render: (_, record) =>
-        record?.Department?.tenKhoaPhong || record.phanKhoa,
+      render: (_, record) => record?.Department?.tenKhoaPhong,
     },
     {
       title: 'Phân loại nhập',
@@ -407,15 +409,24 @@ const Equipment = () => {
           {showFilter && (
             <Flex gap={16}>
               <Select
-                mode="multiple"
+                // mode="multiple"
                 placeholder="Lọc theo phân khoa"
-                defaultValue={phanKhoa}
+                defaultValue={departmentIds}
                 allowClear
-                onChange={(val) => setQuery({ ...query, phanKhoa: val })}
+                onChange={(val) => setQuery({ ...query, departmentIds: [val] })}
                 style={{
                   width: '100%',
                 }}
-                options={defaultKhoaPhong}
+                options={[
+                  ...departments.map((item) => ({
+                    label: item.tenKhoaPhong,
+                    value: item.id,
+                  })),
+                  {
+                    label: 'Chưa có phân khoa',
+                    value: 'none',
+                  },
+                ]}
               />
               <Select
                 mode="multiple"

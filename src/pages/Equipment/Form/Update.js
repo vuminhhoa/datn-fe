@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Form,
   Input,
@@ -265,9 +265,7 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
                   message: 'Vui lòng chọn khoa phòng!',
                 },
               ]}
-              initialValue={
-                formValue.Department?.tenKhoaPhong || formValue.phanKhoa
-              }
+              initialValue={formValue.Department?.tenKhoaPhong}
             >
               <Select
                 allowClear
@@ -276,7 +274,7 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
                 onChange={(value) =>
                   setFormValue({
                     ...formValue,
-                    khoaPhong: value,
+                    DepartmentId: value,
                   })
                 }
                 options={departments.map((department) => ({

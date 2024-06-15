@@ -62,7 +62,7 @@ const Detail = () => {
     },
     {
       label: 'Khoa phòng',
-      children: data?.Deparment?.tenKhoaPhong || data.phanKhoa,
+      children: data?.Department?.tenKhoaPhong,
     },
     {
       label: 'Xuất xứ',

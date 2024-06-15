@@ -116,7 +116,11 @@ const User = () => {
                       {item.name ? item.name : item.email}
                     </Link>
                   }
-                  description={item.Role.name}
+                  description={`${item.Role.name} ${
+                    item?.Department?.tenKhoaPhong
+                      ? ` - ${item.Department?.tenKhoaPhong}`
+                      : ' '
+                  }`}
                 />
               </List.Item>
             )}

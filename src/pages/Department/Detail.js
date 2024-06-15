@@ -115,7 +115,7 @@ const DetailDepartment = () => {
         <Flex vertical gap={16}>
           <Row>
             <Col span={16}>
-              <Descriptions items={items} column={2} />
+              <Descriptions items={items} column={1} />
             </Col>
             <Col span={8}>
               <Flex justify="center" vertical align="center" gap={8}>
