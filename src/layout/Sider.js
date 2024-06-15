@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import {
+  ApartmentOutlined,
   AuditOutlined,
   DesktopOutlined,
   HomeOutlined,
@@ -15,6 +16,7 @@ import {
   EQUIPMENT_READ,
   DASHBOARD_READ,
   EQUIPMENT_CREATE,
+  DEPARTMENT_READ,
 } from '../const/permission';
 import { useNavigate } from 'react-router-dom';
 import hasPermission from '../helpers/hasPermission';
@@ -50,6 +52,12 @@ function AppSider() {
       key: '/users',
       icon: <TeamOutlined />,
       permission: USER_READ,
+    }),
+    getItem({
+      label: 'Quản lý khoa phòng',
+      key: '/departments',
+      icon: <ApartmentOutlined />,
+      permission: DEPARTMENT_READ,
     }),
     getItem({
       label: 'Quản lý thiết bị',

@@ -30,7 +30,7 @@ import Page from '../../../components/Page';
 const Edit = () => {
   const { id } = useParams();
   const { setToast } = useApp();
-  const { editing, editApi } = useEditApi(`/bidding/${id}`);
+  const { editing, editApi } = useEditApi({ url: `/bidding/${id}` });
   const { data, setData, loading, fetchApi } = useFetchApi({
     url: `/bidding/${id}`,
   });

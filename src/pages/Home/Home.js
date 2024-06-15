@@ -22,16 +22,10 @@ import Page from '../../components/Page/Page.js';
 
 const getFetchUrl = (type) => {
   switch (type) {
-    case 'user':
-      return 'user';
-    case 'role':
-      return 'role';
     case 'bidding':
       return 'shopping/bidding';
-    case 'equipment':
-      return 'equipment';
     default:
-      break;
+      return type;
   }
 };
 

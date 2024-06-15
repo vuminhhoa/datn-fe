@@ -5,7 +5,6 @@ import { useApp } from '../../../contexts/appProvider';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { convertBase64 } from '../../../helpers/uploadFile';
 import useEditApi from '../../../hooks/useEditApi';
-import { ADMIN } from '../../../const/role';
 
 const EditModal = ({
   open,
@@ -18,7 +17,7 @@ const EditModal = ({
   setValue,
 }) => {
   const { setToast, user, setUser } = useApp();
-  const { editing, editApi } = useEditApi(`/user`);
+  const { editing, editApi } = useEditApi({ url: `/user` });
   const [form] = Form.useForm();
   const [uploading, setUploading] = useState(false);
   const handleEditFormChange = (e) => {

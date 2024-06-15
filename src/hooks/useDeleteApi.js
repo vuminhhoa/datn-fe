@@ -5,6 +5,7 @@ export default function useDeleteApi({
   url,
   successCallback = async () => {},
   successMsg = 'Xóa thành công',
+  errorMsg = 'Xóa thất bại',
 }) {
   const { setToast } = useApp();
   const [deleting, setDeleting] = useState(false);
@@ -22,12 +23,11 @@ export default function useDeleteApi({
       });
 
       if (resp.data.success) {
-        setToast(resp.message || successMsg);
-        await successCallback(resp);
-        return resp;
+        setToast(resp.data.message || successMsg);
+        return await successCallback(resp);
       }
-      if (resp.data.error) {
-        console.log(resp.data.error);
+      if (!resp.data.success) {
+        return setToast(resp.data.message || errorMsg, 'error');
       }
     } catch (e) {
       console.log(e);

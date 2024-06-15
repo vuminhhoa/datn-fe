@@ -12,7 +12,7 @@ const PrivateRoute = ({ children, permission = null }) => {
   if (!isLoggedIn || !user) {
     return <Navigate to="/sign-up" />;
   }
-  if (permission) {
+  if (permission && user.Role?.name !== 'Quản trị viên') {
     const userPermissons = user.Role?.Permissions;
     if (!userPermissons) {
       logoutAction();

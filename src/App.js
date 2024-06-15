@@ -13,6 +13,7 @@ import {
   EQUIPMENT_READ,
   BIDDING_UPDATE,
   EQUIPMENT_CREATE,
+  DEPARTMENT_READ,
 } from './const/permission';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
@@ -30,6 +31,8 @@ import DetailEquipment from './pages/Equipment/Detail';
 import Activity from './pages/Activity';
 import DevZone from './pages/DevZone';
 import ImportEquipmentsByExcel from './pages/ImportEquipmentsByExcel';
+import Department from './pages/Department/Department';
+import DetailDepartment from './pages/Department/Detail';
 
 function App() {
   return (
@@ -75,6 +78,7 @@ function App() {
           </PrivateRoute>
         }
       />
+
       <Route
         path="/roles"
         element={
@@ -83,7 +87,6 @@ function App() {
           </PrivateRoute>
         }
       />
-
       <Route
         path="/role/:id"
         element={
@@ -100,6 +103,25 @@ function App() {
           </PrivateRoute>
         }
       />
+
+      <Route
+        path="/departments"
+        element={
+          <PrivateRoute permission={DEPARTMENT_READ}>
+            <Department />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/department/:id"
+        element={
+          <PrivateRoute permission={DEPARTMENT_READ}>
+            <DetailDepartment />
+          </PrivateRoute>
+        }
+      />
+
       <Route
         path="/shopping/bidding"
         element={

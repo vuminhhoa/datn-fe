@@ -27,7 +27,9 @@ const CompareModal = ({
     successMsg: 'Xử lý trùng lặp thành công!',
   });
 
-  const { editing, editApi } = useEditApi(`/equipment/${initEquipmentInDb.id}`);
+  const { editing, editApi } = useEditApi({
+    url: `/equipment/${initEquipmentInDb.id}`,
+  });
 
   useEffect(() => {
     setShowConfirmModal(false);

@@ -15,7 +15,7 @@ const EditProfileForm = ({
   setFormValue,
 }) => {
   const { setToast, setUser } = useApp();
-  const { editing, editApi } = useEditApi(`/user`);
+  const { editing, editApi } = useEditApi({ url: `/user` });
   const [form] = Form.useForm();
   const [uploading, setUploading] = useState(false);
   const [initData, setInitdata] = useState();

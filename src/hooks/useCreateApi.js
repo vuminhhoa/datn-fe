@@ -4,8 +4,8 @@ import { useApp } from '../contexts/appProvider';
 
 export default function useCreateApi({
   url,
-  successMsg = 'Saved successfully',
-  errorMsg = 'Failed to save',
+  successMsg = 'Tạo mới thành công',
+  errorMsg = 'Tạo mới thất bại',
   successCallback = async () => {},
   errorCallback = () => {},
   useToast = true,
@@ -32,14 +32,13 @@ export default function useCreateApi({
         useToast && setToast(resp.message || successMsg);
         await successCallback(resp);
       }
-      if (resp.error) {
-        showErrors && addErrors([resp.error]);
-        errorCallback(resp);
+      if (!resp.success) {
+        useToast && setToast(resp.message || errorMsg, 'error');
+        errorCallback();
       }
       return resp;
     } catch (e) {
       console.error(e);
-      addErrors([errorMsg ? errorMsg : e.message]);
       return { success: false, error: e.message };
     } finally {
       setCreating(false);

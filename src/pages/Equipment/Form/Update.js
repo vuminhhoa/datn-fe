@@ -15,7 +15,9 @@ const UpdateEquipmentForm = ({
 }) => {
   const [form] = Form.useForm();
   const { setToast } = useApp();
-  const { editing, editApi } = useEditApi(`/equipment/${equipment.id}`);
+  const { editing, editApi } = useEditApi({
+    url: `/equipment/${equipment.id}`,
+  });
   const [formValue, setFormValue] = useState(equipment);
   const [initData, setInitdata] = useState(null);
 

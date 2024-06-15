@@ -51,7 +51,7 @@ const EditRole = () => {
     },
   ]);
   const [selected, setSelected] = useState([]);
-  const { editing, editApi } = useEditApi(`/role/${id}`);
+  const { editing, editApi } = useEditApi({ url: `/role/${id}` });
   const handleSave = async () => {
     try {
       const perpareData = { roleId: data.roles.id, permissions: selected };
