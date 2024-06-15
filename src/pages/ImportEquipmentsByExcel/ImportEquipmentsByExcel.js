@@ -69,14 +69,19 @@ const ImportEquipmentsByExcel = () => {
   };
 
   const handleFileUpload = async (file) => {
-    const result = await readExcelFile(file, defaultExcelColumns);
-    if (result.success) {
-      setData(result.data);
-      checkDuplicateData(result.data);
-      return message.success(result.message);
+    try {
+      const result = await readExcelFile(file, defaultExcelColumns);
+      if (result.success) {
+        setData(result.data);
+        checkDuplicateData(result.data);
+        message.success(result.message);
+      } else {
+        message.error(result.message);
+      }
+    } catch (error) {
+      message.error(`File upload failed: ${error.message}`);
     }
-
-    message.error(result.message);
+    return false; // To prevent default behavior of upload component
   };
 
   return (
