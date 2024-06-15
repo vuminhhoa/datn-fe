@@ -11,6 +11,7 @@ import {
   Input,
   Spin,
   Button,
+  Avatar,
   Radio,
   Popover,
   Divider,
@@ -23,6 +24,7 @@ import {
   FilterOutlined,
   SortAscendingOutlined,
   SortDescendingOutlined,
+  FileImageOutlined,
 } from '@ant-design/icons';
 import {} from '@ant-design/icons';
 import { useAppContext } from '../../contexts/appContext';
@@ -147,6 +149,23 @@ const Equipment = () => {
 
   const columns = [
     {
+      title: 'Ảnh',
+      dataIndex: 'hinhAnh',
+      key: 'hinhAnh',
+      width: '4%',
+      render: (_, record) => {
+        return (
+          <Avatar
+            src={record.hinhAnh}
+            icon={<FileImageOutlined />}
+            shape="square"
+            size={'large'}
+          />
+        );
+      },
+      editable: true,
+    },
+    {
       title: 'Tên thiết bị',
       dataIndex: 'tenThietBi',
       key: 'tenThietBi',
@@ -163,11 +182,11 @@ const Equipment = () => {
       editable: true,
     },
     {
-      title: 'Số lượng',
+      title: 'SL',
       dataIndex: 'soLuong',
       key: 'soLuong',
       align: 'right',
-      width: '6%',
+      width: '3%',
       editable: true,
     },
     {
@@ -221,6 +240,8 @@ const Equipment = () => {
       key: 'phanKhoa',
       width: '10%',
       editable: true,
+      render: (_, record) =>
+        record?.Department?.tenKhoaPhong || record.phanKhoa,
     },
     {
       title: 'Phân loại nhập',

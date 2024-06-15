@@ -1,30 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Select, Flex, Button, Avatar, Upload, Modal } from 'antd';
+import {
+  Form,
+  Input,
+  Select,
+  Flex,
+  Button,
+  Avatar,
+  Upload,
+  Modal,
+  Row,
+  Col,
+} from 'antd';
 import { useAppContext } from '../../../contexts/appContext';
 import { UploadOutlined } from '@ant-design/icons';
 import { FileImageOutlined } from '@ant-design/icons';
 import useEditApi from '../../../hooks/useEditApi';
-import { convertBase64 } from '../../../helpers/uploadFile';
+import useUploadFile from '../../../hooks/useUploadFile';
 
-const UpdateEquipmentForm = ({
-  open,
-  setOpen,
-  equipment,
-  setEquipment,
-  fetchApi,
-}) => {
+const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
+  const { departments, loadingDepartments } = useAppContext();
   const [form] = Form.useForm();
-  const { setToast } = useAppContext();
   const { editing, editApi } = useEditApi({
     url: `/equipment/${equipment.id}`,
+    successCallback: () => {
+      fetchApi();
+      setOpen(false);
+    },
   });
   const [formValue, setFormValue] = useState(equipment);
-  const [initData, setInitdata] = useState(null);
-
-  useEffect(() => {
-    if (initData) return;
-    setInitdata(equipment);
-  }, []);
+  const { uploading, uploadFile, fileBase64 } = useUploadFile();
 
   const handleFormChange = (e) => {
     setFormValue({
@@ -33,25 +37,9 @@ const UpdateEquipmentForm = ({
     });
   };
 
-  const handleCreateEquipment = async () => {
-    try {
-      const res = await editApi(formValue);
-      if (res.data.success) {
-        return setToast('Cập nhật thành công!');
-      }
-    } catch (error) {
-      console.log(error);
-      setToast('Cập nhật thất bại', 'error');
-    } finally {
-      setOpen(false);
-      fetchApi();
-    }
-  };
-
   const handleChangeFile = async (e) => {
     try {
       const file = e.file;
-      const imgUrl = URL.createObjectURL(file);
       form.setFields([
         {
           name: 'image',
@@ -67,13 +55,10 @@ const UpdateEquipmentForm = ({
           },
         ]);
       }
-      const fileBase64 = await convertBase64(file);
+      const { fileUrl } = await uploadFile(file);
       setFormValue({
         ...formValue,
-        image: fileBase64,
-      });
-      setEquipment({
-        equipment: { ...equipment, image: imgUrl },
+        hinhAnh: fileUrl,
       });
     } catch (error) {
       console.log(error);
@@ -84,29 +69,31 @@ const UpdateEquipmentForm = ({
       title="Cập nhật thiết bị"
       open={open}
       onCancel={() => {
-        setEquipment({ equipment: initData });
-        setFormValue(initData);
+        setFormValue(equipment);
         form.resetFields();
         setOpen(false);
       }}
       closeIcon={!editing}
       footer={null}
+      width={800}
     >
       <Form
         autoComplete="off"
-        onFinish={handleCreateEquipment}
+        onFinish={() =>
+          editApi({ ...formValue, hinhAnh: fileBase64 || equipment.hinhAnh })
+        }
         form={form}
         layout="vertical"
       >
         <Form.Item
-          name="image"
+          name="hinhAnh"
           label="Ảnh thiết bị"
-          initialValue={equipment.image}
+          initialValue={formValue.hinhAnh}
         >
           <Flex align="center" gap={'16px'} vertical>
             <Avatar
               size={128}
-              src={equipment.image}
+              src={formValue.hinhAnh}
               icon={<FileImageOutlined />}
               shape="square"
             />
@@ -123,176 +110,201 @@ const UpdateEquipmentForm = ({
             </Upload>
           </Flex>
         </Form.Item>
-        <Form.Item
-          name="maThietBi"
-          label="Mã thiết bị"
-          rules={[{ required: true, message: 'Vui lòng nhập tên thiết bị!' }]}
-          initialValue={equipment.maThietBi}
-        >
-          <Input
-            allowClear
-            name="maThietBi"
-            placeholder="Nhập mã thiết bị"
-            onChange={handleFormChange}
-            autoComplete="off"
-          />
-        </Form.Item>
-        <Form.Item
-          name="tenThietBi"
-          label="Tên thiết bị"
-          rules={[{ required: true, message: 'Vui lòng nhập tên thiết bị!' }]}
-          initialValue={equipment.tenThietBi}
-        >
-          <Input
-            allowClear
-            name="tenThietBi"
-            placeholder="Nhập tên thiết bị"
-            onChange={handleFormChange}
-            autoComplete="off"
-          />
-        </Form.Item>
-        <Form.Item
-          name="trangThai"
-          label="Trạng thái thiết bị"
-          rules={[
-            { required: true, message: 'Vui lòng chọn trạng thái thiết bị!' },
-          ]}
-          initialValue={equipment.trangThai}
-        >
-          <Select
-            allowClear
-            placeholder="Chọn khoa phòng"
-            onChange={(value) =>
-              setFormValue({
-                ...formValue,
-                trangThai: value,
-              })
-            }
-            options={[
-              {
-                value: 'Mới nhập',
-                label: 'Mới nhập',
-              },
-              {
-                value: 'Đang sử dụng',
-                label: 'Đang sử dụng',
-              },
-              {
-                value: 'Đang sửa chữa',
-                label: 'Đang sửa chữa',
-              },
-              {
-                value: 'Đã hỏng',
-                label: 'Đã hỏng',
-              },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item
-          name="serial"
-          label="Serial thiết bị"
-          rules={[
-            { required: true, message: 'Vui lòng nhập serial thiết bị!' },
-          ]}
-          initialValue={equipment.serial}
-        >
-          <Input
-            allowClear
-            name="serial"
-            placeholder="Nhập serial thiết bị"
-            onChange={handleFormChange}
-            autoComplete="off"
-          />
-        </Form.Item>
-        <Form.Item
-          name="model"
-          label="Model thiết bị"
-          rules={[{ required: true, message: 'Vui lòng nhập model thiết bị!' }]}
-          initialValue={equipment.model}
-        >
-          <Input
-            allowClear
-            name="model"
-            placeholder="Nhập model thiết bị"
-            onChange={handleFormChange}
-            autoComplete="off"
-          />
-        </Form.Item>
-        <Form.Item
-          name="namSanXuat"
-          label="Năm sản xuất"
-          rules={[
-            { required: true, message: 'Vui lòng nhập năm sản xuất thiết bị!' },
-          ]}
-          initialValue={equipment.namSanXuat}
-        >
-          <Input
-            allowClear
-            name="namSanXuat"
-            placeholder="Nhập năm sản xuất thiết bị"
-            onChange={handleFormChange}
-            autoComplete="off"
-          />
-        </Form.Item>
-        <Form.Item
-          name="khoaPhong"
-          label="Khoa phòng"
-          rules={[
-            {
-              required: true,
-              message: 'Vui lòng chọn khoa phòng!',
-            },
-          ]}
-          initialValue={equipment.khoaPhong}
-        >
-          <Select
-            allowClear
-            placeholder="Chọn khoa phòng"
-            onChange={(value) =>
-              setFormValue({
-                ...formValue,
-                khoaPhong: value,
-              })
-            }
-            options={[
-              {
-                value: 'Khoa vi sinh',
-                label: 'Khoa vi sinh',
-              },
-              {
-                value: 'Khoa y te',
-                label: 'Khoa y te',
-              },
-              {
-                value: 'Khoa dep trai',
-                label: 'Khoa dep trai',
-              },
-              {
-                value: 'Khoa xinh gai',
-                label: 'Khoa xinh gai',
-              },
-            ]}
-          />
-        </Form.Item>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item
+              name="tenThietBi"
+              label="Tên thiết bị"
+              rules={[
+                { required: true, message: 'Vui lòng nhập tên thiết bị!' },
+              ]}
+              initialValue={formValue.tenThietBi}
+            >
+              <Input
+                allowClear
+                name="tenThietBi"
+                placeholder="Nhập tên thiết bị"
+                onChange={handleFormChange}
+                autoComplete="off"
+              />
+            </Form.Item>
+            <Form.Item
+              name="donVi"
+              label="Đơn vị thiết bị"
+              rules={[{ required: true, message: 'Vui lòng nhập đơn vị!' }]}
+              initialValue={formValue.donVi}
+            >
+              <Input
+                allowClear
+                name="tenThietBi"
+                placeholder="Nhập đơn vị"
+                onChange={handleFormChange}
+                autoComplete="off"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="serial"
+              label="Serial thiết bị"
+              rules={[
+                { required: true, message: 'Vui lòng nhập serial thiết bị!' },
+              ]}
+              initialValue={formValue.serial}
+            >
+              <Input
+                allowClear
+                name="serial"
+                placeholder="Nhập serial thiết bị"
+                onChange={handleFormChange}
+                autoComplete="off"
+              />
+            </Form.Item>
+            <Form.Item
+              name="kyMaHieu"
+              label="Ký mã hiệu thiết bị"
+              rules={[
+                {
+                  required: true,
+                  message: 'Vui lòng nhập ký mã hiệu thiết bị!',
+                },
+              ]}
+              initialValue={formValue.kyMaHieu}
+            >
+              <Input
+                allowClear
+                name="kyMaHieu"
+                placeholder="Nhập ký mã hiệu thiết bị"
+                onChange={handleFormChange}
+                autoComplete="off"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="hangSanXuat"
+              label="Hãng sản xuất"
+              rules={[
+                {
+                  required: true,
+                  message: 'Vui lòng nhập hãng sản xuất thiết bị!',
+                },
+              ]}
+              initialValue={formValue.hangSanXuat}
+            >
+              <Input
+                allowClear
+                name="hangSanXuat"
+                placeholder="Nhập hãng sản xuất thiết bị"
+                onChange={handleFormChange}
+                autoComplete="off"
+              />
+            </Form.Item>
+            <Form.Item
+              name="xuatXu"
+              label="Xuất xứ"
+              rules={[
+                {
+                  required: true,
+                  message: 'Vui lòng nhập xuất xứ thiết bị!',
+                },
+              ]}
+              initialValue={formValue.xuatXu}
+            >
+              <Input
+                allowClear
+                name="xuatXu"
+                placeholder="Nhập xuất xứ thiết bị"
+                onChange={handleFormChange}
+                autoComplete="off"
+              />
+            </Form.Item>
+            <Form.Item
+              name="soLuong"
+              label="Số lượng"
+              rules={[
+                {
+                  required: true,
+                  message: 'Vui lòng nhập số lượng thiết bị!',
+                },
+              ]}
+              initialValue={formValue.soLuong}
+            >
+              <Input
+                allowClear
+                name="soLuong"
+                placeholder="Nhập số lượng thiết bị"
+                onChange={handleFormChange}
+                autoComplete="off"
+              />
+            </Form.Item>
+            <Form.Item
+              name="donGia"
+              label="Đơn giá"
+              rules={[
+                {
+                  required: true,
+                  message: 'Vui lòng nhập đơn giá thiết bị!',
+                },
+              ]}
+              initialValue={formValue.donGia}
+            >
+              <Input
+                allowClear
+                name="xuatXu"
+                placeholder="Nhập đơn giá thiết bị"
+                onChange={handleFormChange}
+                autoComplete="off"
+              />
+            </Form.Item>
+            <Form.Item
+              name="khoaPhong"
+              label="Khoa phòng"
+              rules={[
+                {
+                  required: true,
+                  message: 'Vui lòng chọn khoa phòng!',
+                },
+              ]}
+              initialValue={
+                formValue.Department?.tenKhoaPhong || formValue.phanKhoa
+              }
+            >
+              <Select
+                allowClear
+                disabled={loadingDepartments}
+                placeholder="Chọn khoa phòng"
+                onChange={(value) =>
+                  setFormValue({
+                    ...formValue,
+                    khoaPhong: value,
+                  })
+                }
+                options={departments.map((department) => ({
+                  value: department.id,
+                  label: department.tenKhoaPhong,
+                }))}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
 
         <Flex gap={8} justify="flex-end">
           <Button
             key="back"
             onClick={() => {
-              setEquipment({ equipment: initData });
-              setFormValue(initData);
+              setFormValue(equipment);
               form.resetFields();
               setOpen(false);
             }}
-            disabled={editing}
+            disabled={editing || uploading}
           >
             Hủy
           </Button>
           <Button
             type="primary"
             htmlType="submit"
-            loading={editing}
-            disabled={JSON.stringify(initData) === JSON.stringify(formValue)}
+            loading={editing || uploading}
+            disabled={JSON.stringify(equipment) === JSON.stringify(formValue)}
           >
             Lưu
           </Button>

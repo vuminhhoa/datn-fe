@@ -7,7 +7,6 @@ import {
   Breadcrumb,
   Button,
   Skeleton,
-  Tag,
   Col,
   Row,
   Avatar,
@@ -22,6 +21,7 @@ import { PictureOutlined } from '@ant-design/icons';
 import UpdateEquipmentForm from './Form/Update.js';
 import NotFound from '../NotFound/NotFound.js';
 import Page from '../../components/Page/Page.js';
+import { formatVNCurrency } from '../../helpers/formatVNCurrency.js';
 
 const Detail = () => {
   const { id } = useParams();
@@ -43,38 +43,18 @@ const Detail = () => {
     },
   ]);
 
-  const getTagColor = (status) => {
-    let color = '';
-    switch (status) {
-      case 'Mới nhập':
-        color = 'processing';
-        break;
-      case 'Đang sử dụng':
-        color = 'success';
-        break;
-      case 'Đang sửa chữa':
-        color = 'warning';
-        break;
-      case 'Đã hỏng':
-        color = 'error';
-        break;
-      default:
-        color = 'default';
-    }
-    return {
-      color: color,
-      title: status,
-    };
-  };
-  const equipmentTag = getTagColor(data?.trangThai);
   const items = [
     {
-      label: 'Mã thiết bị',
-      children: data?.maThietBi,
+      label: 'Tên thiết bị',
+      children: data?.tenThietBi,
     },
     {
-      label: 'Model',
-      children: data?.model,
+      label: 'Đơn vị tính',
+      children: data?.donVi,
+    },
+    {
+      label: 'Ký mã hiệu',
+      children: data?.kyMaHieu,
     },
     {
       label: 'Serial',
@@ -82,16 +62,25 @@ const Detail = () => {
     },
     {
       label: 'Khoa phòng',
-      children: data?.khoaPhong,
+      children: data?.Deparment?.tenKhoaPhong || data.phanKhoa,
     },
     {
-      label: 'Năm sản xuất',
-      children: data?.namSanXuat,
+      label: 'Xuất xứ',
+      children: data?.xuatXu,
     },
     {
-      label: 'Trạng thái',
-      children: <Tag color={equipmentTag.color}>{equipmentTag.title}</Tag>,
+      label: 'Số lượng',
+      children: data?.soLuong,
     },
+    {
+      label: 'Đơn giá',
+      children: formatVNCurrency(data?.donGia),
+    },
+    {
+      label: 'Thành tiền',
+      children: formatVNCurrency(data.soLuong * data.donGia) || '',
+    },
+
     {
       label: `Ngày tạo`,
       children: new Date(data?.createdAt).toLocaleString(),
@@ -154,7 +143,7 @@ const Detail = () => {
             <Col span={8}>
               <Flex justify="center" vertical align="center" gap={8}>
                 <Avatar
-                  src={data.image}
+                  src={data.hinhAnh}
                   icon={<PictureOutlined />}
                   shape="square"
                   size={164}
