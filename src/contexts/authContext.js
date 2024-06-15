@@ -10,7 +10,7 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const userLocal = JSON.parse(localStorage.getItem('CURRENT_USER'));
-  const [token, setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
+  const token = localStorage.getItem('ACCESS_TOKEN');
   const [user, setUser] = useState(userLocal);
   const [verifying, setVerifying] = useState(true);
 
@@ -18,7 +18,7 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await fetchAuthApi({ url: `/user/${userLocal.id}` });
       if (res.data.success) {
-        setUser(res.data.data);
+        return setUser(res.data.data);
       }
       return navigate('/login');
     } catch (err) {
@@ -46,7 +46,6 @@ const AuthProvider = ({ children }) => {
       });
       if (res.data.success) {
         setUser(res.data.data.user);
-        setToken(res.data.data.accessToken);
         localStorage.setItem('ACCESS_TOKEN', res.data.data.accessToken);
         localStorage.setItem(
           'CURRENT_USER',
@@ -60,7 +59,6 @@ const AuthProvider = ({ children }) => {
   };
 
   const logoutAction = () => {
-    setToken('');
     localStorage.removeItem('ACCESS_TOKEN');
     localStorage.removeItem('CURRENT_USER');
     setUser(null);
