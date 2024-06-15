@@ -4,15 +4,14 @@ import { Flex, Avatar, Button, Modal, Form, Input, Select, Upload } from 'antd';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import useEditApi from '../../hooks/useEditApi';
 import useUploadFile from '../../hooks/useUploadFile';
-import useFetchApi from '../../hooks/useFetchApi';
 import { useAuthContext } from '../../contexts/authContext';
+import { useAppContext } from '../../contexts/appContext';
 
 const EditModal = ({ open, input, fetchApi, setOpen }) => {
   const { user, setUser } = useAuthContext();
-  const { data: roles, loading: loadingRoles } = useFetchApi({
-    url: '/roles',
-    defaultData: [],
-  });
+  const { roles, departments, loadingRoles, loadingDepartments } =
+    useAppContext();
+
   const { editing, editApi } = useEditApi({
     url: `/user`,
     successCallback: () => {
@@ -111,19 +110,20 @@ const EditModal = ({ open, input, fetchApi, setOpen }) => {
             placeholder="Tên người dùng"
           />
         </Form.Item>
-        {/* <Form.Item
+        <Form.Item
           name="DepartmentId"
           label="Khoa phòng"
           rules={[{ required: true, message: 'Vui lòng chọn khoa phòng' }]}
+          initialValue={value.Department?.tenKhoaPhong}
         >
           <Select
             allowClear
-            disabled={loadingDepartment || creating}
+            disabled={loadingDepartments || editing}
             placeholder="Chọn khoa phòng"
-            onChange={(value) =>
-              setCreateFormData({
-                ...createFormData,
-                department: value,
+            onChange={(val) =>
+              setValue({
+                ...value,
+                DepartmentId: val,
               })
             }
             options={departments.map((department) => {
@@ -133,7 +133,7 @@ const EditModal = ({ open, input, fetchApi, setOpen }) => {
               };
             })}
           />
-        </Form.Item> */}
+        </Form.Item>
 
         <Form.Item name="address" label="Địa chỉ" initialValue={value.address}>
           <Input
@@ -160,7 +160,7 @@ const EditModal = ({ open, input, fetchApi, setOpen }) => {
           name="role"
           label="Vai trò"
           rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
-          initialValue={value.Role.name}
+          initialValue={value.Role?.name}
         >
           <Select
             allowClear

@@ -16,7 +16,6 @@ import {
   DeleteOutlined,
   ApartmentOutlined,
 } from '@ant-design/icons';
-import useFetchApi from '../../hooks/useFetchApi.js';
 import {
   DEPARTMENT_CREATE,
   DEPARTMENT_DELETE,
@@ -26,19 +25,22 @@ import { useBreadcrumb } from '../../hooks/useBreadcrumb.js';
 import Page from '../../components/Page/Page.js';
 import CreateModal from './CreateModal.js';
 import useDeleteApi from '../../hooks/useDeleteApi.js';
+import { useAppContext } from '../../contexts/appContext.js';
 
 const Department = () => {
   const navigate = useNavigate();
-  const { data, loading, fetchApi } = useFetchApi({
-    url: '/departments',
-  });
+  const {
+    departments: data,
+    loadingDepartments: loading,
+    fetchDepartments: fetchApi,
+  } = useAppContext();
+
   const { deleting, deleteApi } = useDeleteApi({
     url: `/department`,
     successCallback: () => fetchApi(),
   });
 
   const [deleteId, setDeleteId] = useState(null);
-
   const columns = [
     {
       title: 'Ảnh',
@@ -141,7 +143,7 @@ const Department = () => {
           <Table
             loading={loading}
             columns={columns}
-            dataSource={data.departments}
+            dataSource={data}
             bordered
           />
         </Flex>

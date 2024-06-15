@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Flex, Modal, Input, Button, Select, Form } from 'antd';
-import useFetchApi from '../../hooks/useFetchApi';
 import useCreateApi from '../../hooks/useCreateApi';
 import { useAuthContext } from '../../contexts/authContext';
+import { useAppContext } from '../../contexts/appContext';
 
 const CreateModal = ({ isShowCreateForm, setIsShowCreateForm, fetchApi }) => {
   const { user } = useAuthContext();
+  const { roles, departments, loadingRoles, loadingDepartments } =
+    useAppContext();
   const [form] = Form.useForm();
   const { creating, createApi } = useCreateApi({
     url: '/auth/register',
@@ -13,16 +15,6 @@ const CreateModal = ({ isShowCreateForm, setIsShowCreateForm, fetchApi }) => {
       setIsShowCreateForm(false);
       fetchApi();
     },
-  });
-
-  const { data: departments, loading: loadingDepartment } = useFetchApi({
-    url: '/departments',
-    defaultData: [],
-  });
-
-  const { data: roles, loading: loadingRoles } = useFetchApi({
-    url: '/roles',
-    defaultData: [],
   });
 
   const [createFormData, setCreateFormData] = useState({});
@@ -102,7 +94,7 @@ const CreateModal = ({ isShowCreateForm, setIsShowCreateForm, fetchApi }) => {
         >
           <Select
             allowClear
-            disabled={loadingDepartment || creating}
+            disabled={loadingDepartments || creating}
             placeholder="Chọn khoa phòng"
             onChange={(value) =>
               setCreateFormData({
@@ -173,7 +165,7 @@ const CreateModal = ({ isShowCreateForm, setIsShowCreateForm, fetchApi }) => {
             type="primary"
             htmlType="submit"
             loading={creating}
-            disabled={loadingDepartment || loadingRoles}
+            disabled={loadingDepartments || loadingRoles}
           >
             Lưu
           </Button>

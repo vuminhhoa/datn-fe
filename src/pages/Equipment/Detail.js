@@ -14,14 +14,14 @@ import {
   Typography,
 } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
-import { useBreadcrumb } from '../../../hooks/useBreadcrumb.js';
-import useFetchApi from '../../../hooks/useFetchApi.js';
-import hasPermission from '../../../helpers/hasPermission.js';
-import { EQUIPMENT_UPDATE } from '../../../const/permission.js';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb.js';
+import useFetchApi from '../../hooks/useFetchApi.js';
+import hasPermission from '../../helpers/hasPermission.js';
+import { EQUIPMENT_UPDATE } from '../../const/permission.js';
 import { PictureOutlined } from '@ant-design/icons';
-import UpdateEquipmentForm from '../Form/Update.js';
-import NotFound from '../../NotFound/NotFound.js';
-import Page from '../../../components/Page/Page.js';
+import UpdateEquipmentForm from './Form/Update.js';
+import NotFound from '../NotFound/NotFound.js';
+import Page from '../../components/Page/Page.js';
 
 const Detail = () => {
   const { id } = useParams();
@@ -39,7 +39,7 @@ const Detail = () => {
       title: 'Quản lý thiết bị',
     },
     {
-      title: loading ? `------------` : data.equipment?.tenThietBi,
+      title: loading ? <Skeleton.Input size="small" /> : data?.tenThietBi,
     },
   ]);
 
@@ -66,27 +66,27 @@ const Detail = () => {
       title: status,
     };
   };
-  const equipmentTag = getTagColor(data.equipment?.trangThai);
+  const equipmentTag = getTagColor(data?.trangThai);
   const items = [
     {
       label: 'Mã thiết bị',
-      children: data.equipment?.maThietBi,
+      children: data?.maThietBi,
     },
     {
       label: 'Model',
-      children: data.equipment?.model,
+      children: data?.model,
     },
     {
       label: 'Serial',
-      children: data.equipment?.serial,
+      children: data?.serial,
     },
     {
       label: 'Khoa phòng',
-      children: data.equipment?.khoaPhong,
+      children: data?.khoaPhong,
     },
     {
       label: 'Năm sản xuất',
-      children: data.equipment?.namSanXuat,
+      children: data?.namSanXuat,
     },
     {
       label: 'Trạng thái',
@@ -94,11 +94,11 @@ const Detail = () => {
     },
     {
       label: `Ngày tạo`,
-      children: new Date(data.equipment?.createdAt).toLocaleString(),
+      children: new Date(data?.createdAt).toLocaleString(),
     },
     {
       label: `Ngày sửa đổi gần nhất`,
-      children: new Date(data.equipment?.updatedAt).toLocaleString(),
+      children: new Date(data?.updatedAt).toLocaleString(),
     },
   ];
 
@@ -121,12 +121,12 @@ const Detail = () => {
       </Page>
     );
   }
-  if (!data.equipment) return <NotFound />;
+  if (!data) return <NotFound />;
   return (
     <Page>
       <Breadcrumb items={breadcrumbItems} />
       <Card
-        title={`Thông tin thiết bị: ${data.equipment.tenThietBi}`}
+        title={`Thông tin thiết bị: ${data.tenThietBi}`}
         extra={
           hasPermission(EQUIPMENT_UPDATE) && (
             <Button
@@ -142,7 +142,7 @@ const Detail = () => {
         <UpdateEquipmentForm
           open={openEditForm}
           setOpen={setOpenEditForm}
-          equipment={data.equipment}
+          equipment={data}
           setEquipment={setData}
           fetchApi={fetchApi}
         />
@@ -154,7 +154,7 @@ const Detail = () => {
             <Col span={8}>
               <Flex justify="center" vertical align="center" gap={8}>
                 <Avatar
-                  src={data.equipment.image}
+                  src={data.image}
                   icon={<PictureOutlined />}
                   shape="square"
                   size={164}

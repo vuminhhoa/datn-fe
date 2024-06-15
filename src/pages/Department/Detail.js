@@ -41,11 +41,7 @@ const DetailDepartment = () => {
     },
     {
       href: `/department/${id}`,
-      title: loading ? (
-        <Skeleton.Input size="small" />
-      ) : (
-        data.department?.tenKhoaPhong
-      ),
+      title: loading ? <Skeleton.Input size="small" /> : data?.tenKhoaPhong,
     },
   ]);
 
@@ -53,17 +49,17 @@ const DetailDepartment = () => {
     {
       key: '1',
       label: 'Tên khoa phòng',
-      children: data.department?.tenKhoaPhong,
+      children: data?.tenKhoaPhong,
     },
     {
       key: '2',
       label: 'Số điện thoại',
-      children: data.department?.soDienThoai,
+      children: data?.soDienThoai,
     },
     {
       key: '3',
       label: 'Địa chỉ',
-      children: data.department?.diaChi,
+      children: data?.diaChi,
     },
   ];
 
@@ -90,7 +86,7 @@ const DetailDepartment = () => {
       </Page>
     );
   }
-  if (!data.department) return <NotFound />;
+  if (!data) return <NotFound />;
   return (
     <Page>
       <Breadcrumb items={breadcrumbItems} />
@@ -124,7 +120,7 @@ const DetailDepartment = () => {
             <Col span={8}>
               <Flex justify="center" vertical align="center" gap={8}>
                 <Avatar
-                  src={data.department.hinhAnh}
+                  src={data.hinhAnh}
                   icon={<ApartmentOutlined />}
                   shape="square"
                   size={164}

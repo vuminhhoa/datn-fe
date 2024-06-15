@@ -4,20 +4,21 @@ import { Flex, Avatar, Button, Modal, Form, Input, Upload } from 'antd';
 import { ApartmentOutlined, UploadOutlined } from '@ant-design/icons';
 import useEditApi from '../../hooks/useEditApi';
 import useUploadFile from '../../hooks/useUploadFile';
+import { useAppContext } from '../../contexts/appContext';
 
-const EditModal = ({ open, input, setInput, fetchApi, setOpen }) => {
+const EditModal = ({ open, input, fetchApi, setOpen }) => {
+  const { fetchDepartments } = useAppContext();
   const { editing, editApi } = useEditApi({
-    url: `/department/${input.department.id}`,
+    url: `/department/${input.id}`,
     successCallback: () => {
       fetchApi();
+      fetchDepartments();
       setOpen(false);
     },
   });
   const { uploading, uploadFile, fileBase64 } = useUploadFile();
   const [form] = Form.useForm();
-  const [value, setValue] = useState(input.department);
-
-  console.log('EditModal', value);
+  const [value, setValue] = useState(input);
 
   const handleEditFormChange = (e) => {
     setValue({
@@ -99,7 +100,7 @@ const EditModal = ({ open, input, setInput, fetchApi, setOpen }) => {
           name="tenKhoaPhong"
           label="Tên khoa phòng"
           rules={[{ required: true, message: 'Vui lòng nhập tên khoa phòng!' }]}
-          initialValue={input.department.tenKhoaPhong}
+          initialValue={input.tenKhoaPhong}
         >
           <Input
             name="tenKhoaPhong"
@@ -113,7 +114,7 @@ const EditModal = ({ open, input, setInput, fetchApi, setOpen }) => {
           rules={[
             { required: true, message: 'Vui lòng nhập địa chỉ khoa phòng!' },
           ]}
-          initialValue={input.department.diaChi}
+          initialValue={input.diaChi}
         >
           <Input
             name="diaChi"
@@ -130,7 +131,7 @@ const EditModal = ({ open, input, setInput, fetchApi, setOpen }) => {
               message: 'Vui lòng nhập số điện thoại khoa phòng!',
             },
           ]}
-          initialValue={input.department.soDienThoai}
+          initialValue={input.soDienThoai}
         >
           <Input
             name="soDienThoai"
@@ -147,9 +148,7 @@ const EditModal = ({ open, input, setInput, fetchApi, setOpen }) => {
             type="primary"
             htmlType="submit"
             loading={editing}
-            disabled={
-              JSON.stringify(value) === JSON.stringify(input.department)
-            }
+            disabled={JSON.stringify(value) === JSON.stringify(input)}
           >
             Lưu
           </Button>
