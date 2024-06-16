@@ -63,7 +63,7 @@ function App() {
       />
 
       <Route
-        path="/users"
+        path="/users/list_users"
         element={
           <PrivateRoute permission={USER_READ}>
             <User />
@@ -105,7 +105,7 @@ function App() {
       />
 
       <Route
-        path="/departments"
+        path="/departments/list_departments"
         element={
           <PrivateRoute permission={DEPARTMENT_READ}>
             <Department />
@@ -131,7 +131,7 @@ function App() {
         }
       />
       <Route
-        path="/equipments"
+        path="/equipments/list_equipments"
         element={
           <PrivateRoute permission={EQUIPMENT_READ}>
             <Equipment />
@@ -147,7 +147,7 @@ function App() {
         }
       />
       <Route
-        path="/equipments/import_by_excel"
+        path="/equipments/import_equipments_by_excel"
         element={
           <PrivateRoute permission={EQUIPMENT_CREATE}>
             <ImportEquipmentsByExcel />

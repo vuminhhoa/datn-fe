@@ -28,7 +28,7 @@ import {} from '@ant-design/icons';
 import { useAppContext } from '../../contexts/appContext';
 import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
-import CreateEquipmentForm from '../Equipment/Form/Create';
+import CreateEquipmentForm from '../Equipment/CreateModal';
 import hasPermission from '../../helpers/hasPermission';
 import { EQUIPMENT_CREATE, EQUIPMENT_DELETE } from '../../const/permission';
 import useDeleteApi from '../../hooks/useDeleteApi';

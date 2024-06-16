@@ -16,7 +16,9 @@ import {
   EQUIPMENT_READ,
   DASHBOARD_READ,
   EQUIPMENT_CREATE,
+  USER_CREATE,
   DEPARTMENT_READ,
+  DEPARTMENT_CREATE,
 } from '../const/permission';
 import { useNavigate } from 'react-router-dom';
 import hasPermission from '../helpers/hasPermission';
@@ -52,12 +54,36 @@ function AppSider() {
       key: '/users',
       icon: <TeamOutlined />,
       permission: USER_READ,
+      children: [
+        getItem({
+          label: 'Danh sách thành viên',
+          key: '/list_users',
+          permission: USER_READ,
+        }),
+        getItem({
+          label: 'Tạo mới thành viên',
+          key: '/create_user',
+          permission: USER_CREATE,
+        }),
+      ],
     }),
     getItem({
       label: 'Quản lý khoa phòng',
       key: '/departments',
       icon: <ApartmentOutlined />,
       permission: DEPARTMENT_READ,
+      children: [
+        getItem({
+          label: 'Danh sách khoa phòng',
+          key: '/list_departments',
+          permission: DEPARTMENT_READ,
+        }),
+        getItem({
+          label: 'Tạo mới khoa phòng',
+          key: '/create_department',
+          permission: DEPARTMENT_CREATE,
+        }),
+      ],
     }),
     getItem({
       label: 'Quản lý thiết bị',
@@ -67,12 +93,17 @@ function AppSider() {
       children: [
         getItem({
           label: 'Danh sách thiết bị',
-          key: '',
+          key: '/list_equipments',
           permission: EQUIPMENT_READ,
         }),
         getItem({
+          label: 'Nhập thiết bị đơn lẻ',
+          key: '/create_equipment',
+          permission: EQUIPMENT_CREATE,
+        }),
+        getItem({
           label: 'Nhập thiết bị bằng file excel',
-          key: '/import_by_excel',
+          key: '/import_equipments_by_excel',
           permission: EQUIPMENT_CREATE,
         }),
       ],
@@ -129,6 +160,7 @@ function AppSider() {
         defaultOpenKeys={[
           '/equipments',
           '/members',
+          '/users',
           '/departments',
           '/tenders',
           '/settings',

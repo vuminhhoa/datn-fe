@@ -2,37 +2,39 @@ import React, { useState } from 'react';
 import {
   Form,
   Input,
-  Select,
   Flex,
   Button,
   Avatar,
   Upload,
-  Modal,
   Row,
   Col,
+  Select,
+  Modal,
 } from 'antd';
-import { useAppContext } from '../../../contexts/appContext';
-import { UploadOutlined } from '@ant-design/icons';
-import { FileImageOutlined } from '@ant-design/icons';
-import useEditApi from '../../../hooks/useEditApi';
-import useUploadFile from '../../../hooks/useUploadFile';
+import { useAppContext } from '../../contexts/appContext';
+import useCreateApi from '../../hooks/useCreateApi';
+import { FileImageOutlined, UploadOutlined } from '@ant-design/icons';
+import useUploadFile from '../../hooks/useUploadFile';
 
-const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
-  const { departments, loadingDepartments } = useAppContext();
+const CreateModal = ({ fetchApi, setIsShowCreateForm, isShowCreateForm }) => {
+  const { departments, loadingDepartments, biddings, loadingBiddings } =
+    useAppContext();
   const [form] = Form.useForm();
-  const { editing, editApi } = useEditApi({
-    url: `/equipment/${equipment.id}`,
+  const [createFormData, setCreateFormData] = useState({});
+  const { creating, createApi } = useCreateApi({
+    url: '/equipment',
     successCallback: () => {
+      form.resetFields();
+      setCreateFormData({});
+      setIsShowCreateForm(false);
       fetchApi();
-      setOpen(false);
     },
   });
-  const [formValue, setFormValue] = useState(equipment);
   const { uploading, uploadFile, fileBase64 } = useUploadFile();
 
-  const handleFormChange = (e) => {
-    setFormValue({
-      ...formValue,
+  const handleCreateFormChange = (e) => {
+    setCreateFormData({
+      ...createFormData,
       [e.target.name]: e.target.value,
     });
   };
@@ -56,8 +58,8 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
         ]);
       }
       const { fileUrl } = await uploadFile(file);
-      setFormValue({
-        ...formValue,
+      setCreateFormData({
+        ...createFormData,
         hinhAnh: fileUrl,
       });
     } catch (error) {
@@ -66,40 +68,36 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
   };
   return (
     <Modal
-      title="Cập nhật thiết bị"
-      open={open}
+      title="Tạo mới thiết bị"
+      open={isShowCreateForm}
       onCancel={() => {
-        setFormValue(equipment);
         form.resetFields();
-        setOpen(false);
+        setCreateFormData({});
+        setIsShowCreateForm(false);
       }}
-      closeIcon={!editing}
       footer={null}
       width={800}
     >
       <Form
         autoComplete="off"
         onFinish={() =>
-          editApi({ ...formValue, hinhAnh: fileBase64 || equipment.hinhAnh })
+          createApi({ ...createFormData, hinhAnh: fileBase64 || null })
         }
         form={form}
         layout="vertical"
       >
-        <Form.Item
-          name="hinhAnh"
-          label="Ảnh thiết bị"
-          initialValue={formValue.hinhAnh}
-        >
+        <Form.Item name="hinhAnh" label="Ảnh thiết bị">
           <Flex align="center" gap={'16px'} vertical>
             <Avatar
               size={128}
-              src={formValue.hinhAnh}
+              src={createFormData.hinhAnh}
               icon={<FileImageOutlined />}
               shape="square"
             />
             <Upload
               showUploadList={false}
               onChange={handleChangeFile}
+              loading={uploading}
               beforeUpload={() => {
                 return false;
               }}
@@ -118,13 +116,12 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
               rules={[
                 { required: true, message: 'Vui lòng nhập tên thiết bị!' },
               ]}
-              initialValue={formValue.tenThietBi}
             >
               <Input
                 allowClear
                 name="tenThietBi"
                 placeholder="Nhập tên thiết bị"
-                onChange={handleFormChange}
+                onChange={handleCreateFormChange}
                 autoComplete="off"
               />
             </Form.Item>
@@ -132,13 +129,12 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
               name="donVi"
               label="Đơn vị thiết bị"
               rules={[{ required: true, message: 'Vui lòng nhập đơn vị!' }]}
-              initialValue={formValue.donVi}
             >
               <Input
                 allowClear
-                name="tenThietBi"
+                name="donVi"
                 placeholder="Nhập đơn vị"
-                onChange={handleFormChange}
+                onChange={handleCreateFormChange}
                 autoComplete="off"
               />
             </Form.Item>
@@ -149,13 +145,12 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
               rules={[
                 { required: true, message: 'Vui lòng nhập serial thiết bị!' },
               ]}
-              initialValue={formValue.serial}
             >
               <Input
                 allowClear
                 name="serial"
                 placeholder="Nhập serial thiết bị"
-                onChange={handleFormChange}
+                onChange={handleCreateFormChange}
                 autoComplete="off"
               />
             </Form.Item>
@@ -168,18 +163,15 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
                   message: 'Vui lòng nhập ký mã hiệu thiết bị!',
                 },
               ]}
-              initialValue={formValue.kyMaHieu}
             >
               <Input
                 allowClear
                 name="kyMaHieu"
                 placeholder="Nhập ký mã hiệu thiết bị"
-                onChange={handleFormChange}
+                onChange={handleCreateFormChange}
                 autoComplete="off"
               />
             </Form.Item>
-          </Col>
-          <Col span={12}>
             <Form.Item
               name="hangSanXuat"
               label="Hãng sản xuất"
@@ -189,16 +181,17 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
                   message: 'Vui lòng nhập hãng sản xuất thiết bị!',
                 },
               ]}
-              initialValue={formValue.hangSanXuat}
             >
               <Input
                 allowClear
                 name="hangSanXuat"
                 placeholder="Nhập hãng sản xuất thiết bị"
-                onChange={handleFormChange}
+                onChange={handleCreateFormChange}
                 autoComplete="off"
               />
             </Form.Item>
+          </Col>
+          <Col span={12}>
             <Form.Item
               name="xuatXu"
               label="Xuất xứ"
@@ -208,13 +201,12 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
                   message: 'Vui lòng nhập xuất xứ thiết bị!',
                 },
               ]}
-              initialValue={formValue.xuatXu}
             >
               <Input
                 allowClear
                 name="xuatXu"
                 placeholder="Nhập xuất xứ thiết bị"
-                onChange={handleFormChange}
+                onChange={handleCreateFormChange}
                 autoComplete="off"
               />
             </Form.Item>
@@ -226,14 +218,18 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
                   required: true,
                   message: 'Vui lòng nhập số lượng thiết bị!',
                 },
+                {
+                  type: 'number',
+                  message: 'Số lượng phải là số!',
+                  transform: (value) => Number(value),
+                },
               ]}
-              initialValue={formValue.soLuong}
             >
               <Input
                 allowClear
                 name="soLuong"
                 placeholder="Nhập số lượng thiết bị"
-                onChange={handleFormChange}
+                onChange={handleCreateFormChange}
                 autoComplete="off"
               />
             </Form.Item>
@@ -245,35 +241,29 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
                   required: true,
                   message: 'Vui lòng nhập đơn giá thiết bị!',
                 },
+                {
+                  type: 'number',
+                  message: 'Đơn giá phải là số!',
+                  transform: (value) => Number(value),
+                },
               ]}
-              initialValue={formValue.donGia}
             >
               <Input
                 allowClear
-                name="xuatXu"
+                name="donGia"
                 placeholder="Nhập đơn giá thiết bị"
-                onChange={handleFormChange}
+                onChange={handleCreateFormChange}
                 autoComplete="off"
               />
             </Form.Item>
-            <Form.Item
-              name="khoaPhong"
-              label="Khoa phòng"
-              rules={[
-                {
-                  required: true,
-                  message: 'Vui lòng chọn khoa phòng!',
-                },
-              ]}
-              initialValue={formValue.Department?.tenKhoaPhong}
-            >
+            <Form.Item name="khoaPhong" label="Khoa phòng">
               <Select
                 allowClear
                 disabled={loadingDepartments}
                 placeholder="Chọn khoa phòng"
                 onChange={(value) =>
-                  setFormValue({
-                    ...formValue,
+                  setCreateFormData({
+                    ...createFormData,
                     DepartmentId: value,
                   })
                 }
@@ -283,26 +273,39 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
                 }))}
               />
             </Form.Item>
+            <Form.Item name="duAn" label="Dự án">
+              <Select
+                allowClear
+                disabled={loadingBiddings}
+                placeholder="Chọn dự án"
+                onChange={(value) =>
+                  setCreateFormData({
+                    ...createFormData,
+                    BiddingId: value,
+                  })
+                }
+                options={biddings.map((bidding) => ({
+                  value: bidding.id,
+                  label: bidding.tenDeXuat,
+                }))}
+              />
+            </Form.Item>
           </Col>
         </Row>
 
         <Flex gap={8} justify="flex-end">
           <Button
             key="back"
-            onClick={() => {
-              setFormValue(equipment);
-              form.resetFields();
-              setOpen(false);
-            }}
-            disabled={editing || uploading}
+            onClick={() => setIsShowCreateForm(false)}
+            disabled={uploading}
           >
             Hủy
           </Button>
           <Button
             type="primary"
             htmlType="submit"
-            loading={editing || uploading}
-            disabled={JSON.stringify(equipment) === JSON.stringify(formValue)}
+            loading={creating}
+            disabled={uploading}
           >
             Lưu
           </Button>
@@ -311,4 +314,4 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
     </Modal>
   );
 };
-export default UpdateEquipmentForm;
+export default CreateModal;

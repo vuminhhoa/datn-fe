@@ -18,7 +18,7 @@ import useFetchApi from '../../hooks/useFetchApi.js';
 import hasPermission from '../../helpers/hasPermission.js';
 import { EQUIPMENT_UPDATE } from '../../const/permission.js';
 import { PictureOutlined } from '@ant-design/icons';
-import UpdateEquipmentForm from './Form/Update.js';
+import UpdateEquipmentForm from './UpdateModal.js';
 import NotFound from '../NotFound/NotFound.js';
 import Page from '../../components/Page/Page.js';
 import { formatVNCurrency } from '../../helpers/formatVNCurrency.js';
@@ -63,6 +63,10 @@ const Detail = () => {
     {
       label: 'Khoa phòng',
       children: data?.Department?.tenKhoaPhong,
+    },
+    {
+      label: 'Dự án',
+      children: data?.Bidding?.tenDeXuat,
     },
     {
       label: 'Xuất xứ',

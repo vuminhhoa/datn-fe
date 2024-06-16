@@ -22,6 +22,15 @@ const AppProvider = ({ children }) => {
     url: '/departments',
     defaultData: [],
   });
+  const {
+    data: biddings,
+    loading: loadingBiddings,
+    fetchApi: fetchBiddings,
+    setData: setBiddings,
+  } = useFetchApi({
+    url: '/biddings',
+    defaultData: [],
+  });
 
   const setToast = (content, type = 'success') => {
     return messageApi.open({
@@ -37,11 +46,15 @@ const AppProvider = ({ children }) => {
         departments,
         loadingDepartments,
         fetchDepartments,
+        setDepartments,
         setRoles,
         loadingRoles,
         roles,
         fetchRoles,
-        setDepartments,
+        setBiddings,
+        loadingBiddings,
+        biddings,
+        fetchBiddings,
       }}
     >
       {contextHolder}
