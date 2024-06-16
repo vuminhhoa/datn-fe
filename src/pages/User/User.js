@@ -25,6 +25,7 @@ const User = () => {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null); // Added state for the record being edited
+  const [deleteId, setDeleteId] = useState(null);
 
   const { deleting, deleteApi } = useDeleteApi({
     url: `/user`,
@@ -124,6 +125,7 @@ const User = () => {
                       <Button
                         type="link"
                         icon={<EditOutlined />}
+                        disabled={deleting && deleteId === item.id}
                         onClick={() => {
                           setEditingRecord(item); // Set the record being edited
                           setShowEditModal(true);
@@ -136,8 +138,12 @@ const User = () => {
                       <Button
                         type="link"
                         danger
+                        loading={deleting && deleteId === item.id}
                         icon={<DeleteOutlined />}
-                        onClick={() => deleteApi(item.id)}
+                        onClick={() => {
+                          setDeleteId(item.id);
+                          deleteApi(item.id);
+                        }}
                       />
                     </Popover>
                   ) : null,
