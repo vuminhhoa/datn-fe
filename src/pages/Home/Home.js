@@ -14,7 +14,7 @@ import {
   UserOutlined,
   DesktopOutlined,
   AuditOutlined,
-  ProfileOutlined,
+  ApartmentOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import useFetchApi from '../../hooks/useFetchApi.js';
@@ -41,7 +41,11 @@ function Home() {
       <Page>
         <Row gutter={16}>
           <Col span={12}>
-            <Card hoverable bordered={false} onClick={() => navigate('/users')}>
+            <Card
+              hoverable
+              bordered={false}
+              onClick={() => navigate('/users/list_users')}
+            >
               <Statistic
                 title="Số lượng thành viên"
                 value={'--'}
@@ -62,7 +66,7 @@ function Home() {
           <Col span={12}>
             <Card
               bordered={false}
-              onClick={() => navigate('/equipments')}
+              onClick={() => navigate('/equipments/list_equipments')}
               hoverable
             >
               <Statistic
@@ -91,7 +95,7 @@ function Home() {
               hoverable
             >
               <Statistic
-                title="Số lượng hoạt động mua sắm đấu thầu"
+                title="Số lượng hoạt động mua sắm"
                 value={'--'}
                 valueStyle={{
                   color: '#3f8600',
@@ -110,22 +114,22 @@ function Home() {
           <Col span={12}>
             <Card
               bordered={false}
-              onClick={() => navigate('/shopping/non-bidding')}
+              onClick={() => navigate('/departmens/list_departments')}
               hoverable
             >
               <Statistic
-                title="Số lượng hoạt động mua sắm không đấu thầu"
+                title="Số lượng khoa phòng"
                 value={'--'}
                 valueStyle={{
                   color: '#3f8600',
                 }}
                 prefix={
                   <div style={{ paddingInlineEnd: '8px' }}>
-                    <ProfileOutlined />
+                    <ApartmentOutlined />
                   </div>
                 }
                 suffix={
-                  <div style={{ paddingInlineStart: '8px' }}>hoạt động</div>
+                  <div style={{ paddingInlineStart: '8px' }}>khoa phòng</div>
                 }
               />
             </Card>
@@ -147,7 +151,11 @@ function Home() {
     <Page>
       <Row gutter={16}>
         <Col span={12}>
-          <Card hoverable bordered={false} onClick={() => navigate('/users')}>
+          <Card
+            hoverable
+            bordered={false}
+            onClick={() => navigate('/users/list_users')}
+          >
             <Statistic
               title="Số lượng thành viên"
               value={loading ? '--' : data.countUsers}
@@ -168,7 +176,7 @@ function Home() {
         <Col span={12}>
           <Card
             bordered={false}
-            onClick={() => navigate('/equipments')}
+            onClick={() => navigate('/equipments/list_equipments')}
             hoverable
           >
             <Statistic
@@ -195,7 +203,7 @@ function Home() {
             hoverable
           >
             <Statistic
-              title="Số lượng hoạt động mua sắm đấu thầu"
+              title="Số lượng hoạt động mua sắm"
               value={loading ? '--' : data.countBiddings}
               valueStyle={{
                 color: '#3f8600',
@@ -214,22 +222,22 @@ function Home() {
         <Col span={12}>
           <Card
             bordered={false}
-            onClick={() => navigate('/shopping/non-bidding')}
+            onClick={() => navigate('/departments/list_departments')}
             hoverable
           >
             <Statistic
-              title="Số lượng hoạt động mua sắm không đấu thầu"
-              value={loading ? '--' : data.countNonBiddings}
+              title="Số lượng khoa phòng"
+              value={loading ? '--' : data.countDepartments}
               valueStyle={{
                 color: '#3f8600',
               }}
               prefix={
                 <div style={{ paddingInlineEnd: '8px' }}>
-                  <ProfileOutlined />
+                  <ApartmentOutlined />
                 </div>
               }
               suffix={
-                <div style={{ paddingInlineStart: '8px' }}>hoạt động</div>
+                <div style={{ paddingInlineStart: '8px' }}>khoa phòng</div>
               }
             />
           </Card>

@@ -34,7 +34,7 @@ export default function useCreateApi({
       }
       if (!resp.success) {
         useToast && setToast(resp.message || errorMsg, 'error');
-        errorCallback();
+        errorCallback(resp);
       }
       return resp;
     } catch (e) {
