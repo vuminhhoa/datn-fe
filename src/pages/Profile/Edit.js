@@ -17,7 +17,14 @@ const EditProfileForm = ({
 }) => {
   const { setToast } = useAppContext();
   const { setUser } = useAuthContext();
-  const { editing, editApi } = useEditApi({ url: `/user` });
+  const { editing, editApi } = useEditApi({
+    url: `/profile`,
+    successCallback: () => {
+      setUser(formValue);
+      localStorage.setItem('CURRENT_USER', JSON.stringify(formValue));
+      setOpen(false);
+    },
+  });
   const [form] = Form.useForm();
   const [uploading, setUploading] = useState(false);
   const [initData, setInitdata] = useState();
@@ -31,23 +38,6 @@ const EditProfileForm = ({
       ...formValue,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleUpdateUser = async () => {
-    try {
-      const res = await editApi({ ...formValue, isEditProfile: true });
-      if (res.data.success) {
-        setUser(formValue);
-        localStorage.setItem('CURRENT_USER', JSON.stringify(formValue));
-        return setToast('Cập nhật thành công!');
-      }
-      setToast(res.data.message, 'error');
-    } catch (error) {
-      console.log(error);
-      setToast('Cập nhật thất bại', 'error');
-    } finally {
-      setOpen(false);
-    }
   };
 
   const handleChangeFile = async (e) => {
@@ -100,7 +90,7 @@ const EditProfileForm = ({
     >
       <Form
         autoComplete="off"
-        onFinish={handleUpdateUser}
+        onFinish={() => editApi({ ...formValue, isEditProfile: true })}
         form={form}
         layout="vertical"
       >
