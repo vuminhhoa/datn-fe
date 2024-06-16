@@ -48,13 +48,14 @@ const Detail = () => {
       href: `/user/${id}`,
       title: loading ? (
         <Skeleton.Input size="small" />
-      ) : user.name ? (
+      ) : user?.name ? (
         user.name
       ) : (
-        user.email
+        user?.email
       ),
     },
   ]);
+  if (!user) return <NotFound />;
 
   const items = [
     {
@@ -85,7 +86,7 @@ const Detail = () => {
     {
       key: '6',
       label: 'Email',
-      children: user.email,
+      children: user?.email,
     },
     {
       key: '6',
