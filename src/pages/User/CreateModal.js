@@ -3,6 +3,7 @@ import { Flex, Modal, Input, Button, Select, Form } from 'antd';
 import useCreateApi from '../../hooks/useCreateApi';
 import { useAuthContext } from '../../contexts/authContext';
 import { useAppContext } from '../../contexts/appContext';
+import { ADMIN } from '../../const/role';
 
 const CreateModal = ({ isShowCreateForm, setIsShowCreateForm, fetchApi }) => {
   const { user } = useAuthContext();
@@ -143,7 +144,7 @@ const CreateModal = ({ isShowCreateForm, setIsShowCreateForm, fetchApi }) => {
               })
             }
             options={roles
-              .filter((role) => role.name !== 'Quản trị viên')
+              .filter((role) => role.name !== ADMIN)
               .map((role) => {
                 return {
                   value: role.id,

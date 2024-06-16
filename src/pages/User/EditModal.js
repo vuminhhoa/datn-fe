@@ -6,6 +6,7 @@ import useEditApi from '../../hooks/useEditApi';
 import useUploadFile from '../../hooks/useUploadFile';
 import { useAuthContext } from '../../contexts/authContext';
 import { useAppContext } from '../../contexts/appContext';
+import { ADMIN } from '../../const/role';
 
 const EditModal = ({ open, input, fetchApi, setOpen }) => {
   const { user, setUser } = useAuthContext();
@@ -173,7 +174,7 @@ const EditModal = ({ open, input, fetchApi, setOpen }) => {
               })
             }
             options={roles
-              .filter((role) => role.name !== 'Quản trị viên')
+              .filter((role) => role.name !== ADMIN)
               .map((role) => {
                 return {
                   value: role.id,

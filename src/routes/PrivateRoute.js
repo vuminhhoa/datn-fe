@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import AppLayout from '../layout/Layout';
 import NotFound from '../pages/NotFound';
 import { useAuthContext } from '../contexts/authContext';
+import { ADMIN } from '../const/role';
 
 const PrivateRoute = ({ children, permission = null }) => {
   const { logoutAction, user } = useAuthContext();
@@ -10,7 +11,7 @@ const PrivateRoute = ({ children, permission = null }) => {
   if (!user) {
     return <Navigate to="/sign-up" />;
   }
-  if (permission && user.Role?.name !== 'Quản trị viên') {
+  if (permission && user.Role?.name !== ADMIN) {
     const userPermissons = user.Role?.Permissions;
     if (!userPermissons) {
       logoutAction();

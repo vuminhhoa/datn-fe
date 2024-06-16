@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Flex, Breadcrumb, Button, Skeleton } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
-import { ADMIN, USER } from '../../const/role.js';
+import { ADMIN, STAFF } from '../../const/role.js';
 import { ROLE_DELETE, ROLE_UPDATE } from '../../const/permission.js';
 import useFetchApi from '../../hooks/useFetchApi.js';
 import hasPermission from '../../helpers/hasPermission.js';
@@ -24,9 +24,19 @@ function checkUserInArray(arr, email) {
 const DetailRole = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { setToast } = useAppContext();
+  const { fetchRoles } = useAppContext();
   const { user } = useAuthContext();
-  const { deleting, deleteApi } = useDeleteApi({ url: `/role/${id}` });
+  const { deleting, deleteApi } = useDeleteApi({
+    url: `/role/${id}`,
+    successCallback: () => {
+      const isUserHasRole = checkUserInArray(data.Users, user.email);
+      if (isUserHasRole) {
+        window.location.reload();
+      }
+      fetchRoles();
+      navigate('/roles');
+    },
+  });
   const { data, loading } = useFetchApi({
     url: `/role/${id}`,
   });
@@ -115,22 +125,6 @@ const DetailRole = () => {
       children: new Date(data?.updatedAt).toLocaleString(),
     },
   ];
-  const handleDeleteRole = async () => {
-    try {
-      const res = await deleteApi();
-      if (res.data.success) {
-        setToast('Xóa thành công');
-        const isUserHasRole = checkUserInArray(data.Users, user.email);
-        if (isUserHasRole) {
-          window.location.reload();
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      navigate('/roles');
-    }
-  };
 
   return (
     <Page>
@@ -140,9 +134,9 @@ const DetailRole = () => {
         extra={
           <Flex gap={8}>
             {data?.name !== ADMIN &&
-              data?.name !== USER &&
+              data?.name !== STAFF &&
               hasPermission(ROLE_DELETE) && (
-                <Button danger disabled={deleting} onClick={handleDeleteRole}>
+                <Button danger loading={deleting} onClick={() => deleteApi()}>
                   Xóa
                 </Button>
               )}

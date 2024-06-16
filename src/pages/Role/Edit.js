@@ -110,7 +110,7 @@ const EditRole = () => {
           <Button
             type="primary"
             onClick={() => editApi({ roleId: data.id, permissions: selected })}
-            disabled={editing}
+            loading={editing}
           >
             Lưu
           </Button>
