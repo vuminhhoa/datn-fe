@@ -153,13 +153,7 @@ const DuplicateRowsTable = () => {
           ? formatVNCurrency(record.soLuong * record.donGia)
           : '',
     },
-    {
-      title: 'Phân khoa',
-      dataIndex: 'phanKhoa',
-      key: 'phanKhoa',
-      width: '10%',
-      editable: true,
-    },
+
     {
       title: 'Hành động',
       width: '8%',

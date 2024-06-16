@@ -62,7 +62,6 @@ export const downloadExcelTemplate = () => {
       'Hãng sản xuất',
       'Xuất xứ',
       'Đơn giá',
-      'Phân khoa',
     ],
   ]);
   const wb = XLSX.utils.book_new();

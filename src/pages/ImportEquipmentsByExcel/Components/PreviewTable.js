@@ -14,10 +14,18 @@ import { formatVNCurrency } from '../../../helpers/formatVNCurrency.js';
 import { EditableCell } from './EditableCell.js';
 import SearchInput from './SearchInput.js';
 import { useImportEquipmentsExcelContext } from '../../../contexts/importEquipmentsExcelContext.js';
+import { useAppContext } from '../../../contexts/appContext.js';
 
 const PreviewTable = () => {
-  const { data, setData, duplicateRows, duplicateEquipmentsInDb } =
-    useImportEquipmentsExcelContext();
+  const {
+    data,
+    setData,
+    duplicateRows,
+    duplicateEquipmentsInDb,
+    selectedBidding,
+    selectedDepartment,
+  } = useImportEquipmentsExcelContext();
+  const { departments, biddings } = useAppContext();
   const [editingKey, setEditingKey] = useState('');
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState('');
@@ -35,7 +43,6 @@ const PreviewTable = () => {
   const cancel = () => {
     setEditingKey('');
   };
-
   const save = async (key) => {
     try {
       const row = await form.validateFields();
@@ -88,7 +95,6 @@ const PreviewTable = () => {
       title: 'Đơn vị',
       dataIndex: 'donVi',
       key: 'donVi',
-      width: '5%',
       editable: true,
     },
     {
@@ -97,14 +103,12 @@ const PreviewTable = () => {
       key: 'soLuong',
       align: 'right',
       sorter: (a, b) => a.soLuong - b.soLuong,
-      width: '7%',
       editable: true,
     },
     {
       title: 'Ký mã hiệu',
       dataIndex: 'kyMaHieu',
       key: 'kyMaHieu',
-      width: '13%',
       sorter: (a, b) => a.kyMaHieu.localeCompare(b.kyMaHieu),
       editable: true,
       ...SearchInput(
@@ -118,21 +122,18 @@ const PreviewTable = () => {
       title: 'Hãng sản xuất',
       dataIndex: 'hangSanXuat',
       key: 'hangSanXuat',
-      width: '10%',
       editable: true,
     },
     {
       title: 'Xuất xứ',
       dataIndex: 'xuatXu',
       key: 'xuatXu',
-      width: '10%',
       editable: true,
     },
     {
       title: 'Đơn giá',
       dataIndex: 'donGia',
       key: 'donGia',
-      width: '8%',
       align: 'right',
       editable: true,
       sorter: (a, b) => a.donGia - b.donGia,
@@ -142,7 +143,6 @@ const PreviewTable = () => {
       title: 'Thành tiền',
       dataIndex: 'thanhTien',
       key: 'thanhTien',
-      width: '8%',
       align: 'right',
       sorter: (a, b) => a.soLuong * a.donGia - b.soLuong * b.donGia,
       render: (_, record) =>
@@ -154,13 +154,19 @@ const PreviewTable = () => {
       title: 'Phân khoa',
       dataIndex: 'phanKhoa',
       key: 'phanKhoa',
-      width: '10%',
-      editable: true,
+      render: () =>
+        departments.find((dep) => dep.id === selectedDepartment)?.tenKhoaPhong,
+    },
+    {
+      title: 'Dự án',
+      dataIndex: 'duAn',
+      key: 'duAn',
+      render: () =>
+        biddings.find((bidding) => bidding.id === selectedBidding)?.tenDeXuat,
     },
 
     {
       title: 'Hành động',
-      width: '8%',
       dataIndex: 'action',
       align: 'center',
       render: (_, record) => {

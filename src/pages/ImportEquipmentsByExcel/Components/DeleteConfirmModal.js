@@ -3,8 +3,13 @@ import { Button, Modal, Typography, Space } from 'antd';
 import { useImportEquipmentsExcelContext } from '../../../contexts/importEquipmentsExcelContext';
 
 const DeleteConfirmModal = ({ showDeleteConfirm, setShowDeleteConfirm }) => {
-  const { setData, setDuplicateEquipmentsInDb, setDuplicateRows } =
-    useImportEquipmentsExcelContext();
+  const {
+    setData,
+    setDuplicateEquipmentsInDb,
+    setDuplicateRows,
+    setSelectedDepartment,
+    setSelectedBidding,
+  } = useImportEquipmentsExcelContext();
 
   return (
     <Modal
@@ -27,6 +32,8 @@ const DeleteConfirmModal = ({ showDeleteConfirm, setShowDeleteConfirm }) => {
             type="primary"
             danger
             onClick={() => {
+              setSelectedDepartment(null);
+              setSelectedBidding(null);
               setDuplicateRows([]);
               setDuplicateEquipmentsInDb([]);
               setData([]);

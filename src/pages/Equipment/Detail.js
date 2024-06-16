@@ -35,7 +35,7 @@ const Detail = () => {
       title: <HomeOutlined />,
     },
     {
-      href: '/equipments',
+      href: '/equipments/list_equipments',
       title: 'Quản lý thiết bị',
     },
     {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Upload, Button, message, Space, Card } from 'antd';
+import { Upload, Button, message, Space, Card, Flex, Select } from 'antd';
 import { UploadOutlined, FileExcelOutlined } from '@ant-design/icons';
 import Page from '../../components/Page/Page.js';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
@@ -12,8 +12,10 @@ import ImportEquipmentsExcelContext from '../../contexts/importEquipmentsExcelCo
 import PreviewTable from './Components/PreviewTable.js';
 import DuplicateRowsTable from './Components/DuplicateRowsTable.js';
 import DeleteConfirmModal from './Components/DeleteConfirmModal.js';
+import { useAppContext } from '../../contexts/appContext.js';
 
 const ImportEquipmentsByExcel = () => {
+  const { departments, biddings } = useAppContext();
   const breadcrumb = useBreadcrumb(
     [
       {
@@ -27,6 +29,9 @@ const ImportEquipmentsByExcel = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [duplicateRows, setDuplicateRows] = useState([]);
   const [duplicateEquipmentsInDb, setDuplicateEquipmentsInDb] = useState([]);
+
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [selectedBidding, setSelectedBidding] = useState(null);
 
   const { creating, createApi } = useCreateApi({
     url: `/equipments/importByExcel`,
@@ -63,7 +68,13 @@ const ImportEquipmentsByExcel = () => {
       return;
     }
 
-    const cleanedData = data.map(({ id, key, updatedAt, ...rest }) => rest);
+    const cleanedData = data.map(({ id, key, updatedAt, ...rest }) => {
+      return {
+        ...rest,
+        BiddingId: selectedBidding,
+        DepartmentId: selectedDepartment,
+      };
+    });
 
     createApi(cleanedData);
   };
@@ -83,7 +94,6 @@ const ImportEquipmentsByExcel = () => {
     }
     return false; // To prevent default behavior of upload component
   };
-
   return (
     <ImportEquipmentsExcelContext.Provider
       value={{
@@ -94,6 +104,10 @@ const ImportEquipmentsByExcel = () => {
         duplicateEquipmentsInDb,
         setDuplicateEquipmentsInDb,
         checkDuplicateData,
+        selectedBidding,
+        setSelectedBidding,
+        setSelectedDepartment,
+        selectedDepartment,
       }}
     >
       <Page fullWidth={true}>
@@ -147,6 +161,44 @@ const ImportEquipmentsByExcel = () => {
           }
         >
           <Space direction="vertical" style={{ width: '100%' }}>
+            <Flex gap={8}>
+              <Select
+                placeholder="Chọn khoa phòng"
+                allowClear
+                value={
+                  departments.find((item) => item.id === selectedDepartment)
+                    ?.tenKhoaPhong
+                }
+                onChange={(val) => setSelectedDepartment(val)}
+                style={{
+                  width: '100%',
+                }}
+                options={[
+                  ...departments.map((item) => ({
+                    label: item.tenKhoaPhong,
+                    value: item.id,
+                  })),
+                ]}
+              />
+              <Select
+                placeholder="Chọn dự án"
+                allowClear
+                value={
+                  biddings.find((item) => item.id === selectedBidding)
+                    ?.tenDeXuat
+                }
+                onChange={(val) => setSelectedBidding(val)}
+                style={{
+                  width: '100%',
+                }}
+                options={[
+                  ...biddings.map((item) => ({
+                    label: item.tenDeXuat,
+                    value: item.id,
+                  })),
+                ]}
+              />
+            </Flex>
             {duplicateEquipmentsInDb.length > 0 && <DuplicateEquipmentsTable />}
             {duplicateRows.length > 0 && <DuplicateRowsTable />}
             <PreviewTable />

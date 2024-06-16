@@ -114,7 +114,7 @@ const Equipment = () => {
       title: <HomeOutlined />,
     },
     {
-      path: '/equipments',
+      path: '/equipments/list_equipments',
       title: 'Danh sách thiết bị',
     },
   ]);

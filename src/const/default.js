@@ -111,8 +111,4 @@ export const defaultExcelColumns = [
     label: 'Đơn giá',
     value: 'donGia',
   },
-  {
-    label: 'Phân khoa',
-    value: 'phanKhoa',
-  },
 ];

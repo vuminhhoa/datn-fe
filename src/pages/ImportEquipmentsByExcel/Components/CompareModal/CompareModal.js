@@ -25,95 +25,32 @@ const CompareModal = ({
   const { deleting, deleteApi } = useDeleteApi({
     url: `/equipment`,
     successMsg: 'Xử lý trùng lặp thành công!',
-  });
-
-  const { editing, editApi } = useEditApi({
-    url: `/equipment/${initEquipmentInDb.id}`,
-  });
-
-  useEffect(() => {
-    setShowConfirmModal(false);
-  }, [deleting, editing]);
-
-  const handleResolveDuplicate = async () => {
-    try {
+    successCallback: () => {
       if (
         JSON.stringify(equipmentInDb) === '{}' &&
         JSON.stringify(equipmentToCompare) === '{}'
       ) {
-        const resp = await deleteApi(initEquipmentInDb.id);
-
-        if (resp.data.success) {
-          setData(
-            data.filter(
-              (item) => item.kyMaHieu !== initEquipmentToCompare.kyMaHieu
-            )
-          );
-          setDuplicateEquipmentsInDb(
-            duplicateEquipmentsInDb.filter(
-              (item) => item.kyMaHieu !== initEquipmentInDb.kyMaHieu
-            )
-          );
-          setShowConfirmModal(false);
-          setShowCompareModal(false);
-          setEquipmentInDb({});
-          setEquipmentToCompare({});
-        }
-        return;
-      }
-
-      if (JSON.stringify(equipmentToCompare) === '{}') {
-        const resp = await editApi(equipmentInDb);
-
-        if (resp.data.success) {
-          setData(
-            data.filter(
-              (item) => item.kyMaHieu !== initEquipmentToCompare.kyMaHieu
-            )
-          );
-          setDuplicateEquipmentsInDb(
-            duplicateEquipmentsInDb.filter(
-              (item) => item.kyMaHieu !== initEquipmentToCompare.kyMaHieu
-            )
-          );
-          setShowConfirmModal(false);
-          setShowCompareModal(false);
-          setEquipmentInDb({});
-          setEquipmentToCompare({});
-        }
+        setData(
+          data.filter(
+            (item) => item.kyMaHieu !== initEquipmentToCompare.kyMaHieu
+          )
+        );
+        setDuplicateEquipmentsInDb(
+          duplicateEquipmentsInDb.filter(
+            (item) => item.kyMaHieu !== initEquipmentInDb.kyMaHieu
+          )
+        );
+        setShowConfirmModal(false);
+        setShowCompareModal(false);
+        setEquipmentInDb({});
+        setEquipmentToCompare({});
         return;
       }
 
       if (JSON.stringify(equipmentInDb) === '{}') {
-        const resp = await deleteApi(initEquipmentInDb.id);
-
-        if (resp.data.success) {
-          const updatedData = data.map((item) =>
-            item.kyMaHieu === initEquipmentInDb.kyMaHieu
-              ? { ...item, ...initEquipmentInDb }
-              : item
-          );
-
-          setData(updatedData);
-          setDuplicateEquipmentsInDb(
-            duplicateEquipmentsInDb.filter(
-              (item) => item.kyMaHieu !== initEquipmentInDb.kyMaHieu
-            )
-          );
-          setShowConfirmModal(false);
-          setShowCompareModal(false);
-          setEquipmentInDb({});
-          setEquipmentToCompare({});
-        }
-        return;
-      }
-
-      const resp = await editApi(equipmentInDb);
-
-      if (resp.data.success) {
         const updatedData = data.map((item) =>
           item.kyMaHieu === initEquipmentInDb.kyMaHieu
-            ? { ...item, ...equipmentToCompare }
+            ? { ...item, ...initEquipmentInDb }
             : item
         );
 
@@ -127,7 +64,63 @@ const CompareModal = ({
         setShowCompareModal(false);
         setEquipmentInDb({});
         setEquipmentToCompare({});
+        return;
       }
+    },
+  });
+
+  const { editing, editApi } = useEditApi({
+    url: `/equipment/${initEquipmentInDb.id}`,
+    successCallback: () => {
+      if (JSON.stringify(equipmentToCompare) === '{}') {
+        setData(
+          data.filter(
+            (item) => item.kyMaHieu !== initEquipmentToCompare.kyMaHieu
+          )
+        );
+        setDuplicateEquipmentsInDb(
+          duplicateEquipmentsInDb.filter(
+            (item) => item.kyMaHieu !== initEquipmentToCompare.kyMaHieu
+          )
+        );
+        setShowConfirmModal(false);
+        setShowCompareModal(false);
+        setEquipmentInDb({});
+        setEquipmentToCompare({});
+        return;
+      }
+
+      const updatedData = data.map((item) =>
+        item.kyMaHieu === initEquipmentInDb.kyMaHieu
+          ? { ...item, ...equipmentToCompare }
+          : item
+      );
+
+      setData(updatedData);
+      setDuplicateEquipmentsInDb(
+        duplicateEquipmentsInDb.filter(
+          (item) => item.kyMaHieu !== initEquipmentInDb.kyMaHieu
+        )
+      );
+      setShowConfirmModal(false);
+      setShowCompareModal(false);
+      setEquipmentInDb({});
+      setEquipmentToCompare({});
+    },
+  });
+
+  useEffect(() => {
+    setShowConfirmModal(false);
+  }, [deleting, editing]);
+
+  const handleResolveDuplicate = async () => {
+    try {
+      if (JSON.stringify(equipmentInDb) === '{}') {
+        await deleteApi(initEquipmentInDb.id);
+        return;
+      }
+
+      await editApi(equipmentInDb);
       return;
     } catch (error) {
       console.log(error);

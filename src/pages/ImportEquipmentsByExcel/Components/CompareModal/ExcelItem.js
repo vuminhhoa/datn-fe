@@ -92,7 +92,6 @@ const ExcelItem = ({
       title: 'Đơn vị',
       dataIndex: 'donVi',
       key: 'donVi',
-      width: '5%',
       editable: true,
     },
     {
@@ -100,35 +99,30 @@ const ExcelItem = ({
       dataIndex: 'soLuong',
       key: 'soLuong',
       align: 'right',
-      width: '7%',
       editable: true,
     },
     {
       title: 'Ký mã hiệu',
       dataIndex: 'kyMaHieu',
       key: 'kyMaHieu',
-      width: '13%',
       editable: true,
     },
     {
       title: 'Hãng sản xuất',
       dataIndex: 'hangSanXuat',
       key: 'hangSanXuat',
-      width: '10%',
       editable: true,
     },
     {
       title: 'Xuất xứ',
       dataIndex: 'xuatXu',
       key: 'xuatXu',
-      width: '10%',
       editable: true,
     },
     {
       title: 'Đơn giá',
       dataIndex: 'donGia',
       key: 'donGia',
-      width: '8%',
       align: 'right',
       editable: true,
       render: (_, record) =>
@@ -138,7 +132,6 @@ const ExcelItem = ({
       title: 'Thành tiền',
       dataIndex: 'thanhTien',
       key: 'thanhTien',
-      width: '8%',
       align: 'right',
       render: (_, record) =>
         record.soLuong && record.donGia
@@ -149,12 +142,14 @@ const ExcelItem = ({
       title: 'Phân khoa',
       dataIndex: 'phanKhoa',
       key: 'phanKhoa',
-      width: '10%',
-      editable: true,
+    },
+    {
+      title: 'Dự án',
+      dataIndex: 'duAn',
+      key: 'duAn',
     },
     {
       title: 'Hành động',
-      width: '8%',
       dataIndex: 'action',
       align: 'center',
       render: (_, record) => {

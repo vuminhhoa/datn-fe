@@ -57,25 +57,30 @@ const DatabaseItem = ({
       const kyMaHieuExists = data.find(
         (item) => item.kyMaHieu === row.kyMaHieu && item.key !== record.key
       );
-      const resp = await fetchAuthApi({
-        url: `/equipment/${row.kyMaHieu}?key=kyMaHieu`,
-      });
+      if (initEquipmentInDb.kyMaHieu !== equipmentInDb.kyMaHieu) {
+        const resp = await fetchAuthApi({
+          url: `/equipment/${row.kyMaHieu}?key=kyMaHieu`,
+        });
 
-      const kyMaHieuExistslInDb = resp.data.equipment;
+        const kyMaHieuExistslInDb = resp.data.equipment;
+        if (kyMaHieuExistslInDb) {
+          message.error(
+            'Ký mã hiệu đã tồn tại trong CSDL. Vui lòng chọn một ký mã hiệu khác.'
+          );
+          return;
+        }
+      }
 
-      if (kyMaHieuExists) {
+      if (
+        kyMaHieuExists &&
+        initEquipmentInDb.kyMaHieu !== equipmentInDb.kyMaHieu
+      ) {
         message.error(
           'Ký mã hiệu đã tồn tại. Vui lòng chọn một ký mã hiệu khác.'
         );
         return;
       }
 
-      if (kyMaHieuExistslInDb) {
-        message.error(
-          'Ký mã hiệu đã tồn tại trong CSDL. Vui lòng chọn một ký mã hiệu khác.'
-        );
-        return;
-      }
       setEquipmentInDb({ ...equipmentInDb, ...row });
       setEditingKey('');
       return;
@@ -95,7 +100,6 @@ const DatabaseItem = ({
       title: 'Đơn vị',
       dataIndex: 'donVi',
       key: 'donVi',
-      width: '5%',
       editable: true,
     },
     {
@@ -103,35 +107,30 @@ const DatabaseItem = ({
       dataIndex: 'soLuong',
       key: 'soLuong',
       align: 'right',
-      width: '7%',
       editable: true,
     },
     {
       title: 'Ký mã hiệu',
       dataIndex: 'kyMaHieu',
       key: 'kyMaHieu',
-      width: '13%',
       editable: true,
     },
     {
       title: 'Hãng sản xuất',
       dataIndex: 'hangSanXuat',
       key: 'hangSanXuat',
-      width: '10%',
       editable: true,
     },
     {
       title: 'Xuất xứ',
       dataIndex: 'xuatXu',
       key: 'xuatXu',
-      width: '10%',
       editable: true,
     },
     {
       title: 'Đơn giá',
       dataIndex: 'donGia',
       key: 'donGia',
-      width: '8%',
       align: 'right',
       editable: true,
       render: (_, record) =>
@@ -141,7 +140,6 @@ const DatabaseItem = ({
       title: 'Thành tiền',
       dataIndex: 'thanhTien',
       key: 'thanhTien',
-      width: '8%',
       align: 'right',
       render: (_, record) =>
         record.soLuong && record.donGia
@@ -152,12 +150,16 @@ const DatabaseItem = ({
       title: 'Phân khoa',
       dataIndex: 'phanKhoa',
       key: 'phanKhoa',
-      width: '10%',
-      editable: true,
+      render: (_, record) => record.Department?.tenKhoaPhong,
+    },
+    {
+      title: 'Dự án',
+      dataIndex: 'duAn',
+      key: 'duAn',
+      render: (_, record) => record.Bidding?.tenDeXuat,
     },
     {
       title: 'Hành động',
-      width: '8%',
       dataIndex: 'action',
       align: 'center',
       render: (_, record) => {

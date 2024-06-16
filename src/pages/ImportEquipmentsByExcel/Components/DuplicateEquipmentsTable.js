@@ -22,10 +22,18 @@ import { useImportEquipmentsExcelContext } from '../../../contexts/importEquipme
 import fetchAuthApi from '../../../helpers/fetchAuthApi.js';
 import '../ImportEquipmentsByExcel.css';
 import CompareModal from './CompareModal/CompareModal.js';
+import { useAppContext } from '../../../contexts/appContext.js';
 
 const DuplicateEquipmentsTable = () => {
-  const { data, setData, duplicateEquipmentsInDb, setDuplicateEquipmentsInDb } =
-    useImportEquipmentsExcelContext();
+  const { biddings, departments } = useAppContext();
+  const {
+    data,
+    setData,
+    duplicateEquipmentsInDb,
+    setDuplicateEquipmentsInDb,
+    selectedBidding,
+    selectedDepartment,
+  } = useImportEquipmentsExcelContext();
   const [editingKey, setEditingKey] = useState('');
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState('');
@@ -44,7 +52,6 @@ const DuplicateEquipmentsTable = () => {
   const isEditing = (record) => record.key === editingKey;
 
   const edit = (record) => {
-    console.log(record);
     form.setFieldsValue({
       ...record,
     });
@@ -111,8 +118,18 @@ const DuplicateEquipmentsTable = () => {
 
   const handleResolveConflict = async (record) => {
     try {
-      setEquipmentToCompare(record);
-      setInitEquipmentToCompare(record);
+      setEquipmentToCompare({
+        ...record,
+        phanKhoa: departments.find((item) => item.id === selectedDepartment)
+          ?.tenKhoaPhong,
+        duAn: biddings.find((item) => item.id === selectedBidding)?.tenDeXuat,
+      });
+      setInitEquipmentToCompare({
+        ...record,
+        phanKhoa: departments.find((item) => item.id === selectedDepartment)
+          ?.tenKhoaPhong,
+        duAn: biddings.find((item) => item.id === selectedBidding)?.tenDeXuat,
+      });
       setShowCompareModal(true);
       setFetchingEquipmentInDb(true);
       const resp = await fetchAuthApi({
@@ -120,7 +137,6 @@ const DuplicateEquipmentsTable = () => {
         body: record,
       });
 
-      console.log(resp.data.equipment);
       if (resp.data.success) {
         setInitEquipmentInDb({
           key: resp.data.equipment.id + 'eqInDb',
@@ -217,13 +233,7 @@ const DuplicateEquipmentsTable = () => {
           ? formatVNCurrency(record.soLuong * record.donGia)
           : '',
     },
-    {
-      title: 'Phân khoa',
-      dataIndex: 'phanKhoa',
-      key: 'phanKhoa',
-      width: '10%',
-      editable: true,
-    },
+
     {
       title: 'Hành động',
       width: '8%',
