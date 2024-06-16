@@ -36,7 +36,7 @@ const DetailDepartment = () => {
       title: <HomeOutlined />,
     },
     {
-      href: '/departments',
+      href: '/departments/list_departments',
       title: 'Quản lý khoa phòng',
     },
     {

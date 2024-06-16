@@ -41,7 +41,7 @@ const Detail = () => {
       title: <HomeOutlined />,
     },
     {
-      href: '/users',
+      href: '/users/list_users',
       title: 'Quản lý thành viên',
     },
     {

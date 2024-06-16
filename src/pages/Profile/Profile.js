@@ -30,7 +30,7 @@ const Profile = () => {
       title: <HomeOutlined />,
     },
     {
-      href: '/users',
+      href: '/profile',
       title: 'Thông tin cá nhân',
     },
   ]);
