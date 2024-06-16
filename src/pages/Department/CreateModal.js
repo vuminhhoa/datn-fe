@@ -6,7 +6,15 @@ import useCreateApi from '../../hooks/useCreateApi.js';
 import useUploadFile from '../../hooks/useUploadFile.js';
 
 const CreateModal = ({ isShowCreateForm, setIsShowCreateForm, fetchApi }) => {
-  const { creating, createApi } = useCreateApi({ url: '/department' });
+  const { creating, createApi } = useCreateApi({
+    url: '/department',
+    successCallback: () => {
+      setFormValue({});
+      setIsShowCreateForm(false);
+      form.resetFields();
+      fetchApi();
+    },
+  });
   const { uploading, fileBase64, uploadFile } = useUploadFile();
 
   const [form] = Form.useForm();
@@ -17,17 +25,6 @@ const CreateModal = ({ isShowCreateForm, setIsShowCreateForm, fetchApi }) => {
       ...formValue,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleCreateRole = async () => {
-    try {
-      await createApi({ ...formValue, hinhAnh: fileBase64 });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsShowCreateForm(false);
-      fetchApi();
-    }
   };
 
   const handleChangeFile = async (e) => {
@@ -67,7 +64,7 @@ const CreateModal = ({ isShowCreateForm, setIsShowCreateForm, fetchApi }) => {
     >
       <Form
         autoComplete="off"
-        onFinish={handleCreateRole}
+        onFinish={() => createApi({ ...formValue, hinhAnh: fileBase64 })}
         form={form}
         layout="vertical"
       >
@@ -88,8 +85,12 @@ const CreateModal = ({ isShowCreateForm, setIsShowCreateForm, fetchApi }) => {
               onChange={handleChangeFile}
             >
               <Flex vertical align="center">
-                <Button icon={<UploadOutlined />} loading={uploading}>
-                  Thay đổi
+                <Button
+                  icon={<UploadOutlined />}
+                  loading={uploading}
+                  disabled={creating}
+                >
+                  Tải lên
                 </Button>
               </Flex>
             </Upload>

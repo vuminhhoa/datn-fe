@@ -14,6 +14,8 @@ import {
   BIDDING_UPDATE,
   EQUIPMENT_CREATE,
   DEPARTMENT_READ,
+  USER_CREATE,
+  DEPARTMENT_CREATE,
 } from './const/permission';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
@@ -33,6 +35,9 @@ import DevZone from './pages/DevZone';
 import ImportEquipmentsByExcel from './pages/ImportEquipmentsByExcel';
 import Department from './pages/Department/Department';
 import DetailDepartment from './pages/Department/Detail';
+import CreateUser from './pages/CreateUser';
+import CreateDepartment from './pages/CreateDepartment';
+import CreateEquipment from './pages/CreateEquipment';
 
 function App() {
   return (
@@ -67,6 +72,30 @@ function App() {
         element={
           <PrivateRoute permission={USER_READ}>
             <User />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/users/create_user"
+        element={
+          <PrivateRoute permission={USER_CREATE}>
+            <CreateUser />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/departments/create_department"
+        element={
+          <PrivateRoute permission={DEPARTMENT_CREATE}>
+            <CreateDepartment />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/equipments/create_equipment"
+        element={
+          <PrivateRoute permission={DEPARTMENT_CREATE}>
+            <CreateEquipment />
           </PrivateRoute>
         }
       />

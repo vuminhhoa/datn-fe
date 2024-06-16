@@ -103,7 +103,7 @@ const CreateModal = ({ fetchApi, setIsShowCreateForm, isShowCreateForm }) => {
               }}
             >
               <Flex vertical align="center">
-                <Button icon={<UploadOutlined />}>Thay đổi</Button>
+                <Button icon={<UploadOutlined />}>Tải lên</Button>
               </Flex>
             </Upload>
           </Flex>
