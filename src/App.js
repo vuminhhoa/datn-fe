@@ -107,7 +107,6 @@ function App() {
           </PrivateRoute>
         }
       />
-
       <Route
         path="/roles"
         element={
@@ -132,7 +131,6 @@ function App() {
           </PrivateRoute>
         }
       />
-
       <Route
         path="/departments/list_departments"
         element={
@@ -141,7 +139,6 @@ function App() {
           </PrivateRoute>
         }
       />
-
       <Route
         path="/department/:id"
         element={
@@ -150,7 +147,6 @@ function App() {
           </PrivateRoute>
         }
       />
-
       <Route
         path="/shopping/bidding"
         element={
