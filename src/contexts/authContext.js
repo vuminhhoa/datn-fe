@@ -18,7 +18,12 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await fetchAuthApi({ url: `/user/${userLocal.id}` });
       if (res.data.success) {
-        return setUser(res.data.data);
+        const user = res.data.data;
+        if (JSON.stringify(userLocal.Role) !== JSON.stringify(user.Role)) {
+          return logoutAction();
+        }
+
+        return true;
       }
       return navigate('/login');
     } catch (err) {
