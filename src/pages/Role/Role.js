@@ -13,7 +13,6 @@ import {
   Checkbox,
 } from 'antd';
 import { HomeOutlined, PlusOutlined } from '@ant-design/icons';
-import useFetchApi from '../../hooks/useFetchApi.js';
 import {
   DASHBOARD_READ,
   ALL_PERMISSION,

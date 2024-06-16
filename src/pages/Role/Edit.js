@@ -34,7 +34,7 @@ function checkUserInArray(arr, email) {
 
 const EditRole = () => {
   const { id } = useParams();
-  const { setToast } = useAppContext();
+  const { fetchRoles } = useAppContext();
   const { user } = useAuthContext();
   const { data, loading, fetched, fetchApi } = useFetchApi({
     url: `/role/${id}`,
@@ -53,24 +53,17 @@ const EditRole = () => {
     },
   ]);
   const [selected, setSelected] = useState([]);
-  const { editing, editApi } = useEditApi({ url: `/role/${id}` });
-  const handleSave = async () => {
-    try {
-      const perpareData = { roleId: data.id, permissions: selected };
-      const res = await editApi(perpareData);
-      if (res.data.success) {
-        setToast('Cập nhật thành công');
-        const isUserHasRole = checkUserInArray(data.Users, user.email);
-        if (isUserHasRole) {
-          window.location.reload();
-        }
+  const { editing, editApi } = useEditApi({
+    url: `/role/${id}`,
+    successCallback: () => {
+      const isUserHasRole = checkUserInArray(data.Users, user.email);
+      if (isUserHasRole) {
+        return window.location.reload();
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
       fetchApi();
-    }
-  };
+      fetchRoles();
+    },
+  });
 
   const onChange = (e, item) => {
     const checked = e.target.checked;
@@ -114,7 +107,11 @@ const EditRole = () => {
       <Card
         title={`Cập nhật vai trò: ${data?.name}`}
         extra={
-          <Button type="primary" onClick={handleSave} disabled={editing}>
+          <Button
+            type="primary"
+            onClick={() => editApi({ roleId: data.id, permissions: selected })}
+            disabled={editing}
+          >
             Lưu
           </Button>
         }
