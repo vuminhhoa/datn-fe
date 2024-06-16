@@ -173,7 +173,6 @@ const Filter = ({
       {showFilter && (
         <Flex gap={16}>
           <Select
-            // mode="multiple"
             placeholder="Lọc theo phân khoa"
             defaultValue={departmentIds}
             allowClear

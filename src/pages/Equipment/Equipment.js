@@ -15,12 +15,17 @@ import {
   EyeOutlined,
   PlusOutlined,
   FileImageOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import {} from '@ant-design/icons';
 import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
 import hasPermission from '../../helpers/hasPermission';
-import { EQUIPMENT_CREATE, EQUIPMENT_DELETE } from '../../const/permission';
+import {
+  EQUIPMENT_CREATE,
+  EQUIPMENT_DELETE,
+  EQUIPMENT_UPDATE,
+} from '../../const/permission';
 import useDeleteApi from '../../hooks/useDeleteApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import Page from '../../components/Page';
@@ -28,6 +33,7 @@ import { formatVNCurrency } from '../../helpers/formatVNCurrency';
 import queryString from 'query-string';
 import CreateModal from './CreateModal';
 import Filter from './Filter';
+import UpdateEquipmentForm from './UpdateModal';
 
 const Equipment = () => {
   const navigate = useNavigate();
@@ -89,6 +95,9 @@ const Equipment = () => {
 
   const reFetchUrl = '/equipments?' + queryString.stringify(searchParams);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingRecord, setEditingRecord] = useState(null); // Added state for the record being edited
 
   const { data, fetchApi, loading, pageInfo } = useFetchApi({
     url: reFetchUrl,
@@ -227,6 +236,19 @@ const Equipment = () => {
               onClick={() => navigate(`/equipment/${record.id}`)}
             />
           </Popover>
+          {hasPermission(EQUIPMENT_UPDATE) && (
+            <Popover content="Cập nhật thiết bị" trigger="hover">
+              <Button
+                type="link"
+                disabled={deleting && deletingId === record.id}
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setEditingRecord(record); // Set the record being edited
+                  setShowEditModal(true);
+                }}
+              />
+            </Popover>
+          )}
           {hasPermission(EQUIPMENT_DELETE) && (
             <Popover content="Xóa thiết bị" trigger="hover">
               <Button
@@ -254,8 +276,21 @@ const Equipment = () => {
     }));
   };
 
+  const renderEditModal = (record) => {
+    return (
+      <UpdateEquipmentForm
+        open={showEditModal}
+        setOpen={setShowEditModal}
+        equipment={record}
+        fetchApi={fetchApi}
+      />
+    );
+  };
+
   return (
     <Page fullWidth={true}>
+      {showEditModal && renderEditModal(editingRecord)}{' '}
+      {/* Call the renderEditModal function */}
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách thiết bị"
@@ -264,7 +299,9 @@ const Equipment = () => {
             <Button
               type="primary"
               icon={<PlusOutlined />}
-              onClick={() => setIsShowCreateForm(true)}
+              onClick={() => {
+                setIsShowCreateForm(true);
+              }}
               disabled={deleting}
             >
               Tạo mới

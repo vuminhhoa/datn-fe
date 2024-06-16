@@ -5,6 +5,7 @@ import {
   DeleteOutlined,
   EyeOutlined,
   UserOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
 import useFetchApi from '../../hooks/useFetchApi';
@@ -14,12 +15,16 @@ import useDeleteApi from '../../hooks/useDeleteApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import Page from '../../components/Page';
 import hasPermission from '../../helpers/hasPermission';
-import { USER_CREATE, USER_DELETE } from '../../const/permission';
+import { USER_CREATE, USER_DELETE, USER_UPDATE } from '../../const/permission';
 import CreateModal from './CreateModal';
+import EditModal from './EditModal';
 
 const User = () => {
   const navigate = useNavigate();
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
+
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingRecord, setEditingRecord] = useState(null); // Added state for the record being edited
 
   const { deleting, deleteApi } = useDeleteApi({
     url: `/user`,
@@ -59,8 +64,21 @@ const User = () => {
         </Card>
       </Page>
     );
+
+  const renderEditModal = (record) => {
+    return (
+      <EditModal
+        open={showEditModal}
+        setOpen={setShowEditModal}
+        input={record}
+        fetchApi={fetchApi}
+      />
+    );
+  };
+
   return (
     <Page>
+      {showEditModal && renderEditModal(editingRecord)}{' '}
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách thành viên"
@@ -101,6 +119,18 @@ const User = () => {
                     />
                   </Popover>,
 
+                  item.Role.name !== ADMIN && hasPermission(USER_UPDATE) ? (
+                    <Popover content="Cập nhật thành viên" trigger="hover">
+                      <Button
+                        type="link"
+                        icon={<EditOutlined />}
+                        onClick={() => {
+                          setEditingRecord(item); // Set the record being edited
+                          setShowEditModal(true);
+                        }}
+                      />
+                    </Popover>
+                  ) : null,
                   item.Role.name !== ADMIN && hasPermission(USER_DELETE) ? (
                     <Popover content="Xóa thành viên" trigger="hover">
                       <Button

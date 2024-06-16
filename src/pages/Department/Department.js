@@ -15,10 +15,12 @@ import {
   EyeOutlined,
   DeleteOutlined,
   ApartmentOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import {
   DEPARTMENT_CREATE,
   DEPARTMENT_DELETE,
+  DEPARTMENT_UPDATE,
 } from '../../const/permission.js';
 import hasPermission from '../../helpers/hasPermission.js';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb.js';
@@ -26,6 +28,7 @@ import Page from '../../components/Page/Page.js';
 import CreateModal from './CreateModal.js';
 import useDeleteApi from '../../hooks/useDeleteApi.js';
 import { useAppContext } from '../../contexts/appContext.js';
+import EditModal from './EditModal.js';
 
 const Department = () => {
   const navigate = useNavigate();
@@ -39,6 +42,8 @@ const Department = () => {
     url: `/department`,
     successCallback: () => fetchApi(),
   });
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingRecord, setEditingRecord] = useState(null); // Added state for the record being edited
 
   const [deleteId, setDeleteId] = useState(null);
   const columns = [
@@ -88,8 +93,21 @@ const Department = () => {
               onClick={() => navigate(`/department/${record.id}`)}
             />
           </Popover>
+          {hasPermission(DEPARTMENT_UPDATE) && (
+            <Popover content="Cập nhật khoa phòng" trigger="hover">
+              <Button
+                type="link"
+                disabled={deleting && deleteId === record.id}
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setEditingRecord(record); // Set the record being edited
+                  setShowEditModal(true);
+                }}
+              />
+            </Popover>
+          )}
           {hasPermission(DEPARTMENT_DELETE) && (
-            <Popover content="Xóa thiết bị" trigger="hover">
+            <Popover content="Xóa khoa phòng" trigger="hover">
               <Button
                 type="link"
                 danger
@@ -115,8 +133,21 @@ const Department = () => {
   ]);
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
 
+  const renderEditModal = (record) => {
+    return (
+      <EditModal
+        open={showEditModal}
+        setOpen={setShowEditModal}
+        input={record}
+        fetchApi={fetchApi}
+      />
+    );
+  };
+
   return (
     <Page>
+      {showEditModal && renderEditModal(editingRecord)}{' '}
+      {/* Call the renderEditModal function */}
       <Breadcrumb items={breadcrumbItems} />
       <Card
         title="Danh sách khoa phòng trong hệ thống"
