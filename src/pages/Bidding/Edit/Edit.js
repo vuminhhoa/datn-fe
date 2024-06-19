@@ -180,34 +180,38 @@ const Edit = () => {
             items={items}
             column={2}
           />
-          <Typography.Title level={5}>2. Lập kế hoạch</Typography.Title>
+          {data?.trangThaiDeXuat === 'approved' && (
+            <>
+              <Typography.Title level={5}>2. Lập kế hoạch</Typography.Title>
 
-          <Flex vertical gap={8}>
-            <CollapsibleForm
-              title="2.1. Chào giá"
-              children={<BiddingRequest />}
-            />
-            <CollapsibleForm
-              title="2.2. Lên dự toán, thành lập tổ chuyên gia, tổ thẩm định"
-              children={<LenDuToanThanhLapCacTo />}
-            />
-            <CollapsibleForm
-              title="2.3. Kế hoạch lựa chọn nhà thầu"
-              children={<KeHoachLuaChonNhaThau />}
-            />
-            <CollapsibleForm
-              title="2.4. E - Hồ sơ mời thầu (E-HSMT)"
-              children={<Ehsmt />}
-            />
-            <CollapsibleForm
-              title="2.5. E - Hồ sơ dự thầu (E-HSDT)"
-              children={<Ehsdt />}
-            />
-            <CollapsibleForm
-              title="2.6. Ký kết thực hiện hợp đồng"
-              children={<KyKetThucHienHopDong />}
-            />
-          </Flex>
+              <Flex vertical gap={8}>
+                <CollapsibleForm
+                  title="2.1. Chào giá"
+                  children={<BiddingRequest />}
+                />
+                <CollapsibleForm
+                  title="2.2. Lên dự toán, thành lập tổ chuyên gia, tổ thẩm định"
+                  children={<LenDuToanThanhLapCacTo />}
+                />
+                <CollapsibleForm
+                  title="2.3. Kế hoạch lựa chọn nhà thầu"
+                  children={<KeHoachLuaChonNhaThau />}
+                />
+                <CollapsibleForm
+                  title="2.4. E - Hồ sơ mời thầu (E-HSMT)"
+                  children={<Ehsmt />}
+                />
+                <CollapsibleForm
+                  title="2.5. E - Hồ sơ dự thầu (E-HSDT)"
+                  children={<Ehsdt />}
+                />
+                <CollapsibleForm
+                  title="2.6. Ký kết thực hiện hợp đồng"
+                  children={<KyKetThucHienHopDong />}
+                />
+              </Flex>
+            </>
+          )}
         </Card>
       </Page>
     </BiddingContext.Provider>
