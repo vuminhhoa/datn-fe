@@ -120,7 +120,7 @@ const CompareModal = ({
         return;
       }
 
-      await editApi(equipmentInDb);
+      await editApi({ body: equipmentInDb });
       return;
     } catch (error) {
       console.log(error);

@@ -137,8 +137,10 @@ const Role = () => {
               autoComplete="off"
               onFinish={() =>
                 createApi({
-                  ...createFormData,
-                  permissions: selectedPermission,
+                  body: {
+                    ...createFormData,
+                    permissions: selectedPermission,
+                  },
                 })
               }
               form={form}

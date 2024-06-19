@@ -71,7 +71,14 @@ const EditModal = ({ open, input, fetchApi, setOpen }) => {
     >
       <Form
         autoComplete="off"
-        onFinish={() => editApi({ ...value, image: fileBase64 || value.image })}
+        onFinish={() =>
+          editApi({
+            body: {
+              ...value,
+              image: fileBase64 || value.image,
+            },
+          })
+        }
         form={form}
         layout="vertical"
       >

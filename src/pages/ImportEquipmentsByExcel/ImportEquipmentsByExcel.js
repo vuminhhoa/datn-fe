@@ -76,7 +76,7 @@ const ImportEquipmentsByExcel = () => {
       };
     });
 
-    createApi(cleanedData);
+    createApi({ body: cleanedData });
   };
 
   const handleFileUpload = async (file) => {

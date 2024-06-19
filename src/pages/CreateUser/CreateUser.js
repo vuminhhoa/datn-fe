@@ -66,9 +66,11 @@ const CreateUser = () => {
             autoComplete="off"
             onFinish={() =>
               createApi({
-                ...createFormData,
-                isCreateUser: true,
-                actorId: user.id,
+                body: {
+                  ...createFormData,
+                  isCreateUser: true,
+                  actorId: user.id,
+                },
               })
             }
             form={form}

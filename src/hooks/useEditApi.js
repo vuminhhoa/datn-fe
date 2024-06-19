@@ -11,13 +11,13 @@ export default function useEditApi({
   const { setToast } = useAppContext();
   const [editing, setEditing] = useState(false);
 
-  async function editApi(body) {
+  async function editApi({ id = null, body }) {
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
     try {
       setEditing(true);
       const resp = await axios({
         method: 'PUT',
-        url: `${process.env.REACT_APP_BASE_API_URL}${url}`,
+        url: `${process.env.REACT_APP_BASE_API_URL}${url}${id ? `/${id}` : ''}`,
         data: body,
         headers: {
           Authorization: `Bearer ${accessToken}`,

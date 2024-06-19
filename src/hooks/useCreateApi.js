@@ -15,13 +15,13 @@ export default function useCreateApi({
   const { setToast } = useAppContext();
   const [creating, setCreating] = useState(false);
 
-  async function createApi(body) {
+  async function createApi({ id = null, body }) {
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
     try {
       setCreating(true);
       const fullResp = await axios({
         method: 'POST',
-        url: `${process.env.REACT_APP_BASE_API_URL}${url}`,
+        url: `${process.env.REACT_APP_BASE_API_URL}${url}${id ? `/${id}` : ''}`,
         data: body,
         headers: {
           Authorization: `Bearer ${accessToken}`,

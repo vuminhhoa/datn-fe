@@ -14,13 +14,18 @@ import {
   Popover,
   Typography,
 } from 'antd';
-import { HomeOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EyeOutlined,
+  CheckOutlined,
+  CloseOutlined,
+} from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
 import { useAppContext } from '../../contexts/appContext';
-import useFetchApi from '../../hooks/useFetchApi';
 import { Link, useNavigate } from 'react-router-dom';
 import hasPermission from '../../helpers/hasPermission';
 import {
+  BIDDING_APPROVE,
   BIDDING_CREATE,
   BIDDING_DELETE,
   BIDDING_READ,
@@ -29,26 +34,59 @@ import useDeleteApi from '../../hooks/useDeleteApi';
 import useCreateApi from '../../hooks/useCreateApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import Page from '../../components/Page';
+import useEditApi from '../../hooks/useEditApi';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 
+const modules = {
+  toolbar: [
+    [{ font: [] }],
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    ['bold', 'italic', 'underline'],
+    [{ color: [] }],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ indent: '-1' }, { indent: '+1' }],
+    [{ align: [] }],
+    ['link'],
+  ],
+};
 const Bidding = () => {
   const navigate = useNavigate();
-  const { setToast } = useAppContext();
-  const { deleting, deleteApi } = useDeleteApi({ url: `/bidding` });
-  const { creating, createApi } = useCreateApi({ url: `/bidding` });
+  const {
+    biddings: data,
+    fetchBiddings: fetchApi,
+    setBiddings: setData,
+    loadingBiddings: loading,
+    departments,
+    loadingDepartments,
+  } = useAppContext();
+  const { deleting, deleteApi } = useDeleteApi({
+    url: `/bidding`,
+    successCallback: () => {
+      setData(data.filter((item) => item.id !== deleteId));
+      fetchApi();
+      setShowDeleteConfirm(false);
+    },
+  });
+  const { creating, createApi } = useCreateApi({
+    url: `/bidding`,
+    successCallback: () => {
+      setIsShowCreateForm(false);
+      fetchApi();
+    },
+  });
+  const { editing, editApi } = useEditApi({
+    url: `/approveBidding`,
+    successCallback: () => {
+      fetchApi();
+    },
+  });
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteId, setDeleteId] = useState();
   const [form] = Form.useForm();
 
-  const { data, fetchApi, setData, loading } = useFetchApi({
-    url: '/biddings',
-    defaultData: [],
-  });
   const breadcrumbItems = useBreadcrumb([
-    {
-      href: '/',
-      title: <HomeOutlined />,
-    },
     {
       href: '/shopping/bidding',
       title: 'Hoạt động mua sắm qua đấu thầu',
@@ -81,6 +119,7 @@ const Bidding = () => {
       title: 'Khoa phòng đề xuất',
       dataIndex: 'khoaPhongDeXuat',
       key: 'khoaPhongDeXuat',
+      render: (_, record) => record.Department?.tenKhoaPhong,
     },
 
     {
@@ -95,14 +134,10 @@ const Bidding = () => {
         return <Tag color="processing">Chờ duyệt</Tag>;
       },
     },
-    {
-      title: 'Ngày tạo',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-    },
 
     {
       title: 'Hành động',
+      align: 'end',
       key: 'action',
       render: (_, record) => (
         <Space size="small">
@@ -115,6 +150,39 @@ const Bidding = () => {
               />
             </Popover>
           )}
+          {hasPermission(BIDDING_APPROVE) &&
+            record.trangThaiDeXuat === 'processing' && (
+              <Popover content="Phê duyệt hoạt động" trigger="hover">
+                <Button
+                  type="link"
+                  loading={editing}
+                  icon={<CheckOutlined />}
+                  onClick={() => {
+                    editApi({
+                      id: record.id,
+                      body: { trangThaiDeXuat: 'approved' },
+                    });
+                  }}
+                />
+              </Popover>
+            )}
+          {hasPermission(BIDDING_APPROVE) &&
+            record.trangThaiDeXuat === 'processing' && (
+              <Popover content="Từ chối hoạt động" trigger="hover">
+                <Button
+                  type="link"
+                  loading={editing}
+                  icon={<CloseOutlined />}
+                  danger
+                  onClick={() => {
+                    editApi({
+                      id: record.id,
+                      body: { trangThaiDeXuat: 'reject' },
+                    });
+                  }}
+                />
+              </Popover>
+            )}
           {hasPermission(BIDDING_DELETE) && (
             <Popover content="Xóa hoạt động" trigger="hover">
               <Button
@@ -132,35 +200,6 @@ const Bidding = () => {
       ),
     },
   ];
-
-  const handleCreateBidding = async () => {
-    try {
-      const res = await createApi(createFormData);
-      if (res.data.success) {
-        setToast('Tạo mới thành công');
-      }
-    } catch (error) {
-      console.log(error);
-      setToast('Tạo mới thất bại', 'error');
-    } finally {
-      setIsShowCreateForm(false);
-      fetchApi();
-    }
-  };
-
-  const handleDeleteBidding = async (id) => {
-    try {
-      const res = await deleteApi(id);
-      if (res.data.success) {
-        setData(data.filter((item) => item.id !== id));
-        setToast('Xóa thành công');
-        setShowDeleteConfirm(false);
-      }
-    } catch (error) {
-      console.log(error);
-      setToast('Xóa thất bại', 'error');
-    }
-  };
 
   if (loading)
     return (
@@ -219,7 +258,7 @@ const Bidding = () => {
                   type="primary"
                   danger={true}
                   loading={deleting}
-                  onClick={() => handleDeleteBidding(deleteId)}
+                  onClick={() => deleteApi(deleteId)}
                 >
                   Xóa
                 </Button>
@@ -227,28 +266,32 @@ const Bidding = () => {
             </Flex>
           </Modal>
           <Modal
-            title="Tạo mới hoạt động"
+            title="Tạo mới hoạt động mua sắm"
             open={isShowCreateForm}
             onCancel={() => setIsShowCreateForm(false)}
             footer={null}
+            width={800}
           >
             <Form
               autoComplete="off"
-              onFinish={handleCreateBidding}
+              onFinish={() => createApi({ body: createFormData })}
               form={form}
               layout="vertical"
             >
               <Form.Item
                 name="tenDeXuat"
-                label="Tên hoạt động"
+                label="Tên hoạt động mua sắm"
                 rules={[
-                  { required: true, message: 'Vui lòng nhập tên hoạt động!' },
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập tên hoạt động mua sắm!',
+                  },
                 ]}
               >
                 <Input
                   allowClear
                   name="tenDeXuat"
-                  placeholder="Nhập tên hoạt động"
+                  placeholder="Nhập tên hoạt động mua sắm"
                   onChange={handleCreateFormChange}
                   autoComplete="off"
                 />
@@ -265,40 +308,40 @@ const Bidding = () => {
               >
                 <Select
                   allowClear
+                  disabled={loadingDepartments}
                   placeholder="Chọn khoa phòng đề xuất"
                   onChange={(value) =>
                     setCreateFormData({
                       ...createFormData,
-                      khoaPhongDeXuat: value,
+                      DepartmentId: value,
                     })
                   }
-                  options={[
-                    {
-                      value: 'Khoa vi sinh',
-                      label: 'Khoa vi sinh',
-                    },
-                    {
-                      value: 'Khoa y te',
-                      label: 'Khoa y te',
-                    },
-                    {
-                      value: 'Khoa dep trai',
-                      label: 'Khoa dep trai',
-                    },
-                    {
-                      value: 'Khoa xinh gai',
-                      label: 'Khoa xinh gai',
-                    },
-                  ]}
+                  options={departments.map((item) => ({
+                    label: item.tenKhoaPhong,
+                    value: item.id,
+                  }))}
                 />
               </Form.Item>
-              <Form.Item name="noiDungDeXuat" label="Nội dung hoạt động">
-                <Input.TextArea
-                  name="noiDungDeXuat"
-                  allowClear
-                  placeholder="Nhập nội dung hoạt động hoạt động"
-                  rows={4}
-                  onChange={handleCreateFormChange}
+              <Form.Item
+                name="noiDungDeXuat"
+                label="Nội dung hoạt động mua sắm"
+              >
+                <ReactQuill
+                  style={{
+                    borderRadius: '12px',
+                    height: '220px',
+                    paddingBottom: '44px',
+                  }}
+                  value={createFormData.noiDungDeXuat}
+                  onChange={(val) =>
+                    setCreateFormData({
+                      ...createFormData,
+                      noiDungDeXuat: val,
+                    })
+                  }
+                  modules={modules}
+                  theme="snow"
+                  placeholder="Nhập nội dung hoạt động mua sắm"
                 />
               </Form.Item>
 

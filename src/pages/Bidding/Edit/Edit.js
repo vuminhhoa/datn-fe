@@ -33,13 +33,13 @@ const Edit = () => {
   const { editing, editApi } = useEditApi({ url: `/bidding/${id}` });
   const { data, setData, loading, fetchApi } = useFetchApi({
     url: `/bidding/${id}`,
+    defaultData: {},
   });
   const breadcrumbItems = useBreadcrumb([
-    { href: '/', title: <HomeOutlined /> },
     { href: '/shopping/bidding', title: 'Hoạt động mua sắm qua đấu thầu' },
     {
-      href: `/shopping/bidding/${data.id}`,
-      title: loading ? '----------' : data.tenDeXuat,
+      href: `/shopping/bidding/${id}`,
+      title: loading ? '----------' : data?.tenDeXuat,
     },
   ]);
   const [initData, setInitData] = useState(null);
@@ -52,52 +52,56 @@ const Edit = () => {
 
   const items = [
     {
-      label: 'Tên khoa phòng',
-      children: data.khoaPhongDeXuat,
+      label: 'Khoa phòng đề xuất',
+      children: data?.Department?.tenKhoaPhong,
     },
-    data.ngayDeXuat !== null && {
+    data?.ngayDeXuat !== null && {
       label: 'Ngày đề xuất',
-      children: data.ngayDeXuat,
+      children: data?.ngayDeXuat,
     },
     {
       label: 'Trạng thái',
       children: (
         <>
-          {data.trangThaiDeXuat === 'approved' && (
+          {data?.trangThaiDeXuat === 'approved' && (
             <Tag color="success">Chấp thuận</Tag>
           )}
-          {data.trangThaiDeXuat === 'reject' && (
+          {data?.trangThaiDeXuat === 'reject' && (
             <Tag color="error">Từ chối</Tag>
           )}
-          {data.trangThaiDeXuat === 'processing' && (
+          {data?.trangThaiDeXuat === 'processing' && (
             <Tag color="processing">Chờ duyệt</Tag>
           )}
         </>
       ),
     },
-    (data.trangThaiDeXuat === 'approved' ||
-      data.trangThaiDeXuat === 'reject') && {
+    (data?.trangThaiDeXuat === 'approved' ||
+      data?.trangThaiDeXuat === 'reject') && {
       label: 'Ngày phê duyệt',
-      children: data.ngayPheDuyetDeXuat,
+      children: data?.ngayPheDuyetDeXuat,
     },
     {
       label: 'Ngày tạo hoạt động',
-      children: data.createdAt,
+      children: data?.createdAt,
     },
     {
       label: 'Lần cập nhật cuối',
-      children: data.updatedAt,
+      children: data?.updatedAt,
     },
     {
       label: 'Nội dung',
-      children: data.noiDungDeXuat,
+      children: (
+        <div dangerouslySetInnerHTML={{ __html: data?.noiDungDeXuat }} />
+      ),
     },
   ];
 
   const handleSaveBidding = async () => {
     try {
-      const res = await editApi({ ...data, deletedFields: deletedFields });
-      if (res.data.success) {
+      const res = await editApi({
+        body: { ...data, deletedFields: deletedFields },
+      });
+      if (res.data?.success) {
         setToast('Lưu thành công');
       }
     } catch (error) {
@@ -136,7 +140,7 @@ const Edit = () => {
       </Page>
     );
 
-  if (!data.id) return <NotFound />;
+  if (!data) return <NotFound />;
 
   return (
     <BiddingContext.Provider
@@ -145,7 +149,7 @@ const Edit = () => {
       <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
-          title={`Chi tiết hoạt động: ${data.tenDeXuat}`}
+          title={`Chi tiết hoạt động: ${data?.tenDeXuat}`}
           extra={
             <Button
               type="primary"

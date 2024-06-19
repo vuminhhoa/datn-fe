@@ -81,7 +81,12 @@ const CreateModal = ({ fetchApi, setIsShowCreateForm, isShowCreateForm }) => {
       <Form
         autoComplete="off"
         onFinish={() =>
-          createApi({ ...createFormData, hinhAnh: fileBase64 || null })
+          createApi({
+            body: {
+              ...createFormData,
+              hinhAnh: fileBase64 || null,
+            },
+          })
         }
         form={form}
         layout="vertical"
