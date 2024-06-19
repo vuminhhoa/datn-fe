@@ -7,6 +7,8 @@ import getStatus from '../../../helpers/getBiddingItemStatus';
 const LenDuToanThanhLapCacTo = () => {
   const { data } = useContext(BiddingContext);
 
+  const input = data.thanhLapToChuyenGiaToThamDinh;
+
   const items = [
     {
       title: 'Họp hội đồng mua sắm',
@@ -33,10 +35,9 @@ const LenDuToanThanhLapCacTo = () => {
   const itemsWithStatus = items.map((val) => {
     return {
       ...val,
-      status: getStatus(data, val.dateField, val.documentField),
+      status: getStatus(input, val.dateField, val.documentField),
     };
   });
-
   return (
     <Timeline
       mode="left"
@@ -44,9 +45,11 @@ const LenDuToanThanhLapCacTo = () => {
       items={itemsWithStatus.map((val) => {
         return {
           color: val.status.dotColor,
-          label: data[val.dateField] || ' ',
+          label: input[val.dateField] || ' ',
           children: (
             <BiddingItem
+              obj={'thanhLapToChuyenGiaToThamDinh'}
+              input={input}
               title={val.title}
               dateField={val.dateField}
               tagStatus={val.status}

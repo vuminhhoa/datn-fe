@@ -6,48 +6,49 @@ import getStatus from '../../../helpers/getBiddingItemStatus';
 
 const Ehsmt = () => {
   const { data } = useContext(BiddingContext);
+  const input = data.eHsmt;
 
   const items = [
     {
       title: 'Dự thảo E-HSMT',
-      dateField: 'ngayDuThaoEhsmt',
-      documentField: 'taiLieuDuThaoEhsmt',
+      dateField: 'ngayDuThao',
+      documentField: 'taiLieuDuThao',
     },
     {
       title: 'Báo cáo xây dựng E-HSMT',
-      dateField: 'ngayTaiLieuBcXayDungEhsmt',
-      documentField: 'taiLieuBcXayDungEhsmt',
+      dateField: 'ngayTaiLieuBcXayDung',
+      documentField: 'taiLieuBcXayDung',
     },
     {
       title: 'Phê duyệt E-HSMT tổ chuyên gia',
-      dateField: 'ngayPheDuyetEhsmtToChuyenGia',
-      documentField: 'taiLieuPheDuyetEhsmtToChuyenGia',
+      dateField: 'ngayPheDuyetToChuyenGia',
+      documentField: 'taiLieuPheDuyetToChuyenGia',
     },
     {
       title: 'Báo cáo thẩm định E-HSMT',
-      dateField: 'ngayBcThamDinhEhsmt',
-      documentField: 'taiLieuBcThamDinhEhsmt',
+      dateField: 'ngayBcThamDinh',
+      documentField: 'taiLieuBcThamDinh',
     },
     {
       title: 'Phê duyệt E-HSMT tổ thẩm định',
-      dateField: 'ngayPheDuyetEhsmtToThamDinh',
-      documentField: 'taiLieuPheDuyetEhsmtToThamDinh',
+      dateField: 'ngayPheDuyetToThamDinh',
+      documentField: 'taiLieuPheDuyetToThamDinh',
     },
     {
       title: 'Quyết định phê duyệt E-HSMT',
-      dateField: 'ngayPheDuyetEhsmt',
-      documentField: 'taiLieuQuyetDinhPheDuyetEhsmt',
+      dateField: 'ngayPheDuyet',
+      documentField: 'taiLieuQuyetDinhPheDuyet',
     },
     {
       title: 'Đăng thông báo mời thầu lên mạng đấu thầu',
-      dateField: 'ngayDangThongBaoMoiThauLenMangDauThau',
+      dateField: 'ngayDangLenMangDauThau',
     },
   ];
 
   const itemsWithStatus = items.map((val) => {
     return {
       ...val,
-      status: getStatus(data, val.dateField, val.documentField),
+      status: getStatus(input, val.dateField, val.documentField),
     };
   });
 
@@ -58,10 +59,12 @@ const Ehsmt = () => {
       items={itemsWithStatus.map((val) => {
         return {
           color: val.status.dotColor,
-          label: data[val.dateField] || ' ',
+          label: input[val.dateField] || ' ',
           children: (
             <BiddingItem
               title={val.title}
+              obj={'eHsmt'}
+              input={input}
               tagStatus={val.status}
               dateField={val.dateField}
               documentField={val.documentField}

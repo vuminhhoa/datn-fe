@@ -6,37 +6,38 @@ import BiddingItem from '../Component/BiddingItem';
 
 const KeHoachLuaChonNhaThau = () => {
   const { data } = useContext(BiddingContext);
+  const input = data.keHoachLuaChonNhaThau;
   const items = [
     {
       title: 'Tờ trình tổ chuyên gia đấu thầu về lập KHLCNT',
-      dateField: 'ngayLapKhlcnt',
-      documentField: 'taiLieuLapKhlcnt',
+      dateField: 'ngayLap',
+      documentField: 'taiLieuLap',
     },
     {
       title: 'Báo cáo thẩm định KHLCNT',
-      dateField: 'ngayBaoCaoThamDinhKhclnt',
-      documentField: 'taiLieuBaoCaoThamDinhKhclnt',
+      dateField: 'ngayBaoCaoThamDinh',
+      documentField: 'taiLieuBaoCaoThamDinh',
     },
     {
       title: 'Tờ trình tổ thẩm định về phê duyệt KHLCNT',
-      dateField: 'ngayPheDuyetKhclnt',
-      documentField: 'taiLieuPheDuyetKhclnt',
+      dateField: 'ngayPheDuyet',
+      documentField: 'taiLieuPheDuyet',
     },
     {
       title: 'Quyết định phê duyệt KHLCNT',
-      dateField: 'ngayQuyetDinhPheDuyetKhlcnt',
-      documentField: 'taiLieuQuyetDinhPheDuyetKhlcnt',
+      dateField: 'ngayQuyetDinhPheDuyet',
+      documentField: 'taiLieuQuyetDinhPheDuyet',
     },
     {
       title: 'Đăng tải kế hoạch lên mạng đấu thầu',
-      dateField: 'ngayDangTaiKeHoachLenMangDauThau',
+      dateField: 'ngayDangLenMangDauThau',
     },
   ];
 
   const itemsWithStatus = items.map((val) => {
     return {
       ...val,
-      status: getStatus(data, val.dateField, val.documentField),
+      status: getStatus(input, val.dateField, val.documentField),
     };
   });
   return (
@@ -46,9 +47,11 @@ const KeHoachLuaChonNhaThau = () => {
       items={itemsWithStatus.map((val) => {
         return {
           color: val.status.dotColor,
-          label: data[val.dateField] || ' ',
+          label: input[val.dateField] || ' ',
           children: (
             <BiddingItem
+              obj={'keHoachLuaChonNhaThau'}
+              input={input}
               title={val.title}
               tagStatus={val.status}
               dateField={val.dateField}

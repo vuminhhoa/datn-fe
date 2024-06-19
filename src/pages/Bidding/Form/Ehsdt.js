@@ -6,7 +6,7 @@ import getStatus from '../../../helpers/getBiddingItemStatus';
 
 const Ehsdt = () => {
   const { data } = useContext(BiddingContext);
-
+  const input = data.eHsdt;
   const items = [
     {
       title: 'Báo cáo đánh giá của tổ Chuyên gia Đấu thầu',
@@ -20,25 +20,25 @@ const Ehsdt = () => {
     },
     {
       title: 'Báo cáo thẩm định kết quả LCNT',
-      dateField: 'taiLieuBcThamDinhKetQuaLcnt',
+      dateField: 'taiLieuBcThamDinhKetQua',
       documentField: 'taiLieuBcDanhGiaCuaToChuyenGia',
     },
     {
       title: 'Tờ trình xin phê duyệt kết quả LCNT',
-      dateField: 'ngayXinPheDuyetKetQuaLcnt',
-      documentField: 'taiLieuToTrinhXinPheDuyetKetQuaLcnt',
+      dateField: 'ngayXinPheDuyetKetQua',
+      documentField: 'taiLieuToTrinhXinPheDuyetKetQua',
     },
     {
       title: 'Quyết định phê duyệt kết quả LCNT',
-      dateField: 'ngayPheDuyetKetQuaLcnt',
-      documentField: 'taiLieuQuyetDinhPheDuyetKetQuaLcnt',
+      dateField: 'ngayPheDuyetKetQua',
+      documentField: 'taiLieuQuyetDinhPheDuyetKetQua',
     },
   ];
 
   const itemsWithStatus = items.map((val) => {
     return {
       ...val,
-      status: getStatus(data, val.dateField, val.documentField),
+      status: getStatus(input, val.dateField, val.documentField),
     };
   });
 
@@ -49,9 +49,11 @@ const Ehsdt = () => {
       items={itemsWithStatus.map((val) => {
         return {
           color: val.status.dotColor,
-          label: data[val.dateField] || ' ',
+          label: input[val.dateField] || ' ',
           children: (
             <BiddingItem
+              obj={'eHsdt'}
+              input={input}
               title={val.title}
               tagStatus={val.status}
               dateField={val.dateField}

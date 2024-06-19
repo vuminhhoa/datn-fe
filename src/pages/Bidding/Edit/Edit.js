@@ -18,7 +18,6 @@ import KeHoachLuaChonNhaThau from '../Form/KeHoachLuaChonNhaThau';
 import Ehsmt from '../Form/Ehsmt';
 import useFetchApi from '../../../hooks/useFetchApi';
 import { useParams } from 'react-router-dom';
-import { useAppContext } from '../../../contexts/appContext';
 import CollapsibleForm from '../Component/CollapsibleForm';
 import Ehsdt from '../Form/Ehsdt';
 import KyKetThucHienHopDong from '../Form/KyKetThucHienHopDong';
@@ -26,11 +25,20 @@ import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import useEditApi from '../../../hooks/useEditApi';
 import NotFound from '../../NotFound/NotFound';
 import Page from '../../../components/Page';
+import { defaultBidding } from '../../../const/defaultBidding';
 
 const Edit = () => {
   const { id } = useParams();
-  const { setToast } = useAppContext();
-  const { editing, editApi } = useEditApi({ url: `/bidding/${id}` });
+  const { editing, editApi } = useEditApi({
+    url: `/bidding/${id}`,
+    successCallback: () => {
+      setCreatedFields([]);
+      setDeletedFields([]);
+      setUpdatedFields([]);
+      setInitData(data);
+      fetchApi();
+    },
+  });
   const { data, setData, loading, fetchApi } = useFetchApi({
     url: `/bidding/${id}`,
     defaultData: {},
@@ -42,13 +50,16 @@ const Edit = () => {
       title: loading ? '----------' : data?.tenDeXuat,
     },
   ]);
-  const [initData, setInitData] = useState(null);
+  const [initData, setInitData] = useState(defaultBidding);
   const [deletedFields, setDeletedFields] = useState([]);
+  const [createdFields, setCreatedFields] = useState([]);
+  const [updatedFields, setUpdatedFields] = useState([]);
 
   useEffect(() => {
-    if (loading || initData) return;
+    if (loading || JSON.stringify(initData) !== JSON.stringify(defaultBidding))
+      return;
     setInitData(data);
-  }, [data, loading, initData]);
+  }, [data]);
 
   const items = [
     {
@@ -96,22 +107,6 @@ const Edit = () => {
     },
   ];
 
-  const handleSaveBidding = async () => {
-    try {
-      const res = await editApi({
-        body: { ...data, deletedFields: deletedFields },
-      });
-      if (res.data?.success) {
-        setToast('Lưu thành công');
-      }
-    } catch (error) {
-      console.log(error);
-      setToast('Lưu thất bại', 'error');
-    } finally {
-      fetchApi();
-    }
-  };
-
   if (loading)
     return (
       <Page>
@@ -144,7 +139,18 @@ const Edit = () => {
 
   return (
     <BiddingContext.Provider
-      value={{ data, setData, editing, initData, setDeletedFields }}
+      value={{
+        data,
+        setData,
+        editing,
+        initData,
+        deletedFields,
+        setDeletedFields,
+        createdFields,
+        setCreatedFields,
+        updatedFields,
+        setUpdatedFields,
+      }}
     >
       <Page>
         <Breadcrumb items={breadcrumbItems} />
@@ -153,7 +159,16 @@ const Edit = () => {
           extra={
             <Button
               type="primary"
-              onClick={handleSaveBidding}
+              onClick={() =>
+                editApi({
+                  body: {
+                    ...data,
+                    deletedFields,
+                    createdFields,
+                    updatedFields,
+                  },
+                })
+              }
               loading={editing}
             >
               Lưu
