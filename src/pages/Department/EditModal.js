@@ -65,8 +65,10 @@ const EditModal = ({ open, input, fetchApi, setOpen }) => {
         autoComplete="off"
         onFinish={() =>
           editApi({
-            ...value,
-            hinhAnh: fileBase64 ? fileBase64 : value.hinhAnh,
+            body: {
+              ...value,
+              hinhAnh: fileBase64 ? fileBase64 : value.hinhAnh,
+            },
           })
         }
         form={form}

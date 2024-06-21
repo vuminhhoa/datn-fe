@@ -81,7 +81,12 @@ const UpdateEquipmentForm = ({ open, setOpen, equipment, fetchApi }) => {
       <Form
         autoComplete="off"
         onFinish={() =>
-          editApi({ ...formValue, hinhAnh: fileBase64 || equipment.hinhAnh })
+          editApi({
+            body: {
+              ...formValue,
+              hinhAnh: fileBase64 || equipment.hinhAnh,
+            },
+          })
         }
         form={form}
         layout="vertical"

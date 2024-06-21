@@ -90,7 +90,14 @@ const EditProfileForm = ({
     >
       <Form
         autoComplete="off"
-        onFinish={() => editApi({ ...formValue, isEditProfile: true })}
+        onFinish={() =>
+          editApi({
+            body: {
+              ...formValue,
+              isEditProfile: true,
+            },
+          })
+        }
         form={form}
         layout="vertical"
       >

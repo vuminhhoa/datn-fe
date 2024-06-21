@@ -3,9 +3,10 @@ import dayjs from 'dayjs';
 import { DatePicker } from 'antd';
 import BiddingContext from '../../../contexts/biddingContext';
 
-const DatePickerFormat = ({ field, maxDate = null }) => {
+const DatePickerFormat = ({ obj, field, maxDate = null }) => {
   const { data, setData, saving } = useContext(BiddingContext);
-  const dateStr = data[field];
+  const input = data[obj];
+  const dateStr = input[field];
   const isValidDate = dayjs(dateStr, 'DD/MM/YYYY', true).isValid();
   const dateValue = isValidDate ? dayjs(dateStr, 'DD/MM/YYYY') : undefined;
 
@@ -18,7 +19,10 @@ const DatePickerFormat = ({ field, maxDate = null }) => {
       onChange={(_, val) => {
         setData({
           ...data,
-          [field]: val,
+          [obj]: {
+            ...data[obj],
+            [field]: val,
+          },
         });
       }}
     />

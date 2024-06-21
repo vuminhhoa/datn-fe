@@ -6,7 +6,7 @@ import getStatus from '../../../helpers/getBiddingItemStatus';
 
 const KyKetThucHienHopDong = () => {
   const { data } = useContext(BiddingContext);
-
+  const input = data.kyKetThucHienHopDong;
   const items = [
     {
       title: 'Thông báo kết quả LCNT đến các nhà thầu',
@@ -43,7 +43,7 @@ const KyKetThucHienHopDong = () => {
   const itemsWithStatus = items.map((val) => {
     return {
       ...val,
-      status: getStatus(data, val.dateField, val.documentField),
+      status: getStatus(input, val.dateField, val.documentField),
     };
   });
 
@@ -54,9 +54,11 @@ const KyKetThucHienHopDong = () => {
       items={itemsWithStatus.map((val) => {
         return {
           color: val.status.dotColor,
-          label: data[val.dateField] || ' ',
+          label: input[val.dateField] || ' ',
           children: (
             <BiddingItem
+              obj={'kyKetThucHienHopDong'}
+              input={input}
               title={val.title}
               dateField={val.dateField}
               tagStatus={val.status}
