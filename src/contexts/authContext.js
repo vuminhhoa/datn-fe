@@ -79,6 +79,7 @@ const AuthProvider = ({ children }) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          backgroundColor: '#f1f2f4',
         }}
       >
         <Flex vertical align="center" justify="center" gap={32}>
@@ -86,12 +87,7 @@ const AuthProvider = ({ children }) => {
             size={128}
             src="https://inhoangkien.vn/wp-content/uploads/2020/04/Logo-B%E1%BB%99-Y-t%E1%BA%BF-01-e1585994422207-300x213.png"
           />
-          <Spin
-            spinning={true}
-            size="large"
-            indicator={<LoadingOutlined />}
-            style={{ backgroundColor: 'white' }}
-          />
+          <Spin spinning={true} size="large" indicator={<LoadingOutlined />} />
         </Flex>
       </div>
     );
@@ -105,6 +101,7 @@ const AuthProvider = ({ children }) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          backgroundColor: '#f1f2f4',
         }}
       >
         <Flex vertical align="center" justify="center" gap={32}>
