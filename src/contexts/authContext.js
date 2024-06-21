@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { isMobile } from 'react-device-detect'; // Import hàm kiểm tra thiết bị mobile từ thư viện react-device-detect
 import fetchAuthApi from '../helpers/fetchAuthApi';
-import { Spin } from 'antd';
+import { Flex, Spin, Avatar } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const AuthContext = createContext();
 
@@ -72,17 +73,48 @@ const AuthProvider = ({ children }) => {
 
   if (verifying) {
     return (
-      <Spin spinning={true} size="large" fullscreen tip={<>Đang tải...</>} />
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Flex vertical align="center" justify="center" gap={32}>
+          <Avatar
+            size={128}
+            src="https://inhoangkien.vn/wp-content/uploads/2020/04/Logo-B%E1%BB%99-Y-t%E1%BA%BF-01-e1585994422207-300x213.png"
+          />
+          <Spin
+            spinning={true}
+            size="large"
+            indicator={<LoadingOutlined />}
+            style={{ backgroundColor: 'white' }}
+          />
+        </Flex>
+      </div>
     );
   }
 
   if (isMobile) {
     return (
-      <div>
-        <p>
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Flex vertical align="center" justify="center" gap={32}>
+          <Avatar
+            size={128}
+            src="https://inhoangkien.vn/wp-content/uploads/2020/04/Logo-B%E1%BB%99-Y-t%E1%BA%BF-01-e1585994422207-300x213.png"
+          />
           Trang web hiện chưa hỗ trợ giao diện thiết bị mobile. Vui lòng quay
           lại sau hoặc sử dụng trên các thiết bị khác!
-        </p>
+        </Flex>
       </div>
     );
   }
