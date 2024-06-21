@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import {
+  Avatar,
   Button,
   Card,
   Flex,
   Form,
   Input,
+  Divider,
   Typography,
   Space,
   message,
@@ -75,7 +77,18 @@ const SignUp = () => {
           onFinish={onFinish}
         >
           <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-            <Flex justify="center">
+            <Flex justify="center" vertical align="center">
+              <Flex gap={16} align="center" justify="center">
+                <Avatar
+                  size={48}
+                  src="https://inhoangkien.vn/wp-content/uploads/2020/04/Logo-B%E1%BB%99-Y-t%E1%BA%BF-01-e1585994422207-300x213.png"
+                />
+
+                <Typography.Title level={4} style={{ margin: '0px' }}>
+                  Phòng Vật tư Y tế
+                </Typography.Title>
+              </Flex>
+              <Divider />
               <Typography.Title level={3} style={{ margin: 0 }}>
                 Đăng kí
               </Typography.Title>

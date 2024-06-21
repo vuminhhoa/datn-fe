@@ -6,10 +6,12 @@ import {
   Checkbox,
   Flex,
   Form,
+  Avatar,
   Input,
   Typography,
   Space,
   message,
+  Divider,
 } from 'antd';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
@@ -50,8 +52,21 @@ const Login = () => {
       <Card style={{ width: 350 }}>
         <Form name="normal_login" onFinish={onFinish} autoComplete="off">
           <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-            <Flex justify="center">
-              <Typography.Title level={3}>Đăng nhập</Typography.Title>
+            <Flex justify="center" vertical align="center">
+              <Flex gap={16} align="center" justify="center">
+                <Avatar
+                  size={48}
+                  src="https://inhoangkien.vn/wp-content/uploads/2020/04/Logo-B%E1%BB%99-Y-t%E1%BA%BF-01-e1585994422207-300x213.png"
+                />
+
+                <Typography.Title level={4} style={{ margin: '0px' }}>
+                  Phòng Vật tư Y tế
+                </Typography.Title>
+              </Flex>
+              <Divider />
+              <Typography.Title level={3} style={{ margin: '0px' }}>
+                Đăng nhập
+              </Typography.Title>
             </Flex>
             <Space
               direction="vertical"
