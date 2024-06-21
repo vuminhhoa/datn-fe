@@ -3,21 +3,24 @@ import React, { useEffect, useState } from 'react';
 import {
   Card,
   Flex,
+  Form,
   Tag,
   Breadcrumb,
   Descriptions,
+  Select,
   Typography,
+  Input,
   Button,
   Skeleton,
 } from 'antd';
-import { HomeOutlined } from '@ant-design/icons';
+import { PlusOutlined, SaveOutlined } from '@ant-design/icons';
 import BiddingContext from '../../../contexts/biddingContext';
 import BiddingRequest from '../Form/BiddingRequest';
 import LenDuToanThanhLapCacTo from '../Form/LenDuToanThanhLapCacTo';
 import KeHoachLuaChonNhaThau from '../Form/KeHoachLuaChonNhaThau';
 import Ehsmt from '../Form/Ehsmt';
 import useFetchApi from '../../../hooks/useFetchApi';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import CollapsibleForm from '../Component/CollapsibleForm';
 import Ehsdt from '../Form/Ehsdt';
 import KyKetThucHienHopDong from '../Form/KyKetThucHienHopDong';
@@ -26,8 +29,33 @@ import useEditApi from '../../../hooks/useEditApi';
 import NotFound from '../../NotFound/NotFound';
 import Page from '../../../components/Page';
 import { defaultBidding } from '../../../const/defaultBidding';
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import 'dayjs/locale/vi'; // import locale Vietnamese
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import Quill styles
+import { useAppContext } from '../../../contexts/appContext';
+
+dayjs.extend(localizedFormat);
+dayjs.locale('vi'); // set locale to Vietnamese
+
+const modules = {
+  toolbar: [
+    [{ font: [] }],
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    ['bold', 'italic', 'underline'],
+    [{ color: [] }],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ indent: '-1' }, { indent: '+1' }],
+    [{ align: [] }],
+    [],
+  ],
+};
 
 const Edit = () => {
+  const { departments, loadingDepartments } = useAppContext();
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
   const { id } = useParams();
   const { editing, editApi } = useEditApi({
     url: `/bidding/${id}`,
@@ -54,6 +82,7 @@ const Edit = () => {
   const [deletedFields, setDeletedFields] = useState([]);
   const [createdFields, setCreatedFields] = useState([]);
   const [updatedFields, setUpdatedFields] = useState([]);
+  const [isEditItem, setIsEditItem] = useState(false);
 
   useEffect(() => {
     if (loading || JSON.stringify(initData) !== JSON.stringify(defaultBidding))
@@ -89,20 +118,40 @@ const Edit = () => {
     (data?.trangThaiDeXuat === 'approved' ||
       data?.trangThaiDeXuat === 'reject') && {
       label: 'Ngày phê duyệt',
-      children: data?.ngayPheDuyetDeXuat,
+      children: dayjs(data?.ngayPheDuyetDeXuat).format('dd, D/MM/YYYY  h:mm A'),
     },
     {
       label: 'Ngày tạo hoạt động',
-      children: data?.createdAt,
+      children: dayjs(data?.createdAt).format('dd, D/MM/YYYY  h:mm A'),
     },
     {
       label: 'Lần cập nhật cuối',
-      children: data?.updatedAt,
+      children: dayjs(data?.updatedAt).format('dd, D/MM/YYYY  h:mm A'),
     },
     {
       label: 'Nội dung',
       children: (
-        <div dangerouslySetInnerHTML={{ __html: data?.noiDungDeXuat }} />
+        <>
+          <div dangerouslySetInnerHTML={{ __html: data?.noiDungDeXuat }} />
+
+          {/* <ReactQuill
+            style={{
+              borderRadius: '12px',
+              height: '220px',
+              paddingBottom: '44px',
+            }}
+            value={data.noiDungDeXuat}
+            onChange={(val) =>
+              setData({
+                ...data,
+                noiDungDeXuat: val,
+              })
+            }
+            modules={modules}
+            theme="snow"
+            placeholder="Nhập nội dung hoạt động mua sắm"
+          /> */}
+        </>
       ),
     },
   ];
@@ -115,7 +164,7 @@ const Edit = () => {
           title={
             <Flex align="center" gap={8}>
               <Typography.Title level={5} style={{ margin: '0' }}>
-                Chi tiết hoạt động:
+                Chi tiết hoạt động mua sắm:
               </Typography.Title>
               <Skeleton.Input />
             </Flex>
@@ -155,31 +204,136 @@ const Edit = () => {
       <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
-          title={`Chi tiết hoạt động: ${data?.tenDeXuat}`}
+          title={`Chi tiết hoạt động mua sắm: ${data?.tenDeXuat}`}
           extra={
-            <Button
-              type="primary"
-              onClick={() =>
-                editApi({
-                  body: {
-                    ...data,
-                    deletedFields,
-                    createdFields,
-                    updatedFields,
-                  },
-                })
-              }
-              loading={editing}
-            >
-              Lưu
-            </Button>
+            <Flex gap={8}>
+              {data?.trangThaiDeXuat === 'approved' && (
+                <Button
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    navigate(
+                      `/equipments/import_equipments_by_excel?biddingId=${id}&departmentId=${data?.DepartmentId}`
+                    );
+                  }}
+                >
+                  Nhập thiết bị
+                </Button>
+              )}
+              {data.trangThaiDeXuat !== 'reject' && (
+                <Button
+                  type="primary"
+                  icon={<SaveOutlined />}
+                  onClick={() =>
+                    editApi({
+                      body: {
+                        ...data,
+                        deletedFields,
+                        createdFields,
+                        updatedFields,
+                      },
+                    })
+                  }
+                  loading={editing}
+                >
+                  Lưu
+                </Button>
+              )}
+            </Flex>
           }
         >
-          <Descriptions
-            title="1. Khoa phòng đề xuất"
-            items={items}
-            column={2}
-          />
+          <Flex justify="space-between">
+            <Typography.Title level={5} style={{ margin: '0px' }}>
+              1. Khoa phòng đề xuất
+            </Typography.Title>
+
+            <Button
+              disabled={editing}
+              type="link"
+              onClick={() => setIsEditItem(!isEditItem)}
+              style={{ margin: '0px' }}
+            >
+              {isEditItem ? 'Xác nhận' : 'Cập nhật'}
+            </Button>
+          </Flex>
+          {!isEditItem && <Descriptions items={items} column={2} />}
+          {isEditItem && (
+            <Form autoComplete="off" form={form} layout="vertical">
+              <Form.Item
+                name="tenDeXuat"
+                label="Tên hoạt động mua sắm"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập tên hoạt động mua sắm!',
+                  },
+                ]}
+                initialValue={data.tenDeXuat}
+              >
+                <Input
+                  allowClear
+                  name="tenDeXuat"
+                  placeholder="Nhập tên hoạt động mua sắm"
+                  onChange={(e) =>
+                    setData({ ...data, tenDeXuat: e.target.value })
+                  }
+                  autoComplete="off"
+                />
+              </Form.Item>
+              {data.trangThaiDeXuat !== 'approved' && (
+                <Form.Item
+                  name="khoaPhongDeXuat"
+                  label="Khoa phòng đề xuất"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn khoa phòng đề xuất!',
+                    },
+                  ]}
+                  initialValue={data.Department.tenKhoaPhong}
+                >
+                  <Select
+                    allowClear
+                    disabled={loadingDepartments}
+                    placeholder="Chọn khoa phòng đề xuất"
+                    onChange={(value) =>
+                      setData({
+                        ...data,
+                        DepartmentId: value,
+                      })
+                    }
+                    options={departments.map((item) => ({
+                      label: item.tenKhoaPhong,
+                      value: item.id,
+                    }))}
+                  />
+                </Form.Item>
+              )}
+
+              <Form.Item
+                name="noiDungDeXuat"
+                label="Nội dung hoạt động mua sắm"
+                initialValue={data.noiDungDeXuat}
+              >
+                <ReactQuill
+                  style={{
+                    borderRadius: '12px',
+                    height: '220px',
+                    paddingBottom: '44px',
+                  }}
+                  value={data.noiDungDeXuat}
+                  onChange={(val) =>
+                    setData({
+                      ...data,
+                      noiDungDeXuat: val,
+                    })
+                  }
+                  modules={modules}
+                  theme="snow"
+                  placeholder="Nhập nội dung hoạt động mua sắm"
+                />
+              </Form.Item>
+            </Form>
+          )}
           {data?.trangThaiDeXuat === 'approved' && (
             <>
               <Typography.Title level={5}>2. Lập kế hoạch</Typography.Title>

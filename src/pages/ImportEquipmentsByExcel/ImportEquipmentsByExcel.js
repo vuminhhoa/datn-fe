@@ -13,8 +13,13 @@ import PreviewTable from './Components/PreviewTable.js';
 import DuplicateRowsTable from './Components/DuplicateRowsTable.js';
 import DeleteConfirmModal from './Components/DeleteConfirmModal.js';
 import { useAppContext } from '../../contexts/appContext.js';
+import { useLocation } from 'react-router-dom';
 
 const ImportEquipmentsByExcel = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialBiddingId = queryParams.get('biddingId');
+  const initialDepartmentId = queryParams.get('departmentId');
   const { departments, biddings } = useAppContext();
   const breadcrumb = useBreadcrumb(
     [
@@ -30,9 +35,12 @@ const ImportEquipmentsByExcel = () => {
   const [duplicateRows, setDuplicateRows] = useState([]);
   const [duplicateEquipmentsInDb, setDuplicateEquipmentsInDb] = useState([]);
 
-  const [selectedDepartment, setSelectedDepartment] = useState(null);
-  const [selectedBidding, setSelectedBidding] = useState(null);
-
+  const [selectedDepartment, setSelectedDepartment] = useState(
+    Number(initialDepartmentId)
+  );
+  const [selectedBidding, setSelectedBidding] = useState(
+    Number(initialBiddingId)
+  );
   const { creating, createApi } = useCreateApi({
     url: `/equipments/importByExcel`,
     errorMsg: 'Nhập thiết bị thất bại',
