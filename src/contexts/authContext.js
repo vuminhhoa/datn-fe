@@ -1,20 +1,22 @@
 import { useContext, createContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { isMobile } from 'react-device-detect'; // Import hàm kiểm tra thiết bị mobile từ thư viện react-device-detect
 import fetchAuthApi from '../helpers/fetchAuthApi';
 import { Flex, Spin, Avatar } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import { useAppContext } from './appContext';
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+  const location = useLocation();
+  const { fetchDepartments, fetchRoles, fetchBiddings } = useAppContext();
   const navigate = useNavigate();
   const userLocal = JSON.parse(localStorage.getItem('CURRENT_USER'));
   const token = localStorage.getItem('ACCESS_TOKEN');
   const [user, setUser] = useState(userLocal);
   const [verifying, setVerifying] = useState(true);
-
   const verifyUser = async () => {
     try {
       const res = await fetchAuthApi({ url: `/user/${userLocal.id}` });
@@ -23,9 +25,13 @@ const AuthProvider = ({ children }) => {
         if (JSON.stringify(userLocal.Role) !== JSON.stringify(user.Role)) {
           return logoutAction();
         }
-
+        fetchBiddings();
+        fetchDepartments();
+        fetchRoles();
         return true;
       }
+
+      if (['/login', '/sign-up'].includes(location.pathname)) return;
       return navigate('/login');
     } catch (err) {
       console.error(err);
@@ -38,6 +44,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (!userLocal || !token) {
       setVerifying(false);
+      if (['/login', '/sign-up'].includes(location.pathname)) return;
       return navigate('/login');
     }
     verifyUser();
@@ -57,6 +64,9 @@ const AuthProvider = ({ children }) => {
           'CURRENT_USER',
           JSON.stringify(res.data.data.user)
         );
+        fetchBiddings();
+        fetchDepartments();
+        fetchRoles();
         return navigate('/');
       }
     } catch (err) {

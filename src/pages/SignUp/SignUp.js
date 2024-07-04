@@ -84,9 +84,14 @@ const SignUp = () => {
                   src="https://inhoangkien.vn/wp-content/uploads/2020/04/Logo-B%E1%BB%99-Y-t%E1%BA%BF-01-e1585994422207-300x213.png"
                 />
 
-                <Typography.Title level={4} style={{ margin: '0px' }}>
-                  Phòng Vật tư Y tế
-                </Typography.Title>
+                <Flex vertical>
+                  <Typography.Title level={4} style={{ margin: '0px' }}>
+                    Quản lý hoạt động
+                  </Typography.Title>
+                  <Typography.Title level={4} style={{ margin: '0px' }}>
+                    Phòng Vật tư Y tế
+                  </Typography.Title>
+                </Flex>
               </Flex>
               <Divider />
               <Typography.Title level={3} style={{ margin: 0 }}>

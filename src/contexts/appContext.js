@@ -12,7 +12,11 @@ const AppProvider = ({ children }) => {
     loading: loadingRoles,
     fetchApi: fetchRoles,
     setData: setRoles,
-  } = useFetchApi({ url: '/roles', defaultData: [] });
+  } = useFetchApi({
+    url: '/roles',
+    defaultData: [],
+    initLoad: false,
+  });
   const {
     data: departments,
     loading: loadingDepartments,
@@ -21,6 +25,7 @@ const AppProvider = ({ children }) => {
   } = useFetchApi({
     url: '/departments',
     defaultData: [],
+    initLoad: false,
   });
   const {
     data: biddings,
@@ -30,6 +35,7 @@ const AppProvider = ({ children }) => {
   } = useFetchApi({
     url: '/biddings',
     defaultData: [],
+    initLoad: false,
   });
 
   const setToast = (content, type = 'success') => {

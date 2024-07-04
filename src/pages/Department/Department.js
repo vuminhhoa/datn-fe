@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Card,
@@ -143,7 +143,25 @@ const Department = () => {
       />
     );
   };
-
+  if (loading) {
+    <Page>
+      <Breadcrumb items={breadcrumbItems} />
+      <Card
+        title="Danh sách khoa phòng trong hệ thống"
+        extra={
+          hasPermission(DEPARTMENT_CREATE) && (
+            <Button type="primary" disabled={true} icon={<PlusOutlined />}>
+              Tạo mới
+            </Button>
+          )
+        }
+      >
+        <Flex vertical gap={16}>
+          <Table loading={true} columns={columns} bordered />
+        </Flex>
+      </Card>
+    </Page>;
+  }
   return (
     <Page>
       {showEditModal && renderEditModal(editingRecord)}{' '}

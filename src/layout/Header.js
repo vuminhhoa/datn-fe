@@ -35,10 +35,10 @@ function AppHeader() {
       label: 'Tài khoản',
       key: '0',
     },
-    {
-      label: 'Thay đổi mật khẩu',
-      key: '1',
-    },
+    // {
+    //   label: 'Thay đổi mật khẩu',
+    //   key: '1',
+    // },
     {
       type: 'divider',
     },
