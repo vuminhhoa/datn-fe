@@ -225,17 +225,6 @@ const Filter = ({
           />
           <Select
             mode="multiple"
-            placeholder="Lọc theo phân loại nhập"
-            defaultValue={phanLoaiNhap}
-            onChange={(val) => setQuery({ ...query, phanLoaiNhap: val })}
-            style={{
-              width: '100%',
-            }}
-            allowClear
-            options={defaultPhanLoaiNhap}
-          />
-          <Select
-            mode="multiple"
             placeholder="Lọc theo đơn vị tính"
             defaultValue={donVi}
             onChange={(val) => setQuery({ ...query, donVi: val })}
