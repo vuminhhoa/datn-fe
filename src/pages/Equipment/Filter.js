@@ -18,11 +18,9 @@ import {
 } from '@ant-design/icons';
 import {} from '@ant-design/icons';
 import { useAppContext } from '../../contexts/appContext';
-import {
-  defaultDonViTinh,
-  defaultPhanLoaiNhap,
-  defaultXuatXu,
-} from '../../const/default';
+import { defaultDonViTinh, defaultXuatXu } from '../../const/default';
+import hasPermission from '../../helpers/hasPermission';
+import { EQUIPMENT_READ_ALL } from '../../const/permission';
 
 const Filter = ({
   allColumns,
@@ -172,27 +170,28 @@ const Filter = ({
       </Flex>
       {showFilter && (
         <Flex gap={16}>
+          {hasPermission(EQUIPMENT_READ_ALL) && (
+            <Select
+              placeholder="Lọc theo phân khoa"
+              defaultValue={departmentIds}
+              allowClear
+              onChange={(val) => setQuery({ ...query, departmentIds: [val] })}
+              style={{
+                width: '100%',
+              }}
+              options={[
+                ...departments.map((item) => ({
+                  label: item.tenKhoaPhong,
+                  value: item.id,
+                })),
+                {
+                  label: 'Chưa có phân khoa',
+                  value: 'none',
+                },
+              ]}
+            />
+          )}
           <Select
-            placeholder="Lọc theo phân khoa"
-            defaultValue={departmentIds}
-            allowClear
-            onChange={(val) => setQuery({ ...query, departmentIds: [val] })}
-            style={{
-              width: '100%',
-            }}
-            options={[
-              ...departments.map((item) => ({
-                label: item.tenKhoaPhong,
-                value: item.id,
-              })),
-              {
-                label: 'Chưa có phân khoa',
-                value: 'none',
-              },
-            ]}
-          />
-          <Select
-            // mode="multiple"
             placeholder="Lọc theo dự án"
             defaultValue={biddingIds}
             allowClear

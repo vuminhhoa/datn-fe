@@ -8,7 +8,6 @@ const LenDuToanThanhLapCacTo = () => {
   const { data } = useContext(BiddingContext);
 
   const input = data.thanhLapToChuyenGiaToThamDinh;
-
   const items = [
     {
       title: 'Họp hội đồng mua sắm',

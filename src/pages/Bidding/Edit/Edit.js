@@ -35,6 +35,8 @@ import 'dayjs/locale/vi'; // import locale Vietnamese
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import { useAppContext } from '../../../contexts/appContext';
+import hasPermission from '../../../helpers/hasPermission';
+import { BIDDING_UPDATE } from '../../../const/permission';
 
 dayjs.extend(localizedFormat);
 dayjs.locale('vi'); // set locale to Vietnamese
@@ -53,7 +55,7 @@ const modules = {
 };
 
 const Edit = () => {
-  const { departments, loadingDepartments } = useAppContext();
+  const { departments, loadingDepartments, fetchBiddings } = useAppContext();
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -65,17 +67,27 @@ const Edit = () => {
       setUpdatedFields([]);
       setInitData(data);
       fetchApi();
+      fetchBiddings();
     },
   });
   const { data, setData, loading, fetchApi } = useFetchApi({
     url: `/bidding/${id}`,
     defaultData: {},
   });
+
   const breadcrumbItems = useBreadcrumb([
-    { href: '/shopping/bidding', title: 'Hoạt động mua sắm qua đấu thầu' },
+    !loading ? (
+      !data.isProposal ? (
+        { href: '/shopping/bidding', title: 'Hoạt động mua sắm qua đấu thầu' }
+      ) : (
+        { href: '/shopping/proposal', title: 'Đề xuất hoạt động mua sắm' }
+      )
+    ) : (
+      <Skeleton.Input size="small" />
+    ),
     {
-      href: `/shopping/bidding/${id}`,
-      title: loading ? '----------' : data?.tenDeXuat,
+      href: `/shopping/${id}`,
+      title: loading ? <Skeleton.Input size="small" /> : data?.tenDeXuat,
     },
   ]);
   const [initData, setInitData] = useState(defaultBidding);
@@ -100,30 +112,133 @@ const Edit = () => {
       children: data?.ngayDeXuat,
     },
     {
-      label: 'Trạng thái',
+      label: 'Trạng thái hoạt động',
       children: (
         <>
-          {data?.trangThaiDeXuat === 'approved' && (
+          {data?.trangThaiHoatDong === 'approved' && (
             <Tag color="success">Chấp thuận</Tag>
           )}
-          {data?.trangThaiDeXuat === 'reject' && (
+          {data?.trangThaiHoatDong === 'pendingProcess' && (
+            <Tag color="blue">Chờ xử lý</Tag>
+          )}
+          {data?.trangThaiHoatDong === 'pendingApprove' && (
+            <Tag color="blue">Chờ duyệt</Tag>
+          )}
+          {data?.trangThaiHoatDong === 'rejected' && (
             <Tag color="error">Từ chối</Tag>
           )}
-          {data?.trangThaiDeXuat === 'processing' && (
-            <Tag color="processing">Chờ duyệt</Tag>
+          {data?.trangThaiHoatDong === 'processing' && (
+            <Tag color="purple">Đang xử lý</Tag>
           )}
         </>
       ),
     },
+    data?.trangThaiDeXuat
+      ? {
+          label: 'Trạng thái đề xuất',
+          children: (
+            <>
+              {data?.trangThaiDeXuat === 'approved' && (
+                <Tag color="success">Chấp thuận</Tag>
+              )}
+              {data?.trangThaiDeXuat === 'pendingProcess' && (
+                <Tag color="blue">Chờ xử lý</Tag>
+              )}
+              {data?.trangThaiDeXuat === 'pendingApprove' && (
+                <Tag color="blue">Chờ duyệt</Tag>
+              )}
+              {data?.trangThaiDeXuat === 'rejected' && (
+                <Tag color="error">Từ chối</Tag>
+              )}
+              {data?.trangThaiDeXuat === 'processing' && (
+                <Tag color="purple">Đang xử lý</Tag>
+              )}
+            </>
+          ),
+        }
+      : false,
     (data?.trangThaiDeXuat === 'approved' ||
-      data?.trangThaiDeXuat === 'reject') && {
-      label: 'Ngày phê duyệt',
+      data?.trangThaiDeXuat === 'rejected') && {
+      label: 'Ngày phê duyệt đề xuất',
       children: dayjs(data?.ngayPheDuyetDeXuat).format('dd, D/MM/YYYY  h:mm A'),
     },
-    {
-      label: 'Ngày tạo hoạt động',
-      children: dayjs(data?.createdAt).format('dd, D/MM/YYYY  h:mm A'),
-    },
+    data?.ngayTaoHoatDong
+      ? {
+          label: 'Ngày tạo hoạt động',
+          children: dayjs(data?.ngayTaoHoatDong).format(
+            'dd, D/MM/YYYY  h:mm A'
+          ),
+        }
+      : false,
+    data?.ngayBatDauXuLy
+      ? {
+          label: 'Ngày bắt đầu xử lý hồ sơ',
+          children: dayjs(data?.ngayBatDauXuLy).format('dd, D/MM/YYYY  h:mm A'),
+        }
+      : false,
+    data?.ngayTaoDeXuat
+      ? {
+          label: 'Ngày tạo đề xuất',
+          children: dayjs(data?.ngayTaoDeXuat).format('dd, D/MM/YYYY  h:mm A'),
+        }
+      : false,
+    data?.NguoiTaoDeXuat
+      ? {
+          label: 'Người tạo đề xuất',
+          children: (
+            <Button
+              size="small"
+              type="link"
+              onClick={() => navigate(`/user/${data?.NguoiTaoDeXuat.id}`)}
+            >
+              {data?.NguoiTaoDeXuat.name}
+            </Button>
+          ),
+        }
+      : false,
+    data?.NguoiDuyetDeXuat
+      ? {
+          label: 'Người duyệt đề xuất',
+          children: (
+            <Button
+              size="small"
+              type="link"
+              onClick={() => navigate(`/user/${data?.NguoiDuyetDeXuat.id}`)}
+            >
+              {data?.NguoiDuyetDeXuat.name}
+            </Button>
+          ),
+        }
+      : false,
+    data?.NguoiTaoHoatDong
+      ? {
+          label: 'Người tạo hoạt động',
+          children: (
+            <Button
+              size="small"
+              type="link"
+              onClick={() => navigate(`/user/${data?.NguoiTaoHoatDong.id}`)}
+            >
+              {data?.NguoiTaoHoatDong.name}
+            </Button>
+          ),
+        }
+      : false,
+    data?.NguoiDuyetHoatDong
+      ? {
+          label: 'Người duyệt hoạt động',
+          children: (
+            <Button
+              size="small"
+              type="link"
+              onClick={() => navigate(`/user/${data?.NguoiDuyetHoatDong.id}`)}
+            >
+              {data?.NguoiDuyetHoatDong.name}
+            </Button>
+          ),
+        }
+      : false,
+
     {
       label: 'Lần cập nhật cuối',
       children: dayjs(data?.updatedAt).format('dd, D/MM/YYYY  h:mm A'),
@@ -131,30 +246,10 @@ const Edit = () => {
     {
       label: 'Nội dung',
       children: (
-        <>
-          <div dangerouslySetInnerHTML={{ __html: data?.noiDungDeXuat }} />
-
-          {/* <ReactQuill
-            style={{
-              borderRadius: '12px',
-              height: '220px',
-              paddingBottom: '44px',
-            }}
-            value={data.noiDungDeXuat}
-            onChange={(val) =>
-              setData({
-                ...data,
-                noiDungDeXuat: val,
-              })
-            }
-            modules={modules}
-            theme="snow"
-            placeholder="Nhập nội dung hoạt động mua sắm"
-          /> */}
-        </>
+        <div dangerouslySetInnerHTML={{ __html: data?.noiDungDeXuat }} />
       ),
     },
-  ];
+  ].filter(Boolean);
 
   if (loading)
     return (
@@ -164,7 +259,7 @@ const Edit = () => {
           title={
             <Flex align="center" gap={8}>
               <Typography.Title level={5} style={{ margin: '0' }}>
-                Chi tiết hoạt động mua sắm:
+                <Skeleton.Input size="small" />
               </Typography.Title>
               <Skeleton.Input />
             </Flex>
@@ -204,7 +299,11 @@ const Edit = () => {
       <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
-          title={`Chi tiết hoạt động mua sắm: ${data?.tenDeXuat}`}
+          title={
+            data.isProposal
+              ? 'Chi tiết đề xuất hoạt động mua sắm: ' + data?.tenDeXuat
+              : 'Chi tiết hoạt động mua sắm: ' + data?.tenDeXuat
+          }
           extra={
             <Flex gap={8}>
               {data?.trangThaiDeXuat === 'approved' && (
@@ -219,41 +318,50 @@ const Edit = () => {
                   Nhập thiết bị
                 </Button>
               )}
-              {data.trangThaiDeXuat !== 'reject' && (
-                <Button
-                  type="primary"
-                  icon={<SaveOutlined />}
-                  onClick={() =>
-                    editApi({
-                      body: {
-                        ...data,
-                        deletedFields,
-                        createdFields,
-                        updatedFields,
-                      },
-                    })
-                  }
-                  loading={editing}
-                >
-                  Lưu
-                </Button>
-              )}
+              {data.trangThaiDeXuat !== 'rejected' &&
+                hasPermission(BIDDING_UPDATE) && (
+                  <Button
+                    type="primary"
+                    disabled={JSON.stringify(data) === JSON.stringify(initData)}
+                    icon={<SaveOutlined />}
+                    onClick={() =>
+                      editApi({
+                        body: {
+                          ...data,
+                          deletedFields,
+                          createdFields,
+                          updatedFields,
+                          ...(data.trangThaiHoatDong === 'pendingProcess'
+                            ? {
+                                trangThaiHoatDong: 'processing',
+                                ngayBatDauXuLy: new Date(),
+                              }
+                            : {}),
+                        },
+                      })
+                    }
+                    loading={editing}
+                  >
+                    Lưu
+                  </Button>
+                )}
             </Flex>
           }
         >
           <Flex justify="space-between">
             <Typography.Title level={5} style={{ margin: '0px' }}>
-              1. Khoa phòng đề xuất
+              {data.isProposal ? 'Thông tin đề xuất' : '1. Khoa phòng đề xuất'}
             </Typography.Title>
-
-            <Button
-              disabled={editing}
-              type="link"
-              onClick={() => setIsEditItem(!isEditItem)}
-              style={{ margin: '0px' }}
-            >
-              {isEditItem ? 'Xác nhận' : 'Cập nhật'}
-            </Button>
+            {hasPermission(BIDDING_UPDATE) && (
+              <Button
+                disabled={editing}
+                type="link"
+                onClick={() => setIsEditItem(!isEditItem)}
+                style={{ margin: '0px' }}
+              >
+                {isEditItem ? 'Xác nhận' : 'Cập nhật'}
+              </Button>
+            )}
           </Flex>
           {!isEditItem && <Descriptions items={items} column={2} />}
           {isEditItem && (
@@ -334,7 +442,7 @@ const Edit = () => {
               </Form.Item>
             </Form>
           )}
-          {data?.trangThaiDeXuat === 'approved' && (
+          {(data?.trangThaiDeXuat === 'approved' || !data?.trangThaiDeXuat) && (
             <>
               <Typography.Title level={5}>2. Lập kế hoạch</Typography.Title>
 

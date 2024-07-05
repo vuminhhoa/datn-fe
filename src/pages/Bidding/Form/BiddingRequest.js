@@ -3,13 +3,14 @@ import dayjs from 'dayjs';
 import { Flex, Button, Typography, Timeline, Tag } from 'antd';
 import BiddingContext from '../../../contexts/biddingContext';
 import DatePickerFormat from '../Component/DatePickerFormat';
+import hasPermission from '../../../helpers/hasPermission';
+import { BIDDING_UPDATE } from '../../../const/permission';
 
 const BiddingRequest = () => {
   const { data, saving } = useContext(BiddingContext);
   const [isEditBiddingRequest, setIsEditBiddingRequest] = useState(false);
 
   const chaoGia = data?.yeuCauChaoGia || { ngayDang: null, ngayHetHan: null };
-
   return (
     <Timeline
       mode="left"
@@ -40,7 +41,7 @@ const BiddingRequest = () => {
                   )}
                 </Typography.Text>
 
-                {!isEditBiddingRequest && (
+                {!isEditBiddingRequest && hasPermission(BIDDING_UPDATE) && (
                   <Button
                     type="link"
                     disabled={saving}
@@ -49,7 +50,7 @@ const BiddingRequest = () => {
                     Cập nhật
                   </Button>
                 )}
-                {isEditBiddingRequest && (
+                {isEditBiddingRequest && hasPermission(BIDDING_UPDATE) && (
                   <Button
                     disabled={saving}
                     type="link"

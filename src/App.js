@@ -38,6 +38,7 @@ import DetailDepartment from './pages/Department/Detail';
 import CreateUser from './pages/CreateUser';
 import CreateDepartment from './pages/CreateDepartment';
 import CreateEquipment from './pages/CreateEquipment';
+import BiddingProposal from './pages/BiddingProposal';
 
 function App() {
   return (
@@ -180,17 +181,17 @@ function App() {
         }
       />
       <Route
-        path="/shopping/non-bidding"
+        path="/shopping/proposal"
         element={
           <PrivateRoute permission={BIDDING_READ}>
-            <Bidding />
+            <BiddingProposal />
           </PrivateRoute>
         }
       />
       <Route
-        path="/shopping/bidding/:id"
+        path="/shopping/:id"
         element={
-          <PrivateRoute permission={BIDDING_UPDATE}>
+          <PrivateRoute permission={BIDDING_READ}>
             <EditBidding />
           </PrivateRoute>
         }

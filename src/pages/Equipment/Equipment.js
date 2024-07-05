@@ -24,6 +24,7 @@ import hasPermission from '../../helpers/hasPermission';
 import {
   EQUIPMENT_CREATE,
   EQUIPMENT_DELETE,
+  EQUIPMENT_READ_ALL,
   EQUIPMENT_UPDATE,
 } from '../../const/permission';
 import useDeleteApi from '../../hooks/useDeleteApi';
@@ -34,8 +35,10 @@ import queryString from 'query-string';
 import CreateModal from './CreateModal';
 import Filter from './Filter';
 import UpdateEquipmentForm from './UpdateModal';
+import { useAuthContext } from '../../contexts/authContext';
 
 const Equipment = () => {
+  const { user } = useAuthContext();
   const navigate = useNavigate();
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [query, setQuery] = useState({
@@ -48,7 +51,7 @@ const Equipment = () => {
     phanLoaiNhap: [],
     xuatXu: [],
     donVi: [],
-    departmentIds: [],
+    departmentIds: hasPermission(EQUIPMENT_READ_ALL) ? [] : [user.DepartmentId],
     biddingIds: [],
   });
 

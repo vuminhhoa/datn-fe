@@ -84,8 +84,6 @@ const DetailRole = () => {
     );
   }
 
-  console.log(data, 'data');
-
   const borderedItems = [
     {
       key: '1',

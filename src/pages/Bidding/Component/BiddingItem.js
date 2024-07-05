@@ -5,6 +5,8 @@ import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useAppContext } from '../../../contexts/appContext';
 import BiddingContext from '../../../contexts/biddingContext';
 import { convertBase64 } from '../../../helpers/uploadFile';
+import hasPermission from '../../../helpers/hasPermission';
+import { BIDDING_UPDATE } from '../../../const/permission';
 
 const BiddingItem = ({
   obj = '',
@@ -72,15 +74,16 @@ const BiddingItem = ({
             </Button>
           )}
         </Flex>
-
-        <Button
-          disabled={saving}
-          type="link"
-          onClick={() => setIsEditItem(!isEditItem)}
-          style={{ margin: '0px' }}
-        >
-          {isEditItem ? 'Xác nhận' : 'Cập nhật'}
-        </Button>
+        {hasPermission(BIDDING_UPDATE) && (
+          <Button
+            disabled={saving}
+            type="link"
+            onClick={() => setIsEditItem(!isEditItem)}
+            style={{ margin: '0px' }}
+          >
+            {isEditItem ? 'Xác nhận' : 'Cập nhật'}
+          </Button>
+        )}
       </Flex>
 
       {isEditItem && (
@@ -156,7 +159,6 @@ const BiddingItem = ({
                         `${obj}.${documentField}`,
                       ]);
                     }
-                    console.log(deletedFields);
                     if (
                       initInput[documentField] &&
                       deletedFields.includes(`${obj}.${documentField}`)

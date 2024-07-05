@@ -6,25 +6,42 @@ import fetchAuthApi from '../helpers/fetchAuthApi';
 import { Flex, Spin, Avatar } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useAppContext } from './appContext';
+import useFetchApi from '../hooks/useFetchApi';
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const location = useLocation();
+
   const { fetchDepartments, fetchRoles, fetchBiddings } = useAppContext();
   const navigate = useNavigate();
   const userLocal = JSON.parse(localStorage.getItem('CURRENT_USER'));
   const token = localStorage.getItem('ACCESS_TOKEN');
-  const [user, setUser] = useState(userLocal);
+  const {
+    data: user,
+    setData: setUser,
+    fetchApi: fetchUser,
+  } = useFetchApi({
+    url: `/user/${userLocal?.id || ''}`,
+    initLoad: false,
+    defaultData: userLocal,
+  });
   const [verifying, setVerifying] = useState(true);
   const verifyUser = async () => {
+    if (!userLocal || !token) {
+      return navigate('/login');
+    }
     try {
       const res = await fetchAuthApi({ url: `/user/${userLocal.id}` });
       if (res.data.success) {
         const user = res.data.data;
-        if (JSON.stringify(userLocal.Role) !== JSON.stringify(user.Role)) {
+        if (
+          JSON.stringify(userLocal?.password) !== JSON.stringify(user.password)
+        ) {
           return logoutAction();
         }
+        setUser(user);
+        localStorage.setItem('CURRENT_USER', JSON.stringify(user));
         fetchBiddings();
         fetchDepartments();
         fetchRoles();
@@ -40,6 +57,12 @@ const AuthProvider = ({ children }) => {
       setVerifying(false);
     }
   };
+  useEffect(() => {
+    if (!userLocal || !token) return;
+    if (JSON.stringify(userLocal?.password) !== JSON.stringify(user.password)) {
+      return logoutAction();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!userLocal || !token) {
@@ -130,6 +153,7 @@ const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        fetchUser,
         setUser,
         loginAction,
         logoutAction,

@@ -110,27 +110,23 @@ function AppSider() {
     }),
     getItem({
       label: 'Hoạt động mua sắm',
-      key: '/shopping/bidding',
+      key: '/shopping',
       icon: <AuditOutlined />,
       permission: BIDDING_READ,
+      children: [
+        getItem({
+          label: 'Danh sách hoạt động',
+          key: '/bidding',
+          permission: EQUIPMENT_READ,
+        }),
+        getItem({
+          label: 'Danh sách đề xuất',
+          key: '/proposal',
+          permission: EQUIPMENT_CREATE,
+        }),
+      ],
     }),
-    // getItem({
-    //   label: 'Hoạt động mua sắm',
-    //   key: '/shopping',
-    //   icon: <AuditOutlined />,
-    //   children: [
-    //     getItem({
-    //       label: 'Mua sắm qua đấu thầu',
-    //       key: '/bidding',
-    //       permission: BIDDING_READ,
-    //     }),
-    //     getItem({
-    //       label: 'Mua sắm không qua đấu thầu',
-    //       key: '/non-bidding',
-    //       permission: BIDDING_READ,
-    //     }),
-    //   ],
-    // }),
+
     getItem({
       label: 'Cài đặt phân quyền',
       key: '/roles',
