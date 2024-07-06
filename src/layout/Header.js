@@ -74,18 +74,17 @@ function AppHeader() {
             />
           )}
         </div>
-        <Flex align="center" gap={16}>
+        <Flex
+          align="center"
+          gap={16}
+          onClick={() => navigate('/')}
+          style={{ cursor: 'pointer' }}
+        >
           <Avatar
             size={'large'}
             src="https://inhoangkien.vn/wp-content/uploads/2020/04/Logo-B%E1%BB%99-Y-t%E1%BA%BF-01-e1585994422207-300x213.png"
-            style={{ cursor: 'pointer' }}
-            onClick={() => navigate('/')}
           />
-          <Typography.Title
-            level={5}
-            style={{ margin: 0, cursor: 'pointer' }}
-            onClick={() => navigate('/')}
-          >
+          <Typography.Title level={5} style={{ margin: 0, cursor: 'pointer' }}>
             Phòng Vật tư Trang thiết bị Y tế
           </Typography.Title>
         </Flex>
