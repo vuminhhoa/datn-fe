@@ -77,7 +77,7 @@ const Edit = () => {
 
   const breadcrumbItems = useBreadcrumb([
     !loading ? (
-      !data.isProposal ? (
+      !data?.isProposal ? (
         { href: '/shopping/bidding', title: 'Hoạt động mua sắm qua đấu thầu' }
       ) : (
         { href: '/shopping/proposal', title: 'Đề xuất hoạt động mua sắm' }
