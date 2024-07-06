@@ -23,7 +23,7 @@ import Page from '../../components/Page/Page.js';
 const getFetchUrl = (type) => {
   switch (type) {
     case 'bidding':
-      return 'shopping/bidding';
+      return 'shopping';
     default:
       return type;
   }
