@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Flex,
@@ -19,6 +19,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import useFetchApi from '../../hooks/useFetchApi.js';
 import Page from '../../components/Page/Page.js';
+import socket from '../../helpers/socket.js';
+import { timeAgo } from '../../helpers/date.js';
 
 const getFetchUrl = (type) => {
   switch (type) {
@@ -31,10 +33,25 @@ const getFetchUrl = (type) => {
 
 function Home() {
   const navigate = useNavigate();
-  const { data, loading } = useFetchApi({
+  const { data, loading, setData } = useFetchApi({
     url: `/dashboard`,
     defaultData: {},
   });
+
+  useEffect(() => {
+    socket.connect();
+    socket.on('newActivity', (newActivity) => {
+      setData((prev) => ({
+        ...prev,
+        activities: [newActivity, ...prev.activities],
+      }));
+    });
+
+    return () => {
+      socket.off('newActivity');
+      socket.disconnect();
+    };
+  }, [setData]);
 
   if (loading) {
     return (
@@ -301,7 +318,7 @@ function Home() {
                         </Flex>
 
                         <Typography.Text type="secondary">
-                          {item.createdAt}
+                          {timeAgo(item.createdAt)}
                         </Typography.Text>
                       </Flex>
                     }
