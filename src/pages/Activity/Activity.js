@@ -8,6 +8,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { List, Avatar } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Page from '../../components/Page';
+import { timeAgo } from '../../helpers/date';
 
 const getFetchUrl = (type) => {
   switch (type) {
@@ -112,7 +113,7 @@ const Activity = () => {
                         </Flex>
 
                         <Typography.Text type="secondary">
-                          {item.createdAt}
+                          {timeAgo(item.createdAt)}
                         </Typography.Text>
                       </Flex>
                     }
