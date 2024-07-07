@@ -9,6 +9,7 @@ import {
   List,
   Avatar,
   Typography,
+  Spin,
 } from 'antd';
 import {
   UserOutlined,
@@ -21,8 +22,8 @@ import useFetchApi from '../../hooks/useFetchApi.js';
 import Page from '../../components/Page/Page.js';
 import socket from '../../helpers/socket.js';
 import { timeAgo } from '../../helpers/date.js';
-import Skeleton from './Skeleton.js';
 import BiddingChart from './BiddingChart.js';
+import { useAppContext } from '../../contexts/appContext.js';
 
 const getFetchUrl = (type) => {
   switch (type) {
@@ -34,6 +35,7 @@ const getFetchUrl = (type) => {
 };
 
 function Home() {
+  const { loadingBiddings } = useAppContext();
   const navigate = useNavigate();
   const { data, loading, setData } = useFetchApi({
     url: `/dashboard`,
@@ -54,10 +56,6 @@ function Home() {
       socket.disconnect();
     };
   }, [setData]);
-
-  if (loading) {
-    return <Skeleton />;
-  }
 
   return (
     <Page>
@@ -160,7 +158,7 @@ function Home() {
           <Typography.Title level={5} style={{ margin: '0px' }}>
             Thông kê hoạt động mua sắm
           </Typography.Title>
-          <BiddingChart />
+          {loadingBiddings ? <Spin /> : <BiddingChart />}
         </Flex>
       </Card>
 
@@ -181,60 +179,67 @@ function Home() {
               </Button>
             )}
           </Flex>
-          <List
-            loading={loading}
-            dataSource={data.activities}
-            renderItem={(item) => {
-              const url = item.target ? getFetchUrl(item.target.type) : '';
-              return (
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar src={item.actor.image} icon={<UserOutlined />} />
-                    }
-                    description={
-                      <Flex justify="space-between" align="baseline" gap={16}>
-                        <Typography.Text>
-                          <Button
-                            type="link"
-                            size="small"
-                            style={{ padding: '0px', margin: '0px' }}
-                            onClick={() => navigate(`/user/${item.actor.id}`)}
-                          >
-                            {item.actor.name || item.actor.email}
-                          </Button>{' '}
-                          <Typography.Text type="primary">
-                            {item.action}
-                          </Typography.Text>{' '}
-                          {item.target && (
+          {loadingBiddings ? (
+            <Spin />
+          ) : (
+            <List
+              loading={loading}
+              dataSource={data.activities}
+              renderItem={(item) => {
+                const url = item.target ? getFetchUrl(item.target.type) : '';
+                return (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={
+                        <Avatar
+                          src={item.actor.image}
+                          icon={<UserOutlined />}
+                        />
+                      }
+                      description={
+                        <Flex justify="space-between" align="baseline" gap={16}>
+                          <Typography.Text>
                             <Button
                               type="link"
                               size="small"
                               style={{ padding: '0px', margin: '0px' }}
-                              onClick={() =>
-                                navigate(`/${url}/${item.target.id}`)
-                              }
+                              onClick={() => navigate(`/user/${item.actor.id}`)}
                             >
-                              {item.target.name}
-                            </Button>
-                          )}
-                        </Typography.Text>
-                        <Flex
-                          align="flex-end"
-                          style={{ width: '240px' }}
-                          justify="flex-end"
-                        >
-                          <Typography.Text type="secondary">
-                            {timeAgo(item.createdAt)}
+                              {item.actor.name || item.actor.email}
+                            </Button>{' '}
+                            <Typography.Text type="primary">
+                              {item.action}
+                            </Typography.Text>{' '}
+                            {item.target && (
+                              <Button
+                                type="link"
+                                size="small"
+                                style={{ padding: '0px', margin: '0px' }}
+                                onClick={() =>
+                                  navigate(`/${url}/${item.target.id}`)
+                                }
+                              >
+                                {item.target.name}
+                              </Button>
+                            )}
                           </Typography.Text>
+                          <Flex
+                            align="flex-end"
+                            style={{ width: '240px' }}
+                            justify="flex-end"
+                          >
+                            <Typography.Text type="secondary">
+                              {timeAgo(item.createdAt)}
+                            </Typography.Text>
+                          </Flex>
                         </Flex>
-                      </Flex>
-                    }
-                  />
-                </List.Item>
-              );
-            }}
-          />
+                      }
+                    />
+                  </List.Item>
+                );
+              }}
+            />
+          )}
         </Flex>
       </Card>
     </Page>
