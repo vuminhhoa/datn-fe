@@ -50,13 +50,14 @@ function BiddingChart() {
               data={preparedData}
               margin={{
                 top: 20,
-                right: 60,
+                right: 40,
                 left: 20,
                 bottom: 30,
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
+                padding={{ left: 40, right: 40 }}
                 dataKey="updatedAt"
                 scale="time"
                 domain={['auto', 'auto']} // Let Recharts handle the domain automatically
