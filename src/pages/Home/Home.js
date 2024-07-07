@@ -153,12 +153,28 @@ function Home() {
           </Card>
         </Col>
       </Row>
-      <Card bordered={false}>
+      <Card bordered={false} style={{ minHeight: '450px' }}>
         <Flex gap={4} vertical>
           <Typography.Title level={5} style={{ margin: '0px' }}>
             Thông kê hoạt động mua sắm
           </Typography.Title>
-          {loadingBiddings ? <Spin /> : <BiddingChart />}
+          {loadingBiddings ? (
+            <Flex
+              vertical
+              align="center"
+              justify="center"
+              style={{
+                minHeight: '350px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Spin />
+            </Flex>
+          ) : (
+            <BiddingChart />
+          )}
         </Flex>
       </Card>
 
@@ -179,8 +195,10 @@ function Home() {
               </Button>
             )}
           </Flex>
-          {loadingBiddings ? (
-            <Spin />
+          {loading ? (
+            <Flex vertical align="center" justify="center">
+              <Spin />
+            </Flex>
           ) : (
             <List
               loading={loading}
