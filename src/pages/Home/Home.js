@@ -291,7 +291,7 @@ function Home() {
                     }
                     description={
                       <Flex justify="space-between" align="baseline">
-                        <Flex gap={4} align="baseline">
+                        <Typography.Text>
                           <Button
                             type="link"
                             size="small"
@@ -299,10 +299,10 @@ function Home() {
                             onClick={() => navigate(`/user/${item.actor.id}`)}
                           >
                             {item.actor.name || item.actor.email}
-                          </Button>
+                          </Button>{' '}
                           <Typography.Text type="primary">
                             {item.action}
-                          </Typography.Text>
+                          </Typography.Text>{' '}
                           {item.target && (
                             <Button
                               type="link"
@@ -315,8 +315,7 @@ function Home() {
                               {item.target.name}
                             </Button>
                           )}
-                        </Flex>
-
+                        </Typography.Text>
                         <Typography.Text type="secondary">
                           {timeAgo(item.createdAt)}
                         </Typography.Text>

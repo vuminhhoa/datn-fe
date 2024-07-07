@@ -13,7 +13,15 @@ import {
   Button,
   Skeleton,
 } from 'antd';
-import { PlusOutlined, SaveOutlined } from '@ant-design/icons';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  EyeOutlined,
+  PlusOutlined,
+  RollbackOutlined,
+  SaveOutlined,
+  SendOutlined,
+} from '@ant-design/icons';
 import BiddingContext from '../../../contexts/biddingContext';
 import BiddingRequest from '../Form/BiddingRequest';
 import LenDuToanThanhLapCacTo from '../Form/LenDuToanThanhLapCacTo';
@@ -36,7 +44,8 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import { useAppContext } from '../../../contexts/appContext';
 import hasPermission from '../../../helpers/hasPermission';
-import { BIDDING_UPDATE } from '../../../const/permission';
+import { BIDDING_APPROVE, BIDDING_UPDATE } from '../../../const/permission';
+import PreviewModal from './PreviewModal';
 
 dayjs.extend(localizedFormat);
 dayjs.locale('vi'); // set locale to Vietnamese
@@ -58,21 +67,38 @@ const Edit = () => {
   const { departments, loadingDepartments, fetchBiddings } = useAppContext();
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [active, setActive] = useState(false);
   const { id } = useParams();
+
+  const [initData, setInitData] = useState(null);
+  const [deletedFields, setDeletedFields] = useState([]);
+  const [createdFields, setCreatedFields] = useState([]);
+  const [updatedFields, setUpdatedFields] = useState([]);
+  const [unsavedChange, setUnsavedChange] = useState(false);
+  const [isEditItem, setIsEditItem] = useState(false);
+
+  const { data, setData, loading, fetchApi } = useFetchApi({
+    url: `/bidding/${id}`,
+    defaultData: {},
+  });
+  const { editApi: approveApi } = useEditApi({
+    url: `/approveBidding/${id}?type=hoatDong`,
+    successCallback: () => {
+      fetchApi();
+      fetchBiddings();
+    },
+  });
+
   const { editing, editApi } = useEditApi({
     url: `/bidding/${id}`,
     successCallback: () => {
       setCreatedFields([]);
       setDeletedFields([]);
       setUpdatedFields([]);
-      setInitData(data);
       fetchApi();
+      setInitData(data);
       fetchBiddings();
     },
-  });
-  const { data, setData, loading, fetchApi } = useFetchApi({
-    url: `/bidding/${id}`,
-    defaultData: {},
   });
 
   const breadcrumbItems = useBreadcrumb([
@@ -90,17 +116,48 @@ const Edit = () => {
       title: loading ? <Skeleton.Input size="small" /> : data?.tenDeXuat,
     },
   ]);
-  const [initData, setInitData] = useState(defaultBidding);
-  const [deletedFields, setDeletedFields] = useState([]);
-  const [createdFields, setCreatedFields] = useState([]);
-  const [updatedFields, setUpdatedFields] = useState([]);
-  const [isEditItem, setIsEditItem] = useState(false);
+
+  const removeFields = (obj, fields) => {
+    if (!obj) return obj;
+    const result = { ...obj };
+    fields.forEach((field) => delete result[field]);
+    return result;
+  };
 
   useEffect(() => {
-    if (loading || JSON.stringify(initData) !== JSON.stringify(defaultBidding))
-      return;
-    setInitData(data);
-  }, [data]);
+    if (!initData || loading || editing || JSON.stringify(initData) === '{}') {
+      return setInitData(data);
+    }
+    if (
+      JSON.stringify(
+        removeFields(initData, [
+          'updatedAt',
+          'ngayPheDuyetDeXuat',
+          'ngayBatDauXuLy',
+          'ngayDeXuat',
+          'ngayTaoHoatDong',
+          'trangThaiHoatDong',
+          'isRejecting',
+          'isApproving',
+        ])
+      ) !==
+      JSON.stringify(
+        removeFields(data, [
+          'updatedAt',
+          'ngayPheDuyetDeXuat',
+          'ngayBatDauXuLy',
+          'ngayDeXuat',
+          'ngayTaoHoatDong',
+          'trangThaiHoatDong',
+          'isRejecting',
+          'isApproving',
+        ])
+      )
+    ) {
+      return setUnsavedChange(true);
+    }
+    return setUnsavedChange(false);
+  }, [data, initData]);
 
   const items = [
     {
@@ -116,16 +173,16 @@ const Edit = () => {
       children: (
         <>
           {data?.trangThaiHoatDong === 'approved' && (
-            <Tag color="success">Chấp thuận</Tag>
+            <Tag color="success">Hoàn thành</Tag>
           )}
           {data?.trangThaiHoatDong === 'pendingProcess' && (
-            <Tag color="blue">Chờ xử lý</Tag>
+            <Tag color="gold">Chờ xử lý</Tag>
           )}
           {data?.trangThaiHoatDong === 'pendingApprove' && (
             <Tag color="blue">Chờ duyệt</Tag>
           )}
           {data?.trangThaiHoatDong === 'rejected' && (
-            <Tag color="error">Từ chối</Tag>
+            <Tag color="error">Đã hủy</Tag>
           )}
           {data?.trangThaiHoatDong === 'processing' && (
             <Tag color="purple">Đang xử lý</Tag>
@@ -142,7 +199,7 @@ const Edit = () => {
                 <Tag color="success">Chấp thuận</Tag>
               )}
               {data?.trangThaiDeXuat === 'pendingProcess' && (
-                <Tag color="blue">Chờ xử lý</Tag>
+                <Tag color="gold">Chờ xử lý</Tag>
               )}
               {data?.trangThaiDeXuat === 'pendingApprove' && (
                 <Tag color="blue">Chờ duyệt</Tag>
@@ -166,6 +223,14 @@ const Edit = () => {
       ? {
           label: 'Ngày tạo hoạt động',
           children: dayjs(data?.ngayTaoHoatDong).format(
+            'dd, D/MM/YYYY  h:mm A'
+          ),
+        }
+      : false,
+    data?.ngayPheDuyetHoatDong
+      ? {
+          label: 'Ngày phê duyệt hoạt động',
+          children: dayjs(data?.ngayPheDuyetHoatDong).format(
             'dd, D/MM/YYYY  h:mm A'
           ),
         }
@@ -251,7 +316,7 @@ const Edit = () => {
     },
   ].filter(Boolean);
 
-  if (loading)
+  if (loading || !initData)
     return (
       <Page>
         <Breadcrumb items={breadcrumbItems} />
@@ -264,11 +329,6 @@ const Edit = () => {
               <Skeleton.Input />
             </Flex>
           }
-          extra={
-            <Button type="primary" disabled={loading}>
-              Lưu
-            </Button>
-          }
         >
           <Skeleton />
           <Skeleton />
@@ -280,10 +340,14 @@ const Edit = () => {
     );
 
   if (!data) return <NotFound />;
+  const canAction =
+    data.trangThaiHoatDong !== 'rejected' &&
+    data.trangThaiHoatDong !== 'approved';
 
   return (
     <BiddingContext.Provider
       value={{
+        canAction,
         data,
         setData,
         editing,
@@ -296,6 +360,14 @@ const Edit = () => {
         setUpdatedFields,
       }}
     >
+      {!!data.danhSachThietBiXemTruoc && (
+        <PreviewModal
+          active={active}
+          setActive={setActive}
+          data={JSON.parse(data.danhSachThietBiXemTruoc)}
+        />
+      )}
+
       <Page>
         <Breadcrumb items={breadcrumbItems} />
         <Card
@@ -305,26 +377,58 @@ const Edit = () => {
               : 'Chi tiết hoạt động mua sắm: ' + data?.tenDeXuat
           }
           extra={
-            <Flex gap={8}>
-              {data?.trangThaiDeXuat === 'approved' && (
+            <Flex gap={8} align="center">
+              {unsavedChange && canAction && (
                 <Button
-                  icon={<PlusOutlined />}
+                  type="link"
+                  size="small"
                   onClick={() => {
-                    navigate(
-                      `/equipments/import_equipments_by_excel?biddingId=${id}&departmentId=${data?.DepartmentId}`
-                    );
+                    setData(initData);
                   }}
+                  loading={loading || editing}
                 >
-                  Nhập thiết bị
+                  Reset
                 </Button>
               )}
+              {(data?.trangThaiDeXuat === 'approved' ||
+                !data?.trangThaiDeXuat) &&
+                !data?.danhSachThietBiXemTruoc &&
+                data?.trangThaiHoatDong !== 'approved' &&
+                data?.trangThaiHoatDong !== 'rejected' && (
+                  <Button
+                    icon={<PlusOutlined />}
+                    onClick={() => {
+                      navigate(
+                        `/equipments/import_equipments_by_excel?biddingId=${id}&departmentId=${data?.DepartmentId}`
+                      );
+                    }}
+                  >
+                    Nhập thiết bị
+                  </Button>
+                )}
+              {(data?.trangThaiDeXuat === 'approved' ||
+                !data?.trangThaiDeXuat) &&
+                data?.danhSachThietBiXemTruoc && (
+                  <Button
+                    icon={<EyeOutlined />}
+                    onClick={() => {
+                      setActive(true);
+                    }}
+                  >
+                    {data?.trangThaiHoatDong === 'approved' ||
+                    data?.trangThaiHoatDong === 'rejected'
+                      ? 'Xem DS thiết bị'
+                      : 'Xem trước DS thiết bị'}
+                  </Button>
+                )}
               {data.trangThaiDeXuat !== 'rejected' &&
-                hasPermission(BIDDING_UPDATE) && (
+                hasPermission(BIDDING_UPDATE) &&
+                canAction &&
+                unsavedChange && (
                   <Button
                     type="primary"
-                    disabled={JSON.stringify(data) === JSON.stringify(initData)}
                     icon={<SaveOutlined />}
-                    onClick={() =>
+                    onClick={() => {
                       editApi({
                         body: {
                           ...data,
@@ -338,11 +442,72 @@ const Edit = () => {
                               }
                             : {}),
                         },
-                      })
-                    }
+                      });
+                    }}
                     loading={editing}
                   >
                     Lưu
+                  </Button>
+                )}
+              {data.trangThaiDeXuat !== 'rejected' &&
+                data.trangThaiHoatDong !== 'pendingApprove' &&
+                data.trangThaiHoatDong !== 'rejected' &&
+                hasPermission(BIDDING_UPDATE) &&
+                canAction &&
+                !unsavedChange && (
+                  <Button
+                    type="primary"
+                    icon={<SendOutlined />}
+                    onClick={() =>
+                      editApi({
+                        body: {
+                          trangThaiHoatDong: 'pendingApprove',
+                        },
+                      })
+                    }
+                    loading={false}
+                  >
+                    Nộp
+                  </Button>
+                )}
+
+              {hasPermission(BIDDING_APPROVE) &&
+                data.trangThaiHoatDong === 'pendingApprove' &&
+                canAction && (
+                  <Button
+                    loading={data.isRejecting}
+                    icon={<CloseOutlined />}
+                    danger
+                    onClick={async () => {
+                      data.isRejecting = true;
+                      await approveApi({
+                        body: { trangThaiHoatDong: 'rejected' },
+                      });
+                      data.isRejecting = false;
+                    }}
+                  >
+                    Từ chối
+                  </Button>
+                )}
+              {hasPermission(BIDDING_APPROVE) &&
+                data.trangThaiHoatDong === 'pendingApprove' &&
+                canAction && (
+                  <Button
+                    type="primary"
+                    loading={data.isApproving}
+                    icon={<CheckOutlined />}
+                    onClick={async () => {
+                      data.isApproving = true;
+                      await approveApi({
+                        body: {
+                          trangThaiHoatDong: 'approved',
+                          danhSachThietBi: data.danhSachThietBiXemTruoc,
+                        },
+                      });
+                      data.isApproving = false;
+                    }}
+                  >
+                    Phê duyệt
                   </Button>
                 )}
             </Flex>
@@ -352,7 +517,7 @@ const Edit = () => {
             <Typography.Title level={5} style={{ margin: '0px' }}>
               {data.isProposal ? 'Thông tin đề xuất' : '1. Khoa phòng đề xuất'}
             </Typography.Title>
-            {hasPermission(BIDDING_UPDATE) && (
+            {hasPermission(BIDDING_UPDATE) && canAction && (
               <Button
                 disabled={editing}
                 type="link"

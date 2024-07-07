@@ -14,18 +14,12 @@ import {
   Popover,
   Typography,
 } from 'antd';
-import {
-  DeleteOutlined,
-  EyeOutlined,
-  CheckOutlined,
-  CloseOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { PlusOutlined } from '@ant-design/icons';
 import { useAppContext } from '../../contexts/appContext';
 import { Link, useNavigate } from 'react-router-dom';
 import hasPermission from '../../helpers/hasPermission';
 import {
-  BIDDING_APPROVE,
   BIDDING_CREATE,
   BIDDING_DELETE,
   BIDDING_READ,
@@ -34,7 +28,6 @@ import useDeleteApi from '../../hooks/useDeleteApi';
 import useCreateApi from '../../hooks/useCreateApi';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import Page from '../../components/Page';
-import useEditApi from '../../hooks/useEditApi';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import { useAuthContext } from '../../contexts/authContext';
@@ -77,12 +70,7 @@ const Bidding = () => {
       fetchApi();
     },
   });
-  const { editing, editApi } = useEditApi({
-    url: `/approveBidding?type=hoatDong`,
-    successCallback: () => {
-      fetchApi();
-    },
-  });
+
   const [isShowCreateForm, setIsShowCreateForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteId, setDeleteId] = useState();
@@ -135,15 +123,15 @@ const Bidding = () => {
         const { color, content } = (() => {
           switch (record.trangThaiHoatDong) {
             case 'approved':
-              return { color: 'success', content: 'Chấp thuận' };
+              return { color: 'success', content: 'Hoàn thành' };
             case 'pendingProcess':
-              return { color: 'blue', content: 'Chờ xử lý' };
+              return { color: 'gold', content: 'Chờ xử lý' };
 
             case 'pendingApprove':
               return { color: 'blue', content: 'Chờ duyệt' };
 
             case 'rejected':
-              return { color: 'error', content: 'Từ chối' };
+              return { color: 'error', content: 'Đã hủy' };
 
             case 'processing':
               return { color: 'purple', content: 'Đang xử lý' };
@@ -171,39 +159,7 @@ const Bidding = () => {
               />
             </Popover>
           )}
-          {hasPermission(BIDDING_APPROVE) &&
-            record.trangThaiHoatDong === 'pending' && (
-              <Popover content="Phê duyệt hoạt động" trigger="hover">
-                <Button
-                  type="link"
-                  loading={editing}
-                  icon={<CheckOutlined />}
-                  onClick={() => {
-                    editApi({
-                      id: record.id,
-                      body: { trangThaiHoatDong: 'approved' },
-                    });
-                  }}
-                />
-              </Popover>
-            )}
-          {hasPermission(BIDDING_APPROVE) &&
-            record.trangThaiHoatDong === 'pending' && (
-              <Popover content="Từ chối hoạt động" trigger="hover">
-                <Button
-                  type="link"
-                  loading={editing}
-                  icon={<CloseOutlined />}
-                  danger
-                  onClick={() => {
-                    editApi({
-                      id: record.id,
-                      body: { trangThaiHoatDong: 'rejected' },
-                    });
-                  }}
-                />
-              </Popover>
-            )}
+
           {hasPermission(BIDDING_DELETE) && (
             <Popover content="Xóa hoạt động" trigger="hover">
               <Button

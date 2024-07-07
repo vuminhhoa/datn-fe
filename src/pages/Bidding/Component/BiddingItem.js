@@ -27,6 +27,7 @@ const BiddingItem = ({
     createdFields,
     deletedFields,
     updatedFields,
+    canAction,
   } = useContext(BiddingContext);
   const initInput = initData[obj];
   const { setToast } = useAppContext();
@@ -74,7 +75,7 @@ const BiddingItem = ({
             </Button>
           )}
         </Flex>
-        {hasPermission(BIDDING_UPDATE) && (
+        {hasPermission(BIDDING_UPDATE) && canAction && (
           <Button
             disabled={saving}
             type="link"

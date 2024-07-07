@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   Flex,
@@ -74,7 +74,7 @@ const BiddingProposal = () => {
       fetchApi();
     },
   });
-  const { editing, editApi } = useEditApi({
+  const { editApi } = useEditApi({
     url: `/approveBidding`,
     successCallback: () => {
       fetchApi();
@@ -158,13 +158,15 @@ const BiddingProposal = () => {
               <Popover content="Phê duyệt đề xuất" trigger="hover">
                 <Button
                   type="link"
-                  loading={editing}
+                  loading={record.isApproving}
                   icon={<CheckOutlined />}
-                  onClick={() => {
-                    editApi({
-                      id: record.id,
+                  onClick={async () => {
+                    record.isApproving = true;
+                    await editApi({
+                      id: `${record.id}?type=deXuat`,
                       body: { trangThaiDeXuat: 'approved', type: 'deXuat' },
                     });
+                    record.isApproving = false;
                   }}
                 />
               </Popover>
@@ -174,14 +176,17 @@ const BiddingProposal = () => {
               <Popover content="Từ chối đề xuất" trigger="hover">
                 <Button
                   type="link"
-                  loading={editing}
+                  loading={record.isRejecting}
                   icon={<CloseOutlined />}
                   danger
-                  onClick={() => {
-                    editApi({
-                      id: record.id,
+                  onClick={async () => {
+                    record.isRejecting = true;
+                    await editApi({
+                      id: `${record.id}?type=deXuat`,
                       body: { trangThaiDeXuat: 'rejected', type: 'deXuat' },
                     });
+
+                    record.isRejecting = false;
                   }}
                 />
               </Popover>

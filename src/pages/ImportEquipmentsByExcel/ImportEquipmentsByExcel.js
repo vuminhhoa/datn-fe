@@ -13,9 +13,10 @@ import PreviewTable from './Components/PreviewTable.js';
 import DuplicateRowsTable from './Components/DuplicateRowsTable.js';
 import DeleteConfirmModal from './Components/DeleteConfirmModal.js';
 import { useAppContext } from '../../contexts/appContext.js';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ImportEquipmentsByExcel = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const initialBiddingId = queryParams.get('biddingId');
@@ -54,9 +55,14 @@ const ImportEquipmentsByExcel = () => {
       }
     },
     successCallback: () => {
+      if (initialBiddingId) {
+        return navigate(`/shopping/${initialBiddingId}`);
+      }
       setData([]);
     },
-    successMsg: 'Nhập thiết bị thành công!',
+    successMsg: selectedBidding
+      ? 'Nhập DS thiết bị xem trước cho hoạt động thành công!'
+      : 'Nhập thiết bị thành công!',
   });
 
   const checkDuplicateData = (data) => {
@@ -84,7 +90,13 @@ const ImportEquipmentsByExcel = () => {
       };
     });
 
-    createApi({ body: cleanedData });
+    createApi({
+      body: {
+        data: cleanedData,
+        BiddingId: selectedBidding,
+        DepartmentId: selectedDepartment,
+      },
+    });
   };
 
   const handleFileUpload = async (file) => {
@@ -200,10 +212,17 @@ const ImportEquipmentsByExcel = () => {
                   width: '100%',
                 }}
                 options={[
-                  ...biddings.map((item) => ({
-                    label: item.tenDeXuat,
-                    value: item.id,
-                  })),
+                  ...biddings
+                    .filter(
+                      (item) =>
+                        item.trangThaiHoatDong === 'pendingProcess' ||
+                        item.trangThaiHoatDong === 'pendingApprove' ||
+                        item.trangThaiHoatDong === 'processing'
+                    )
+                    .map((item) => ({
+                      label: item.tenDeXuat,
+                      value: item.id,
+                    })),
                 ]}
               />
             </Flex>

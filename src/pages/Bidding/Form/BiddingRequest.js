@@ -7,7 +7,7 @@ import hasPermission from '../../../helpers/hasPermission';
 import { BIDDING_UPDATE } from '../../../const/permission';
 
 const BiddingRequest = () => {
-  const { data, saving } = useContext(BiddingContext);
+  const { data, saving, canAction } = useContext(BiddingContext);
   const [isEditBiddingRequest, setIsEditBiddingRequest] = useState(false);
 
   const chaoGia = data?.yeuCauChaoGia || { ngayDang: null, ngayHetHan: null };
@@ -41,24 +41,28 @@ const BiddingRequest = () => {
                   )}
                 </Typography.Text>
 
-                {!isEditBiddingRequest && hasPermission(BIDDING_UPDATE) && (
-                  <Button
-                    type="link"
-                    disabled={saving}
-                    onClick={() => setIsEditBiddingRequest(true)}
-                  >
-                    Cập nhật
-                  </Button>
-                )}
-                {isEditBiddingRequest && hasPermission(BIDDING_UPDATE) && (
-                  <Button
-                    disabled={saving}
-                    type="link"
-                    onClick={() => setIsEditBiddingRequest(false)}
-                  >
-                    Xác nhận
-                  </Button>
-                )}
+                {!isEditBiddingRequest &&
+                  hasPermission(BIDDING_UPDATE) &&
+                  canAction && (
+                    <Button
+                      type="link"
+                      disabled={saving}
+                      onClick={() => setIsEditBiddingRequest(true)}
+                    >
+                      Cập nhật
+                    </Button>
+                  )}
+                {isEditBiddingRequest &&
+                  hasPermission(BIDDING_UPDATE) &&
+                  canAction && (
+                    <Button
+                      disabled={saving}
+                      type="link"
+                      onClick={() => setIsEditBiddingRequest(false)}
+                    >
+                      Xác nhận
+                    </Button>
+                  )}
               </Flex>
               {!isEditBiddingRequest && (
                 <>
