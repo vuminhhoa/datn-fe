@@ -2,7 +2,6 @@ import React from 'react';
 import { useAppContext } from '../../contexts/appContext.js';
 import {
   Bar,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -12,9 +11,10 @@ import {
   ComposedChart,
 } from 'recharts';
 import moment from 'moment';
+import { Card, Flex, Typography, Spin } from 'antd';
 
 function BiddingChart() {
-  const { biddings } = useAppContext();
+  const { biddings, loadingBiddings } = useAppContext();
 
   const formatVND = (value) => `${value.toLocaleString()} VND`;
   const formatXAxis = (tickItem) => {
@@ -25,57 +25,80 @@ function BiddingChart() {
   const preparedData = prepareData(biddings);
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <ComposedChart
-        data={preparedData}
-        margin={{
-          top: 20,
-          right: 60,
-          left: 20,
-          bottom: 30,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="updatedAt"
-          scale="time"
-          domain={['auto', 'auto']} // Let Recharts handle the domain automatically
-          type="number"
-          tickFormatter={formatXAxis} // Format ticks on XAxis
-        />
-        <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-        <YAxis
-          yAxisId="right"
-          orientation="right"
-          stroke="#82ca9d"
-          tickFormatter={formatVND}
-        />
-        <Tooltip
-          formatter={(val, name, props) => {
-            if (props.dataKey === 'totalPrice') {
-              return formatVND(val);
-            }
-            return val;
-          }}
-          labelFormatter={formatXAxis} // Format ticks on XAxis
-        />
-        <Legend />
-        <Bar
-          yAxisId="left"
-          dataKey="totalEquipments"
-          fill="#8884d8"
-          name="Tổng số lượng thiết bị"
-          barSize={20} // Giảm width của Bar xuống
-        />
-        <Bar
-          yAxisId="right"
-          dataKey="totalPrice"
-          fill="#82ca9d"
-          name="Tổng tiền"
-          barSize={20}
-        />
-      </ComposedChart>
-    </ResponsiveContainer>
+    <Card bordered={false} style={{ minHeight: '450px' }}>
+      <Flex gap={4} vertical>
+        <Typography.Title level={5} style={{ margin: '0px' }}>
+          Thống kê hoạt động mua sắm
+        </Typography.Title>
+        {loadingBiddings ? (
+          <Flex
+            vertical
+            align="center"
+            justify="center"
+            style={{
+              minHeight: '350px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Spin />
+          </Flex>
+        ) : (
+          <ResponsiveContainer width="100%" height={400}>
+            <ComposedChart
+              data={preparedData}
+              margin={{
+                top: 20,
+                right: 60,
+                left: 20,
+                bottom: 30,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="updatedAt"
+                scale="time"
+                domain={['auto', 'auto']} // Let Recharts handle the domain automatically
+                type="number"
+                tickFormatter={formatXAxis} // Format ticks on XAxis
+              />
+              <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                stroke="#82ca9d"
+                tickFormatter={formatVND}
+              />
+              <Tooltip
+                formatter={(val, name, props) => {
+                  if (props.dataKey === 'totalPrice') {
+                    return formatVND(val);
+                  }
+                  return val;
+                }}
+                labelFormatter={formatXAxis} // Format ticks on XAxis
+              />
+              <Legend />
+              <Bar
+                yAxisId="left"
+                dataKey="totalEquipments"
+                fill="#8884d8"
+                name="Tổng số lượng thiết bị"
+                barSize={20} // Giảm width của Bar xuống
+              />
+              <Bar
+                yAxisId="right"
+                dataKey="totalPrice"
+                fill="#82ca9d"
+                name="Tổng tiền"
+                barSize={20}
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
+        )}
+      </Flex>
+    </Card>
   );
 }
 
