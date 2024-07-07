@@ -290,7 +290,7 @@ function Home() {
                       <Avatar src={item.actor.image} icon={<UserOutlined />} />
                     }
                     description={
-                      <Flex justify="space-between" align="baseline">
+                      <Flex justify="space-between" align="baseline" gap={16}>
                         <Typography.Text>
                           <Button
                             type="link"
@@ -318,7 +318,7 @@ function Home() {
                         </Typography.Text>
                         <Flex
                           align="flex-end"
-                          style={{ width: '150px' }}
+                          style={{ width: '240px' }}
                           justify="flex-end"
                         >
                           <Typography.Text type="secondary">

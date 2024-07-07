@@ -85,8 +85,8 @@ const Activity = () => {
                       <Avatar src={item.actor.image} icon={<UserOutlined />} />
                     }
                     description={
-                      <Flex justify="space-between" align="baseline">
-                        <Flex gap={4} align="baseline">
+                      <Flex justify="space-between" align="baseline" gap={16}>
+                        <Typography.Text>
                           <Button
                             type="link"
                             size="small"
@@ -94,10 +94,10 @@ const Activity = () => {
                             onClick={() => navigate(`/user/${item.actor.id}`)}
                           >
                             {item.actor.name || item.actor.email}
-                          </Button>
+                          </Button>{' '}
                           <Typography.Text type="primary">
                             {item.action}
-                          </Typography.Text>
+                          </Typography.Text>{' '}
                           {item.target && (
                             <Button
                               type="link"
@@ -110,11 +110,16 @@ const Activity = () => {
                               {item.target.name}
                             </Button>
                           )}
-                        </Flex>
-
-                        <Typography.Text type="secondary">
-                          {timeAgo(item.createdAt)}
                         </Typography.Text>
+                        <Flex
+                          align="flex-end"
+                          style={{ width: '240px' }}
+                          justify="flex-end"
+                        >
+                          <Typography.Text type="secondary">
+                            {timeAgo(item.createdAt)}
+                          </Typography.Text>
+                        </Flex>
                       </Flex>
                     }
                   />
