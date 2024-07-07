@@ -316,9 +316,15 @@ function Home() {
                             </Button>
                           )}
                         </Typography.Text>
-                        <Typography.Text type="secondary">
-                          {timeAgo(item.createdAt)}
-                        </Typography.Text>
+                        <Flex
+                          align="flex-end"
+                          style={{ width: '150px' }}
+                          justify="flex-end"
+                        >
+                          <Typography.Text type="secondary">
+                            {timeAgo(item.createdAt)}
+                          </Typography.Text>
+                        </Flex>
                       </Flex>
                     }
                   />
