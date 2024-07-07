@@ -61,7 +61,7 @@ const ImportEquipmentsByExcel = () => {
       setData([]);
     },
     successMsg: selectedBidding
-      ? 'Nhập DS thiết bị xem trước cho hoạt động thành công!'
+      ? 'Tạo DS thiết bị xem trước cho hoạt động thành công!'
       : 'Nhập thiết bị thành công!',
   });
 
