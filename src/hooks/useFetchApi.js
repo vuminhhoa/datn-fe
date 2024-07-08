@@ -32,7 +32,6 @@ export default function useFetchApi({
     !isSilent && setLoading(true);
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
 
-    console.log(accessToken, 'cxzczx');
     try {
       const resp = await axios({
         method: 'GET',
@@ -40,7 +39,6 @@ export default function useFetchApi({
         headers: {
           'Access-Control-Allow-Origin': '*',
           Authorization: `Bearer ${accessToken}`,
-          'x-access-token': accessToken,
           'Content-Type': 'application/json',
         },
         withCredentials: false,
