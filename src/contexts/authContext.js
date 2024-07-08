@@ -32,7 +32,7 @@ const AuthProvider = ({ children }) => {
       return navigate('/login');
     }
     try {
-      const res = await fetchAuthApi({ url: `/user/${userLocal.id}` });
+      const res = await fetchAuthApi({ url: `/user/verify/${userLocal.id}` });
       if (res.data.success) {
         const user = res.data.data;
         if (

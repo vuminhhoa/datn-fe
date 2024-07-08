@@ -13,7 +13,7 @@ const AppProvider = ({ children }) => {
     fetchApi: fetchRoles,
     setData: setRoles,
   } = useFetchApi({
-    url: '/roles',
+    url: '/dashboard/roles',
     defaultData: [],
     initLoad: false,
   });
@@ -23,7 +23,7 @@ const AppProvider = ({ children }) => {
     fetchApi: fetchDepartments,
     setData: setDepartments,
   } = useFetchApi({
-    url: '/departments',
+    url: '/dashboard/departments',
     defaultData: [],
     initLoad: false,
   });
@@ -33,7 +33,7 @@ const AppProvider = ({ children }) => {
     fetchApi: fetchBiddings,
     setData: setBiddings,
   } = useFetchApi({
-    url: '/biddings',
+    url: '/dashboard/biddings',
     defaultData: [],
     initLoad: false,
   });
