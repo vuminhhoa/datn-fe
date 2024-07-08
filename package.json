@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://datn-be-ebe49d4b9bbc.herokuapp.com",
   "dependencies": {
     "@ant-design/icons": "^5.3.3",
     "@testing-library/jest-dom": "^5.17.0",
