@@ -20,6 +20,7 @@ export default async function fetchAuthApi({ url, body }) {
     url: `${process.env.REACT_APP_BASE_API_URL}${url}`,
     headers: {
       Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
     },
     withCredentials: false,
     data: body,
