@@ -38,6 +38,7 @@ export default function useFetchApi({
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+        withCredentials: false,
       });
 
       setData(resp.data.data);

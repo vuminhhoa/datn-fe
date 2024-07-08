@@ -21,6 +21,7 @@ export default async function fetchAuthApi({ url, body }) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    withCredentials: false,
     data: body,
   });
 
