@@ -65,7 +65,7 @@ function AppHeader() {
         justify={'space-between'}
         align={'center'}
       >
-        <div style={{ width: '250px' }}>
+        <div style={{ width: '350px' }}>
           {user.RoleId === 1 && (
             <Button
               icon={<BugOutlined />}
@@ -94,7 +94,7 @@ function AppHeader() {
           justify="flex-end"
           gap={12}
           style={{
-            width: '250px',
+            width: '350px',
           }}
         >
           <Flex vertical align="flex-end">
