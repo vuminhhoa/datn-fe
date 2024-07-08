@@ -45,7 +45,6 @@ const EditProfileForm = ({
       setUploading(true);
       const file = e.file;
       const imgUrl = URL.createObjectURL(file);
-      console.log(imgUrl);
       form.setFields([
         {
           name: 'image',
@@ -62,7 +61,6 @@ const EditProfileForm = ({
         ]);
       }
       const fileBase64 = await convertBase64(file);
-      console.log(fileBase64);
       setFormValue({
         ...formValue,
         image: fileBase64,
