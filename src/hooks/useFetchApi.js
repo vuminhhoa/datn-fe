@@ -36,6 +36,7 @@ export default function useFetchApi({
         method: 'GET',
         url: `${process.env.REACT_APP_BASE_API_URL}${fetchUrl || url}`,
         headers: {
+          'Access-Control-Allow-Origin': '*',
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
