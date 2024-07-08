@@ -38,6 +38,7 @@ export default function useFetchApi({
         headers: {
           'Access-Control-Allow-Origin': '*',
           Authorization: `Bearer ${accessToken}`,
+           'x-access-token': accessToken,
           'Content-Type': 'application/json',
         },
         withCredentials: false,
