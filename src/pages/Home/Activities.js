@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Button, Flex, Card, List, Avatar, Typography, Spin } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import useFetchApi from '../../hooks/useFetchApi.js';
 import socket from '../../helpers/socket.js';
 import { timeAgo } from '../../helpers/date.js';
 
@@ -15,12 +14,8 @@ const getFetchUrl = (type) => {
   }
 };
 
-function Activities() {
+function Activities({ data, loading, setData }) {
   const navigate = useNavigate();
-  const { data, loading, setData } = useFetchApi({
-    url: `/dashboard`,
-    defaultData: {},
-  });
 
   useEffect(() => {
     socket.connect();

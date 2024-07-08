@@ -7,15 +7,10 @@ import {
   ApartmentOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import useFetchApi from '../../hooks/useFetchApi.js';
 import socket from '../../helpers/socket.js';
 
-function Summary() {
+function Summary({ data, loading, setData }) {
   const navigate = useNavigate();
-  const { data, loading, setData } = useFetchApi({
-    url: `/dashboard`,
-    defaultData: {},
-  });
 
   useEffect(() => {
     socket.connect();
