@@ -45,6 +45,7 @@ export default function useFetchApi({
       setData(resp.data.data);
       setPageInfo(resp.data.pageInfo);
     } catch (e) {
+      console.log(e);
       if (isResetDataOnFetchError) {
         setData(defaultData);
         setPageInfo({});
