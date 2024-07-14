@@ -52,6 +52,18 @@ const BiddingItem = ({
           }),
         },
       });
+      if (!initInput[documentField]) {
+        setCreatedFields((prev) => [...prev, `${obj}.${documentField}`]);
+      }
+      if (
+        initInput[documentField] &&
+        deletedFields.includes(`${obj}.${documentField}`)
+      ) {
+        setDeletedFields((prev) => {
+          return prev.filter((val) => val !== `${obj}.${documentField}`);
+        });
+        setUpdatedFields((prev) => [...prev, `${obj}.${documentField}`]);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -154,26 +166,6 @@ const BiddingItem = ({
                     return false;
                   }}
                   onChange={(e) => {
-                    if (!initInput[documentField]) {
-                      setCreatedFields((prev) => [
-                        ...prev,
-                        `${obj}.${documentField}`,
-                      ]);
-                    }
-                    if (
-                      initInput[documentField] &&
-                      deletedFields.includes(`${obj}.${documentField}`)
-                    ) {
-                      setDeletedFields((prev) => {
-                        return prev.filter(
-                          (val) => val !== `${obj}.${documentField}`
-                        );
-                      });
-                      setUpdatedFields((prev) => [
-                        ...prev,
-                        `${obj}.${documentField}`,
-                      ]);
-                    }
                     return handleChangeFile(e.file, documentField);
                   }}
                 >

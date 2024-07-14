@@ -419,9 +419,9 @@ const Edit = () => {
                       editApi({
                         body: {
                           ...data,
-                          deletedFields,
-                          createdFields,
-                          updatedFields,
+                          deletedFields: [...new Set(deletedFields)],
+                          createdFields: [...new Set(createdFields)],
+                          updatedFields: [...new Set(updatedFields)],
                           ...(data.trangThaiHoatDong === 'pendingProcess'
                             ? {
                                 trangThaiHoatDong: 'processing',
