@@ -550,7 +550,7 @@ const Edit = () => {
             )}
           </Flex>
           {!isEditItem && (
-            <Flex vertical gap={100}>
+            <Flex vertical>
               <Descriptions items={items} column={2} />
               <Typography.Text>Nội dung đề xuất:</Typography.Text>
               <div dangerouslySetInnerHTML={{ __html: data?.noiDungDeXuat }} />
