@@ -297,12 +297,6 @@ const Edit = () => {
       label: 'Lần cập nhật cuối',
       children: dayjs(data?.updatedAt).format('dd, D/MM/YYYY  h:mm A'),
     },
-    {
-      label: 'Nội dung',
-      children: (
-        <div dangerouslySetInnerHTML={{ __html: data?.noiDungDeXuat }} />
-      ),
-    },
   ].filter(Boolean);
 
   if (loading || !initData)
@@ -555,7 +549,13 @@ const Edit = () => {
               </Button>
             )}
           </Flex>
-          {!isEditItem && <Descriptions items={items} column={2} />}
+          {!isEditItem && (
+            <Flex vertical gap={100}>
+              <Descriptions items={items} column={2} />
+              <Typography.Text>Nội dung đề xuất:</Typography.Text>
+              <div dangerouslySetInnerHTML={{ __html: data?.noiDungDeXuat }} />
+            </Flex>
+          )}
           {isEditItem && (
             <Form autoComplete="off" form={form} layout="vertical">
               <Form.Item
