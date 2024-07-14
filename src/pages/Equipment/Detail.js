@@ -114,7 +114,8 @@ const Detail = () => {
       </Page>
     );
   }
-  if (!data?.tenThietBi) return <NotFound />;
+  if (!data) return <NotFound />;
+
   return (
     <Page>
       <Breadcrumb items={breadcrumbItems} />
