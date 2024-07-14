@@ -503,6 +503,7 @@ const Edit = () => {
                 !data.trangThaiHoatDong && (
                   <Button
                     loading={data.isRejecting}
+                    disabled={data.isApproving}
                     icon={<CloseOutlined />}
                     danger
                     onClick={async () => {
@@ -523,6 +524,7 @@ const Edit = () => {
                   <Button
                     type="primary"
                     loading={data.isApproving}
+                    disabled={data.isRejecting}
                     icon={<CheckOutlined />}
                     onClick={async () => {
                       data.isApproving = true;
