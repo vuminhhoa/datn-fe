@@ -82,7 +82,7 @@ const Detail = () => {
     },
     {
       label: 'Thành tiền',
-      children: formatVNCurrency(data.soLuong * data.donGia) || '',
+      children: formatVNCurrency(data?.soLuong * data?.donGia) || '',
     },
 
     {
