@@ -309,7 +309,6 @@ const Edit = () => {
               <Typography.Title level={5} style={{ margin: '0' }}>
                 <Skeleton.Input size="small" />
               </Typography.Title>
-              <Skeleton.Input />
             </Flex>
           }
         >
