@@ -189,19 +189,20 @@ const BiddingProposal = () => {
                 />
               </Popover>
             )}
-          {hasPermission(BIDDING_PROPOSAL_DELETE) && (
-            <Popover content="Xóa đề xuất" trigger="hover">
-              <Button
-                type="link"
-                danger
-                icon={<DeleteOutlined />}
-                onClick={() => {
-                  setDeleteId(record.id);
-                  setShowDeleteConfirm(true);
-                }}
-              />
-            </Popover>
-          )}
+          {hasPermission(BIDDING_PROPOSAL_DELETE) &&
+            record.trangThaiDeXuat !== 'approved' && (
+              <Popover content="Xóa đề xuất" trigger="hover">
+                <Button
+                  type="link"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={() => {
+                    setDeleteId(record.id);
+                    setShowDeleteConfirm(true);
+                  }}
+                />
+              </Popover>
+            )}
         </Space>
       ),
     },

@@ -142,19 +142,20 @@ const Bidding = () => {
             </Popover>
           )}
 
-          {hasPermission(BIDDING_DELETE) && (
-            <Popover content="Xóa hoạt động" trigger="hover">
-              <Button
-                type="link"
-                danger
-                icon={<DeleteOutlined />}
-                onClick={() => {
-                  setDeleteId(record.id);
-                  setShowDeleteConfirm(true);
-                }}
-              />
-            </Popover>
-          )}
+          {hasPermission(BIDDING_DELETE) &&
+            record.trangThaiHoatDong !== 'approved' && (
+              <Popover content="Xóa hoạt động" trigger="hover">
+                <Button
+                  type="link"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={() => {
+                    setDeleteId(record.id);
+                    setShowDeleteConfirm(true);
+                  }}
+                />
+              </Popover>
+            )}
         </Space>
       ),
     },
