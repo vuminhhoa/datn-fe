@@ -39,6 +39,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import useFetchApi from '../../hooks/useFetchApi';
 import { useAuthContext } from '../../contexts/authContext';
+import { getProposalStatus } from '../../helpers/biddingsHelpers';
 
 const modules = {
   toolbar: [
@@ -130,11 +131,8 @@ const BiddingProposal = () => {
       key: 'trangThaiDeXuat',
       dataIndex: 'trangThaiDeXuat',
       render: (_, record) => {
-        if (record.trangThaiDeXuat === 'approved')
-          return <Tag color="success">Chấp thuận</Tag>;
-        if (record.trangThaiDeXuat === 'rejected')
-          return <Tag color="error">Từ chối</Tag>;
-        return <Tag color="processing">Chờ duyệt</Tag>;
+        const { color, content } = getProposalStatus(record.trangThaiDeXuat);
+        return <Tag color={color}>{content}</Tag>;
       },
     },
 

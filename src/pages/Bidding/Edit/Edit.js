@@ -44,8 +44,16 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import { useAppContext } from '../../../contexts/appContext';
 import hasPermission from '../../../helpers/hasPermission';
-import { BIDDING_APPROVE, BIDDING_UPDATE } from '../../../const/permission';
+import {
+  BIDDING_APPROVE,
+  BIDDING_PROPOSAL_APPROVE,
+  BIDDING_UPDATE,
+} from '../../../const/permission';
 import PreviewModal from './PreviewModal';
+import {
+  getBiddingStatus,
+  getProposalStatus,
+} from '../../../helpers/biddingsHelpers';
 
 dayjs.extend(localizedFormat);
 dayjs.locale('vi'); // set locale to Vietnamese
@@ -83,6 +91,14 @@ const Edit = () => {
   });
   const { editApi: approveApi } = useEditApi({
     url: `/approveBidding/${id}?type=hoatDong`,
+    successCallback: () => {
+      fetchApi();
+      fetchBiddings();
+    },
+  });
+
+  const { editApi: approveProposalApi } = useEditApi({
+    url: `/approveBidding`,
     successCallback: () => {
       fetchApi();
       fetchBiddings();
@@ -159,6 +175,9 @@ const Edit = () => {
     return setUnsavedChange(false);
   }, [data, initData]);
 
+  const biddingStatus = getBiddingStatus(data?.trangThaiHoatDong || '');
+  const proposalStatus = getProposalStatus(data?.trangThaiDeXuat || '');
+
   const items = [
     {
       label: 'Khoa phòng đề xuất',
@@ -168,49 +187,19 @@ const Edit = () => {
       label: 'Ngày đề xuất',
       children: data?.ngayDeXuat,
     },
-    {
-      label: 'Trạng thái hoạt động',
-      children: (
-        <>
-          {data?.trangThaiHoatDong === 'approved' && (
-            <Tag color="success">Hoàn thành</Tag>
-          )}
-          {data?.trangThaiHoatDong === 'pendingProcess' && (
-            <Tag color="gold">Chờ xử lý</Tag>
-          )}
-          {data?.trangThaiHoatDong === 'pendingApprove' && (
-            <Tag color="blue">Chờ duyệt</Tag>
-          )}
-          {data?.trangThaiHoatDong === 'rejected' && (
-            <Tag color="error">Đã hủy</Tag>
-          )}
-          {data?.trangThaiHoatDong === 'processing' && (
-            <Tag color="purple">Đang xử lý</Tag>
-          )}
-        </>
-      ),
-    },
+    data?.trangThaiHoatDong
+      ? {
+          label: 'Trạng thái hoạt động',
+          children: (
+            <Tag color={biddingStatus.color}>{biddingStatus.content}</Tag>
+          ),
+        }
+      : false,
     data?.trangThaiDeXuat
       ? {
           label: 'Trạng thái đề xuất',
           children: (
-            <>
-              {data?.trangThaiDeXuat === 'approved' && (
-                <Tag color="success">Chấp thuận</Tag>
-              )}
-              {data?.trangThaiDeXuat === 'pendingProcess' && (
-                <Tag color="gold">Chờ xử lý</Tag>
-              )}
-              {data?.trangThaiDeXuat === 'pendingApprove' && (
-                <Tag color="blue">Chờ duyệt</Tag>
-              )}
-              {data?.trangThaiDeXuat === 'rejected' && (
-                <Tag color="error">Từ chối</Tag>
-              )}
-              {data?.trangThaiDeXuat === 'processing' && (
-                <Tag color="purple">Đang xử lý</Tag>
-              )}
-            </>
+            <Tag color={proposalStatus.color}>{proposalStatus.content}</Tag>
           ),
         }
       : false,
@@ -393,8 +382,7 @@ const Edit = () => {
               {(data?.trangThaiDeXuat === 'approved' ||
                 !data?.trangThaiDeXuat) &&
                 !data?.danhSachThietBiXemTruoc &&
-                data?.trangThaiHoatDong !== 'approved' &&
-                data?.trangThaiHoatDong !== 'rejected' && (
+                canAction && (
                   <Button
                     icon={<PlusOutlined />}
                     onClick={() => {
@@ -449,7 +437,8 @@ const Edit = () => {
                     Lưu
                   </Button>
                 )}
-              {data.trangThaiDeXuat !== 'rejected' &&
+              {!!data.trangThaiHoatDong &&
+                data.trangThaiDeXuat !== 'rejected' &&
                 data.trangThaiHoatDong !== 'pendingApprove' &&
                 data.trangThaiHoatDong !== 'rejected' &&
                 hasPermission(BIDDING_UPDATE) &&
@@ -503,6 +492,44 @@ const Edit = () => {
                           trangThaiHoatDong: 'approved',
                           danhSachThietBi: data.danhSachThietBiXemTruoc,
                         },
+                      });
+                      data.isApproving = false;
+                    }}
+                  >
+                    Phê duyệt
+                  </Button>
+                )}
+              {hasPermission(BIDDING_PROPOSAL_APPROVE) &&
+                data.trangThaiDeXuat === 'processing' &&
+                !data.trangThaiHoatDong && (
+                  <Button
+                    loading={data.isRejecting}
+                    icon={<CloseOutlined />}
+                    danger
+                    onClick={async () => {
+                      data.isRejecting = true;
+                      await approveProposalApi({
+                        id: `${data.id}?type=deXuat`,
+                        body: { trangThaiDeXuat: 'rejected', type: 'deXuat' },
+                      });
+                      data.isRejecting = false;
+                    }}
+                  >
+                    Từ chối
+                  </Button>
+                )}
+              {hasPermission(BIDDING_PROPOSAL_APPROVE) &&
+                data.trangThaiDeXuat === 'processing' &&
+                !data.trangThaiHoatDong && (
+                  <Button
+                    type="primary"
+                    loading={data.isApproving}
+                    icon={<CheckOutlined />}
+                    onClick={async () => {
+                      data.isApproving = true;
+                      await approveProposalApi({
+                        id: `${data.id}?type=deXuat`,
+                        body: { trangThaiDeXuat: 'approved', type: 'deXuat' },
                       });
                       data.isApproving = false;
                     }}

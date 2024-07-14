@@ -31,6 +31,7 @@ import Page from '../../components/Page';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import { useAuthContext } from '../../contexts/authContext';
+import { getBiddingStatus } from '../../helpers/biddingsHelpers';
 
 const modules = {
   toolbar: [
@@ -120,26 +121,7 @@ const Bidding = () => {
       key: 'trangThaiHoatDong',
       dataIndex: 'trangThaiHoatDong',
       render: (_, record) => {
-        const { color, content } = (() => {
-          switch (record.trangThaiHoatDong) {
-            case 'approved':
-              return { color: 'success', content: 'Hoàn thành' };
-            case 'pendingProcess':
-              return { color: 'gold', content: 'Chờ xử lý' };
-
-            case 'pendingApprove':
-              return { color: 'blue', content: 'Chờ duyệt' };
-
-            case 'rejected':
-              return { color: 'error', content: 'Đã hủy' };
-
-            case 'processing':
-              return { color: 'purple', content: 'Đang xử lý' };
-            default:
-              break;
-          }
-        })();
-
+        const { color, content } = getBiddingStatus(record.trangThaiHoatDong);
         return <Tag color={color}>{content}</Tag>;
       },
     },
