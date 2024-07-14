@@ -118,18 +118,15 @@ const Edit = () => {
   });
 
   const breadcrumbItems = useBreadcrumb([
-    loading ? (
-      !data?.isProposal ? (
-        { href: '/shopping/bidding', title: 'Hoạt động mua sắm qua đấu thầu' }
-      ) : (
-        { href: '/shopping/proposal', title: 'Đề xuất hoạt động mua sắm' }
-      )
-    ) : (
-      <Skeleton.Input size="small" />
-    ),
+    !data?.isProposal
+      ? {
+          href: '/shopping/bidding',
+          title: 'Hoạt động mua sắm qua đấu thầu',
+        }
+      : { href: '/shopping/proposal', title: 'Đề xuất hoạt động mua sắm' },
     {
       href: `/shopping/${id}`,
-      title: loading ? <Skeleton.Input size="small" /> : data?.tenDeXuat,
+      title: data?.tenDeXuat,
     },
   ]);
 
@@ -302,7 +299,16 @@ const Edit = () => {
   if (loading || !initData)
     return (
       <Page>
-        <Breadcrumb items={breadcrumbItems} />
+        <Breadcrumb
+          items={[
+            {
+              title: <Skeleton.Input size="small" />,
+            },
+            {
+              title: <Skeleton.Input size="small" />,
+            },
+          ]}
+        />
         <Card
           title={
             <Flex align="center" gap={8}>
